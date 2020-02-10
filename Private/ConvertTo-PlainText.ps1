@@ -1,16 +1,16 @@
 <#
 .SYNOPSIS
-Convert an encrypted string ([System.Security.SecureString]) to its plain-text equivalent ([System.String])
+Convert an encrypted string to its plain-text equivalent.
 
 .DESCRIPTION
-Convert an encrypted string ([System.Security.SecureString]) to its plain-text equivalent ([System.String])
+Convert an encrypted string to its plain-text equivalent.
 
 .PARAMETER SecureString
 The encrypted value to be converted.
 
 .EXAMPLE
-PS > $password = ConvertTo-SecureString 'pa55w0rd' -AsPlainText -Force
-PS > ConvertTo-PlainText $password
+PS> $password = ConvertTo-SecureString 'pa55w0rd' -AsPlainText -Force
+PS> ConvertTo-PlainText $password
 'pa55word'
 
 .INPUTS
@@ -20,6 +20,7 @@ PS > ConvertTo-PlainText $password
 [System.String]
 
 .NOTES
+None
 
 #>
 function ConvertTo-PlainText {
