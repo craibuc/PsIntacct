@@ -27,7 +27,7 @@ function ConvertTo-PlainText {
 
     [CmdletBinding()]
 	param(
-        [Parameter(Mandatory,ValueFromPipeline,ValueFromPipelineByPropertyName)]
+        [Parameter(ValueFromPipeline,ValueFromPipelineByPropertyName)]
         [Alias('Password')]
 		[SecureString]$SecureString
 	)
@@ -35,8 +35,15 @@ function ConvertTo-PlainText {
     Begin{}
     Process
     {
-        $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureString)
-        [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)    
+        try
+        {
+            $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureString)
+            [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)                    
+        }
+        catch
+        {
+            #ignore
+        }
     }
     End {}
     
