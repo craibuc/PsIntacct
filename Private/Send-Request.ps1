@@ -9,7 +9,10 @@ PsCredential object that contains the sender_id and sender_password
 PsCustomObject that contains the session_id and endpoint.
 
 .PARAMETER Login
-PsCustomObject that contains the user_id, company_id, and user_password.
+PsCredential that contains the user's credentials.
+
+.PARAMETER CompanyId
+The company_id associated with the user.
 
 .PARAMETER Function
 One or more function nodes that contain the verbs and nouns to be processed.
@@ -34,7 +37,10 @@ function Send-Request {
         [pscustomobject]$Session,
 
         [Parameter(ParameterSetName='ForLogin', Mandatory)]
-        [pscustomobject]$Login,
+        [pscredential]$Login,
+
+        [Parameter(ParameterSetName='ForLogin', Mandatory)]
+        [string]$CompanyId,
 
         [Parameter(ParameterSetName='ForLogin', Mandatory)]
         [Parameter(ParameterSetName='ForSession', Mandatory)]
@@ -59,16 +65,16 @@ function Send-Request {
         if ($Login)
         {
             "<login>
-                <userid>$( $Login.userid )</userid>
-                <companyid>$( $Login.companyid )</companyid>
-                <password>$( $Login.password )</password>
+                <userid>$( $Login.UserName )</userid>
+                <password>$( $Login | ConvertTo-PlainText )</password>
+                <companyid>$( $CompanyId )</companyid>
             </login>"
         }
         elseif ($Session)
         {
             "<sessionid>$($Session.sessionid)</sessionid>"
         }
-
+    
     $Body=
 @"
 <?xml version="1.0" encoding="UTF-8"?>

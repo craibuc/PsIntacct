@@ -9,14 +9,20 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 
 Describe "Send-Request" {
     
-    # arrange
+    # sender
     $sender_id = 'sender_id'
     $sender_password = 'sender_password'
+    $SenderSecureString = ConvertTo-SecureString $sender_password -AsPlainText -Force
+    $SenderCredential = New-Object System.Management.Automation.PSCredential($sender_id, $SenderSecureString)
 
-    $SecureString = ConvertTo-SecureString $sender_password -AsPlainText -Force
-    $Credential = New-Object System.Management.Automation.PSCredential($sender_id, $SecureString)
+    # user
+    $userid='user_id'
+    $user_password='user_password'
 
-    $Login = [PSCustomObject]@{userid='user_id';companyid='Acme';password='user_password'}
+    $UserSecureString = ConvertTo-SecureString $user_password -AsPlainText -Force
+    $UserCredential = New-Object System.Management.Automation.PSCredential($userid, $UserSecureString)
+    $CompanyId = 'Acme'
+    
     $Session = [PSCustomObject]@{sessionid='01324656789';endpoint='https://xxx.yyy.zzz/'}
     $Function = "<function controlid='$( New-Guid )'></function>"
     
@@ -35,7 +41,7 @@ Describe "Send-Request" {
         # Get-Command "Send-Request" | Should -Not -HaveParameter Session
 
         BeforeEach {
-            Send-Request -Credential $Credential -Login $Login -Function $Function
+            Send-Request -Credential $SenderCredential -Login $UserCredential -CompanyId $CompanyId -Function $Function
         }
         
         it "uses the correct method, content-type, and Uri" {
@@ -60,9 +66,9 @@ Describe "Send-Request" {
             # assert
             Assert-MockCalled Invoke-WebRequest -ParameterFilter { 
                 $xml = ([xml]$Body).request.operation.authentication.login
-                $xml.companyid -eq $Login.companyid -and
-                $xml.userid -eq $Login.userid -and
-                $xml.password -eq $Login.password
+                $xml.userid -eq $UserCredential.UserName -and
+                $xml.password -eq $user_password -and
+                $xml.companyid -eq $CompanyId
             }
         }
      
@@ -90,7 +96,7 @@ Describe "Send-Request" {
         # Get-Command "Send-Request" | Should -Not -HaveParameter Login
 
         BeforeEach {
-            Send-Request -Credential $Credential -Session $Session -Function $Function -Unique -Transaction
+            Send-Request -Credential $SenderCredential -Session $Session -Function $Function -Unique -Transaction
         }
 
         it "-Session creates the correct request/control/uniqueid element" {
@@ -146,7 +152,7 @@ Describe "Send-Request" {
         }
 
         it "returns the response's Content as Xml" {
-            $Actual = Send-Request -Credential $Credential -Session $Session -Function $Function
+            $Actual = Send-Request -Credential $SenderCredential -Session $Session -Function $Function
             $Actual | Should -BeOfType XML
         }
     }
@@ -160,7 +166,7 @@ Describe "Send-Request" {
         }
 
         It "generates an unauthorized (401)" {
-            { Send-Request -Credential $Credential -Session $Session -Function $Function -ErrorAction Stop } | Should -Throw 'Response status code does not indicate success: 401 (Unauthorized).'
+            { Send-Request -Credential $SenderCredential -Session $Session -Function $Function -ErrorAction Stop } | Should -Throw 'Response status code does not indicate success: 401 (Unauthorized).'
         }
 
     }
