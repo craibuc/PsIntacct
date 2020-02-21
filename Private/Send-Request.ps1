@@ -77,7 +77,7 @@ function Send-Request {
         <senderid>$( $Credential.UserName )</senderid>
         <password>$( $Credential | ConvertTo-PlainText )</password>
         <controlid>$( Get-Date -UFormat %s )</controlid>
-        <uniqueid>$Unique</uniqueid>
+        <uniqueid>$( $Unique.ToString().ToLower() )</uniqueid>
         <dtdversion>3.0</dtdversion>
         <includewhitespace>false</includewhitespace>
     </control>
