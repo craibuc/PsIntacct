@@ -10,86 +10,80 @@ function New-Session {
     param
     (
         [pscredential]$SenderCredential,
-        [pscredential]$UserCredential
+        [pscredential]$UserCredential,
+        [string]$CompanyId
     )
 
     Write-Debug "$($MyInvocation.MyCommand.Name)"
     
     Write-Debug "Sender: $($SenderCredential.UserName)"
     Write-Debug "User: $($UserCredential.UserName)"
+    Write-Debug "CompanyId: $($CompanyId)"
 
-    $Uri = 'https://api.intacct.com/ia/xml/xmlgw.phtml'
-    $Body = `
-@"
-<?xml version="1.0" encoding="UTF-8"?>
-<request>
-  <control>
-    <senderid>$( $SenderCredential.UserName )</senderid>
-    <password>$( $SenderCredential | ConvertTo-PlainText  )</password>
-    <controlid>$( Get-Date -UFormat %s )</controlid>
-    <uniqueid>false</uniqueid>
-    <dtdversion>3.0</dtdversion>
-    <includewhitespace>false</includewhitespace>
-  </control>
-  <operation>
-    <authentication>
-      <login>
-        <userid>$( $UserCredential.UserName )</userid>
-        <companyid>$( $UserCredential.Company )</companyid>
-        <password>$( $UserCredential | ConvertTo-PlainText )</password>
-      </login>
-    </authentication>
-    <content>
-      <function controlid='$( New-Guid )'>
-        <getAPISession />
-      </function>
-    </content>
-  </operation>
-</request>
-"@
-
-    Write-Debug $Body
+    $Function ="<function controlid='$( New-Guid )'><getAPISession /></function>"
 
     try
     {
-      $Response = Invoke-WebRequest -Method POST -Uri $Uri -Body $Body -ContentType 'application/xml'
 
-      $Content = [xml]$Response.Content
+      $Content = Send-Request -Credential $SenderCredential -Login $UserCredential -CompanyId $CompanyId -Function $Function
   
-      Write-Debug "status: $($Content.response.control.status)"
+      Write-Debug "control status: $($Content.response.control.status)"
+      Write-Debug "authentication status: $($Content.response.operation.authentication.status)"
+      Write-Debug "result status: $($Content.response.operation.result.status)"
 
-      switch ( $Content.response.control.status )
+      if ( $Content.response.operation.authentication.status -eq 'failure' )
       {
-        'success'
-        {
+            # create ErrorRecord
+            $Exception = New-Object ApplicationException $Content.response.operation.errormessage.error.description2
+            $ErrorId = "$($MyInvocation.MyCommand.Module.Name).$($MyInvocation.MyCommand.Name) - $($Content.response.operation.errormessage.error.errorno)"
+            $ErrorCategory = [System.Management.Automation.ErrorCategory]::NotSpecified
+            $ErrorRecord = New-Object Management.Automation.ErrorRecord $Exception, $ErrorId, $ErrorCategory, $Content
+
+            # write ErrorRecord
+            Write-Error -ErrorRecord $ErrorRecord -RecommendedAction $Content.response.operation.result.errormessage.error.correction
+      }
+
+      elseif ( $Content.response.operation.result.status -eq 'success' )
+      {
           Write-Debug "sessionid: $( $Content.response.operation.result.data.api.sessionid )"
           Write-Debug "endpoint: $( $Content.response.operation.result.data.api.endpoint )"
-  
+
           # returns PsCustomObject representation of object
           [PsCustomObject]@{
             Credential = $SenderCredential
             sessionid = $Content.response.operation.result.data.api.sessionid
             endpoint = $Content.response.operation.result.data.api.endpoint
           }
-        }
-        'failure'
-        { 
-          Write-Debug "Error: $($Content.response.errormessage.error.description2)"
-          # raise an exception
-          Write-Error -Message $Content.response.errormessage.error.description2
-        }    
-      } # /switch
+      }
 
-    }
+      elseif ( $Content.response.operation.result.status -eq 'failure' )
+      { 
+          Write-Debug "Module: $($MyInvocation.MyCommand.Module.Name)"
+          Write-Debug "Command: $($MyInvocation.MyCommand.Name)"
+          Write-Debug "description2: $($Content.response.operation.result.errormessage.error.description2)"
+          Write-Debug "correction: $($Content.response.operation.result.errormessage.error.correction)"
+
+          # create ErrorRecord
+          $Exception = New-Object ApplicationException $Content.response.operation.result.errormessage.error.description2
+          $ErrorId = "$($MyInvocation.MyCommand.Module.Name).$($MyInvocation.MyCommand.Name) - $($Content.response.operation.result.errormessage.error.errorno)"
+          $ErrorCategory = [System.Management.Automation.ErrorCategory]::NotSpecified
+          $ErrorRecord = New-Object Management.Automation.ErrorRecord $Exception, $ErrorId, $ErrorCategory, $Content
+
+          # write ErrorRecord
+          Write-Error -ErrorRecord $ErrorRecord -RecommendedAction $Content.response.operation.result.errormessage.error.correction
+      } # /if
+
+    } # /try
+
     catch [Microsoft.PowerShell.Commands.HttpResponseException]
     {
       # HTTP exceptions
-      Write-Error "$($_.Exception.Response.ReasonPhrase) [$($_.Exception.Response.StatusCode.value__)]"
+      Write-Error $_ # "$($_.Exception.Response.ReasonPhrase) [$($_.Exception.Response.StatusCode.value__)]"
     }
     catch
     {
       # all other exceptions
-      Write-Error $_.Exception.Message
+      Write-Error $_ #.Exception.Message
     }
 
 }
