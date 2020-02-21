@@ -1,3 +1,23 @@
+<#
+.SYNOPSIS
+Retrieve a User record by id or name.
+
+.PARAMETER Session
+The Session object created by New-Session.
+
+.PARAMETER Id
+The User's Id.
+
+.PARAMETER Name
+The User's name.
+
+.EXAMPLE
+PS> Get-User -Session $Session -Id 29
+
+.EXAMPLE
+PS> Get-User -Session $Session -Name 'blumbergh'
+
+#>
 function Get-User {
 
     [CmdletBinding()]
@@ -16,12 +36,6 @@ function Get-User {
 
     Write-Debug "$($MyInvocation.MyCommand.Name)"
 
-    # Write-Debug "Sender: $($Session.Credential.UserName)"
-    # Write-Debug "sessionid: $($Session.sessionid)"
-    # Write-Debug "endpoint: $($Session.endpoint)"
-
-    # $Password = $Session.Credential | ConvertTo-PlainText
-    # $Timestamp = Get-Date -UFormat %s
     $Guid = New-Guid
 
     $Function = `
@@ -62,40 +76,10 @@ function Get-User {
 "@        
         }
 #>
-<#
-    $Body = `
-@"
-<?xml version="1.0" encoding="UTF-8"?>
-<request>
-    <control>
-        <senderid>$($Session.Credential.UserName)</senderid>
-        <password>$Password</password>
-        <controlid>$Timestamp</controlid>
-        <uniqueid>false</uniqueid>
-        <dtdversion>3.0</dtdversion>
-        <includewhitespace>false</includewhitespace>
-    </control>
-    <operation>
-        <authentication>
-        	<sessionid>$($Session.sessionid)</sessionid>
-        </authentication>
-        <content>
-            <function controlid='$Guid'>
-                $Function
-            </function>
-        </content>
-    </operation>
-</request>
-"@
-
-    Write-Debug $Body
-#>
 
     try
     {
         $Content = Send-Request -Credential $Session.Credential -Session $Session -Function $Function
-        # $Response = Invoke-WebRequest -Method POST -Uri $Session.endpoint -Body $Body -ContentType 'application/xml'
-        # $Content = [xml]$Response.Content
 
         Write-Debug "status: $($Content.response.operation.result.status)"
 
@@ -130,8 +114,6 @@ function Get-User {
 
                 # write ErrorRecord
                 Write-Error -ErrorRecord $ErrorRecord -RecommendedAction $Content.response.operation.result.errormessage.error.correction
-                # Write-Error -Message $Content.response.operation.result.errormessage.error.description2 -RecommendedAction $Content.response.operation.result.errormessage.error.correction
-
             }    
         } # /switch
 
