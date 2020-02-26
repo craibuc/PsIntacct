@@ -61,13 +61,17 @@ function Send-Request {
         else {'https://api.intacct.com/ia/xml/xmlgw.phtml'}
     Write-Debug "Uri: $Uri"
 
+    #
+    # <companyid/> must preceed <password/> or login will fail
+    #
+
     $Authentication = 
         if ($Login)
         {
             "<login>
                 <userid>$( $Login.UserName )</userid>
-                <password>$( $Login | ConvertTo-PlainText )</password>
                 <companyid>$( $CompanyId )</companyid>
+                <password>$( $Login | ConvertTo-PlainText )</password>
             </login>"
         }
         elseif ($Session)
