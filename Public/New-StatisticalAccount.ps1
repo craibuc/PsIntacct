@@ -143,85 +143,6 @@ function New-StatisticalAccount {
         if ($REQUIREGLDIM) { [void]$SB.Append("<REQUIREGLDIM>$($REQUIREGLDIM.ToString().ToLower())</REQUIREGLDIM>") }
 
         [void]$SB.AppendLine('</STATACCOUNT>')
-
-        # # mandatory
-        # if ($ACCOUNTNO) { $Fields+= "<ACCOUNTNO>$ACCOUNTNO</ACCOUNTNO>"}
-        # if ($TITLE) { $Fields+= "<TITLE>$TITLE</TITLE>"}
-
-        # # optional
-        # if ($CATEGORY) { $Fields+= "<CATEGORY>$CATEGORY</CATEGORY>"}
-        # if ($ACCOUNTTYPE) { $Fields+= "<ACCOUNTTYPE>$ACCOUNTTYPE</ACCOUNTTYPE>"}
-        # if ($STATUS) { $Fields+= "<STATUS>$STATUS</STATUS>"}
-
-        # if ($REQUIREDEPT) { $Fields+= "<REQUIREDEPT>$($REQUIREDEPT.ToString().ToLower())</REQUIREDEPT>"}
-        # if ($REQUIRELOC) { $Fields+= "<REQUIRELOC>$($REQUIRELOC.ToString().ToLower())</REQUIRELOC>"}
-        # if ($REQUIREPROJECT) { $Fields+= "<REQUIREPROJECT>$($REQUIREPROJECT.ToString().ToLower())</REQUIREPROJECT>"}
-        # if ($REQUIRECUSTOMER) { $Fields+= "<REQUIRECUSTOMER>$($REQUIRECUSTOMER.ToString().ToLower())</REQUIRECUSTOMER>"}
-        # if ($REQUIREVENDOR) { $Fields+= "<REQUIREVENDOR>$($REQUIREVENDOR.ToString().ToLower())</REQUIREVENDOR>"}
-        # if ($REQUIREEMPLOYEE) { $Fields+= "<REQUIREEMPLOYEE>$($REQUIREEMPLOYEE.ToString().ToLower())</REQUIREEMPLOYEE>"}
-        # if ($REQUIREITEM) { $Fields+= "<REQUIREITEM>$($REQUIREITEM.ToString().ToLower())</REQUIREITEM>"}
-        # if ($REQUIRECLASS) { $Fields+= "<REQUIRECLASS>$($REQUIRECLASS.ToString().ToLower())</REQUIRECLASS>"}
-        # if ($REQUIRETASK) { $Fields+= "<REQUIRETASK>$($REQUIRETASK.ToString().ToLower())</REQUIRETASK>"}
-        # if ($REQUIREGLDIM) { $Fields+= "<REQUIREGLDIM>$($REQUIREGLDIM.ToString().ToLower())</REQUIREGLDIM>"}
-<#
-        $Function = 
-"
-<function controlid='$( New-Guid )'>
-    <create>
-        <STATACCOUNT>
-        $( $Fields -Join '' )
-        </STATACCOUNT>
-    </create>
-</function>
-"
-        Write-Debug $Function
-
-        try
-        {
-            $Content = Send-Request -Credential $Session.Credential -Session $Session -Function $Function
-            Write-Debug "status: $($Content.response.operation.result.status)"
-
-            switch ( $Content.response.operation.result.status )
-            {
-                'success'
-                {  
-                    Write-Debug "count: $($Content.response.operation.result.data.count)"
-    
-                    if ( $Content.response.operation.result.data.count -gt 0 )
-                    {
-                        $Content.response.operation.result.data.stataccount
-                    }
-                    else
-                    {
-                        Write-Error $_
-                    }
-    
-                }
-                'failure'
-                {
-                    # write an ErrorRecord for each error in the errormessage collection
-                    foreach ($err in $Content.response.operation.result.errormessage.error) {
-
-                        # create ErrorRecord
-                        $Exception = New-Object ApplicationException $err.description2
-                        $ErrorId = "$($MyInvocation.MyCommand.Module.Name).$($MyInvocation.MyCommand.Name) - $($err.errorno)"
-                        $ErrorCategory = [System.Management.Automation.ErrorCategory]::NotSpecified
-                        $ErrorRecord = New-Object Management.Automation.ErrorRecord $Exception, $ErrorId, $ErrorCategory, $Content
-
-                        # write ErrorRecord
-                        Write-Error -ErrorRecord $ErrorRecord -RecommendedAction $err.correction
-
-                    }
-                }    
-    
-            } # /switch
-
-        }
-        catch
-        {   
-            Write-Error $_
-        }
-#>
     } # /process
     
     end
@@ -268,7 +189,6 @@ function New-StatisticalAccount {
 
                         # write ErrorRecord
                         Write-Error -ErrorRecord $ErrorRecord -RecommendedAction $err.correction
-
                     }
                 }    
     
