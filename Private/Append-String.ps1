@@ -1,0 +1,3 @@
+function Append-String {
+
+}
