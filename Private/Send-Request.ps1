@@ -102,11 +102,18 @@ function Send-Request {
 </request>
 "@
 
-    Write-Debug "Body: $Body"
+    Write-Debug "** Request **"
+    Write-Debug $Body
+    Write-Debug "** /Request **"
 
     try {
 
         $Response = Invoke-WebRequest -Method POST -Uri $Uri -Body $Body -ContentType 'application/xml'
+
+        # Write-Debug "** Response **"
+        # Write-Debug $Response.Content
+        # Write-Debug "** /Response **"
+    
         [xml]$Response.Content
     }
     # catch [Microsoft.PowerShell.Commands.HttpResponseException]

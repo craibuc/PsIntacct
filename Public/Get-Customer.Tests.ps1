@@ -105,4 +105,50 @@ Describe "Get-Customer" -Tag 'unit' {
     
     }
 
+    Context "Pipeline" {
+            # arrange
+            $Customer = [pscustomobject]@{CUSTOMERID='CUST-00108'}
+
+            Mock Send-Request {
+
+                $Content = "<?xml version='1.0' encoding='UTF-8'?>
+                <response>
+                    <control><status>success</status></control>
+                    <operation>
+                        <result>
+                            <status>success</status>
+                            <data listtype='CUSTOMER' count='1'>
+                                <CUSTOMER>
+                                    <CUSTOMERID>$($Customer.CUSTOMERID)</CUSTOMERID>
+                                </CUSTOMER>
+                            </data>
+                        </result>
+                    </operation>
+                </response>"
+                Write-Debug $Content
+                [xml]$Content
+            } # /mock
+
+            # act
+            $Actual = $Customer | Get-Customer -Session $Session
+
+            it "configures the function element properly" {
+                
+                # <function controlid='$Guid'><readByName><object>CUSTOMER</object><keys>$Number</keys><fields>*</fields></readByName><pagesize>100</pagesize></function>
+
+                # assert
+                Assert-MockCalled Send-Request -ParameterFilter {
+                    $verb = ([xml]$Function).function.readByName
+                    $verb.object -eq 'CUSTOMER' -and
+                    $verb.keys -eq $Customer.CUSTOMERID -and
+                    $verb.fields -eq '*'
+                }    
+            }
+
+            It "returns the specified invoice" {
+                # assert
+                $Actual.CUSTOMERID | Should -Be $Customer.CUSTOMERID
+            }
+    }
+
 }

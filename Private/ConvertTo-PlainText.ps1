@@ -38,7 +38,8 @@ function ConvertTo-PlainText {
         try
         {
             $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureString)
-            [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)                    
+            [System.Runtime.InteropServices.Marshal]::PtrToStringBSTR($BSTR)
+            [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($BSTR)
         }
         catch
         {
