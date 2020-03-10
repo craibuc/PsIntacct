@@ -9,7 +9,7 @@
 @{
 
 # Script module or binary module file associated with this manifest.
-RootModule = 'PsIntacct.pdm1'
+RootModule = 'PsIntacct'
 
 # Version number of this module.
 ModuleVersion = '0.0.1'
@@ -69,7 +69,11 @@ Description = 'PowerShell module that wraps the Intacct API.'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @('New-Session')
+FunctionsToExport = @(
+    'ConvertTo-ContactXml','ConvertTo-CustomerXml','ConvertTo-MailingAddressXml',
+    'New-Session','New-GLEntry','New-StatisticalJournalEntry',
+    'Get-Customer','New-Customer','Set-Customer'
+)
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
