@@ -47,7 +47,7 @@ function ConvertTo-MailingAddressXml {
     Begin
     {
         $SB = New-Object -TypeName System.Text.StringBuilder
-        [void]$SB.Append("<MAILADDRESS>")    
+        [void]$SB.AppendLine("<MAILADDRESS>")
     }
     Process
     {
@@ -61,8 +61,8 @@ function ConvertTo-MailingAddressXml {
     }
     End
     {
-        [void]$SB.Append("</MAILADDRESS>")
-        $SB.ToString()    
+        [void]$SB.AppendLine("</MAILADDRESS>")
+        $SB.ToString()
     }
 
 }
