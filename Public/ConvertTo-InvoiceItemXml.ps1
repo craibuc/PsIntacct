@@ -82,19 +82,20 @@ https://developer.intacct.com/api/accounts-receivable/invoices/#create-invoice-l
 
 #>
 
-function New-InvoiceItem {
+function ConvertTo-InvoiceItemXml {
 
     [CmdletBinding()]
     param (
-        [Parameter(ValueFromPipelineByPropertyName,Mandatory)]
-        [decimal]$amount,
-        
-        [Parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName='ByAccountNumber', Mandatory)]
         [string]$glaccountno,
         
-        [Parameter(ValueFromPipelineByPropertyName)]
+		[Parameter(ValueFromPipelineByPropertyName, ParameterSetName='ByAccountLabel', Mandatory)]
         [string]$accountlabel,
-        
+
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName='ByAccountNumber', Mandatory)]
+		[Parameter(ValueFromPipelineByPropertyName, ParameterSetName='ByAccountLabel', Mandatory)]
+        [decimal]$amount,
+
         [Parameter(ValueFromPipelineByPropertyName)]
         [string]$memo,
         
@@ -159,7 +160,7 @@ function New-InvoiceItem {
         [string]$warehouseid,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [string]$customfields
+        [pscustomobject[]]$customfields
     )
 
     begin {
@@ -169,33 +170,40 @@ function New-InvoiceItem {
 
     process {
         [void]$SB.Append('<lineitem>')
-
-        if ($amount) { [void]$SB.Append("<amount>$amount</amount>")}
+        
+        # required
         if ($accountlabel) { [void]$SB.Append("<accountlabel>$accountlabel</accountlabel>")}
         if ($glaccountno) { [void]$SB.Append("<glaccountno>$glaccountno</glaccountno>")}
-        if ($offsetglaccountno) { [void]$SB.Append("<offsetglaccountno>$offsetglaccountno</offsetglaccountno>")}
-        if ($memo) { [void]$SB.Append("<memo>$memo</memo>")}
-        if ($revrecstartdate) { [void]$SB.Append("<revrecstartdate><year>$( $revrecstartdate.ToString('yyyy') )</year><month>$($revrecstartdate.ToString('MM'))</month><day>$($revrecstartdate.ToString('dd'))</day></revrecstartdate>") }
-        if ($revrecenddate) { [void]$SB.Append("<revrecenddate><year>$($revrecenddate.ToString('yyyy'))</year><month>$($revrecenddate.ToString('MM'))</month><day>$($revrecenddate.ToString('dd'))</day></revrecenddate>")}
+        if ($amount) { [void]$SB.Append("<amount>$amount</amount>")}
+        # /required
 
+        if ($offsetglaccountno) { [void]$SB.Append("<offsetglaccountno>$offsetglaccountno</offsetglaccountno>")}
+        if ($allocationid) { [void]$SB.AppendLine("<allocationid>$allocationid</allocationid>") }
+        if ($memo) { [void]$SB.Append("<memo>$( [System.Security.SecurityElement]::Escape($memo) )</memo>")}
+        if ($locationid) { [void]$SB.AppendLine("<locationid>$locationid</locationid>") }
+        if ($departmentid) { [void]$SB.AppendLine("<departmentid>$departmentid</departmentid>") }
+        if ($key) { [void]$SB.AppendLine("<key>$key</key>") }
         if ($totalpaid) { [void]$SB.Append("<totalpaid>$totalpaid</totalpaid>")}
         if ($totaldue) { [void]$SB.Append("<totaldue>$totaldue</totaldue>")}
+        
+        if ($customfields)
+        {
+            $xml = $customfields | ConvertTo-CustomFieldXml
+            [void]$SB.Append( $xml )
+        }
 
         if ($revrectemplate) { [void]$SB.Append("<revrectemplate>$revrectemplate</revrectemplate>")}
         if ($defrevaccount) { [void]$SB.Append("<defrevaccount>$defrevaccount</defrevaccount>")}
-
-        if ($allocationid) { [void]$SB.AppendLine("<allocationid>$allocationid</allocationid>") }
-        if ($classid) { [void]$SB.AppendLine("<classid>$classid</classid>") }
-        if ($contractid) { [void]$SB.AppendLine("<contractid>$contractid</contractid>") }
-        if ($customerid) { [void]$SB.AppendLine("<customerid>$customerid</customerid>") }
-        if ($departmentid) { [void]$SB.AppendLine("<departmentid>$departmentid</departmentid>") }
-        if ($employeeid) { [void]$SB.AppendLine("<employeeid>$employeeid</employeeid>") }
-        if ($itemid) { [void]$SB.AppendLine("<itemid>$itemid</itemid>") }
-        if ($key) { [void]$SB.AppendLine("<key>$key</key>") }
-        if ($locationid) { [void]$SB.AppendLine("<locationid>$locationid</locationid>") }
+        if ($revrecstartdate) { [void]$SB.Append("<revrecstartdate><year>$( $revrecstartdate.ToString('yyyy') )</year><month>$($revrecstartdate.ToString('MM'))</month><day>$($revrecstartdate.ToString('dd'))</day></revrecstartdate>") }
+        if ($revrecenddate) { [void]$SB.Append("<revrecenddate><year>$($revrecenddate.ToString('yyyy'))</year><month>$($revrecenddate.ToString('MM'))</month><day>$($revrecenddate.ToString('dd'))</day></revrecenddate>")}
         if ($projectid) { [void]$SB.AppendLine("<projectid>$projectid</projectid>") }
         if ($taskid) { [void]$SB.AppendLine("<taskid>$taskid</taskid>") }
+        if ($customerid) { [void]$SB.AppendLine("<customerid>$customerid</customerid>") }
         if ($vendorid) { [void]$SB.AppendLine("<vendorid>$vendorid</vendorid>") }
+        if ($employeeid) { [void]$SB.AppendLine("<employeeid>$employeeid</employeeid>") }
+        if ($itemid) { [void]$SB.AppendLine("<itemid>$itemid</itemid>") }
+        if ($classid) { [void]$SB.AppendLine("<classid>$classid</classid>") }
+        if ($contractid) { [void]$SB.AppendLine("<contractid>$contractid</contractid>") }
         if ($warehouseid) { [void]$SB.AppendLine("<warehouseid>$warehouseid</warehouseid>") }
 
         [void]$SB.Append('</lineitem>')
