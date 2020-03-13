@@ -14,8 +14,8 @@ State/province
 .PARAMETER ZIP
 Zip/postal code
 
-.PARAMETER COUNTRY
-Country
+.PARAMETER COUNTRYCODE
+Country code.
 
 #>
 function ConvertTo-MailingAddressXml {
@@ -37,11 +37,8 @@ function ConvertTo-MailingAddressXml {
         [Parameter(ValueFromPipelineByPropertyName)]
         [string]$ZIP,
 
-        # [Parameter(ValueFromPipelineByPropertyName)]
-        # [string]$COUNTRY='US'
         [Parameter(ValueFromPipelineByPropertyName)]
         [string]$COUNTRYCODE='US'
-
     )
 
     Begin
@@ -56,7 +53,6 @@ function ConvertTo-MailingAddressXml {
         if ($CITY) { [void]$SB.Append("<CITY>$CITY</CITY>") }
         if ($STATE) { [void]$SB.Append("<STATE>$STATE</STATE>") }
         if ($ZIP) { [void]$SB.Append("<ZIP>$ZIP</ZIP>") }
-        # if ($COUNTRY) { [void]$SB.Append("<COUNTRY>$COUNTRY</COUNTRY>") }
         if ($COUNTRYCODE) { [void]$SB.Append("<COUNTRYCODE>$COUNTRYCODE</COUNTRYCODE>") }    
     }
     End
