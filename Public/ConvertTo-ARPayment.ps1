@@ -179,7 +179,7 @@ function ConvertTo-ARPayment
     End
     {
         [void]$SB.Append("</ARPYMT>")
-        $SB.ToString()    
+        $SB.ToString()
     }
 
 }
