@@ -12,25 +12,30 @@ PS> git clone git@github.com:craibuc/PsIntacct.git
 
 ## Configuration
 
-### Sender
+### Enable the Sender ID
 
-```powershell
-PS> $SenderCredential = Get-Credential
-```
+Add the `Sender ID` (provided by Intacct) to the environment:
 
-### User
+`Company > Company > Setup > Configuration > Company > Security`:
 
-```powershell
-PS> $UserCredential = Get-Credential
-PS> $CompanyId = 'my_company'
-```
+- Click <kbd>Edit</kbd>, then <kbd>Add</kbd> to display the dialog:
+- Supply the `Sender ID`
+- Click <kbd>Save</kbd> to exit the window
+- Click <kbd>Save</kbd> to save the changes
 
 ## Usage
 
 ### Create a session
 
 ```powershell
-$Session = New-Session -SenderCredential $SenderCredential -UserCredential $UserCredential -CompanyId $CompanyId
+# save the sender id credentials to a variable
+$SenderCredential = Get-Credential
+
+# save the user credentials to a variable
+$UserCredential = Get-Credential
+
+# create the session object
+$Session = New-Session -SenderCredential $SenderCredential -UserCredential $UserCredential -CompanyId 'my_company_id'
 ```
 
 ## Contributors
