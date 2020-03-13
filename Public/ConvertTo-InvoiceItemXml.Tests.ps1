@@ -2,19 +2,19 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
-Describe "New-InvoiceItem" {
+Describe "ConvertTo-InvoiceItemXml" -Tag 'unit' {
 
     $InvoiceItem = [pscustomobject]@{amount=76343.43}
 
     Context "Required fields" {
 
         it "has 1, mandatory parameter" {
-            Get-Command "New-InvoiceItem" | Should -HaveParameter amount -Mandatory
+            Get-Command "ConvertTo-InvoiceItemXml" | Should -HaveParameter amount -Mandatory
         }
     
         it "returns the expected values" {
             # act
-            [xml]$Actual = $InvoiceItem | New-InvoiceItem
+            [xml]$Actual = $InvoiceItem | ConvertTo-InvoiceItemXml
 
             # assert
             $Actual.invoiceitems.lineitem.amount | Should -Be $InvoiceItem.amount
@@ -79,7 +79,7 @@ Describe "New-InvoiceItem" {
         
         it "returns the expected values" {
             # act
-            [xml]$Actual = $InvoiceItem | New-InvoiceItem
+            [xml]$Actual = $InvoiceItem | ConvertTo-InvoiceItemXml
 
             # assert
             $Actual.invoiceitems.lineitem.accountlabel | Should -Be $InvoiceItem.accountlabel
