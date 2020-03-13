@@ -1,6 +1,6 @@
 <#
 .SYNOPIS
-Create 
+Convert GLEntry model to Xml.
 
 .PARAMETER ACCOUNTNO
 Account number
@@ -60,7 +60,7 @@ Custom fields. For a multi-pick-list custom field, implode multiple field values
 https://developer.intacct.com/api/general-ledger/stat-journal-entries/#create-statistical-journal-entry
 
 #>
-function New-GLEntry {
+function ConvertTo-GLEntry {
     [CmdletBinding()]
     param (
         [Parameter(ValueFromPipelineByPropertyName,Mandatory)]

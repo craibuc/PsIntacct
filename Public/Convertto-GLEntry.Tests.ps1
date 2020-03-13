@@ -2,7 +2,7 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
-Describe "New-GLEntry" -tag 'unit' {
+Describe "ConvertTo-GLEntry" -tag 'unit' {
 
     $Entry = [pscustomobject]@{
         ACCOUNTNO='HEADS'
@@ -14,14 +14,14 @@ Describe "New-GLEntry" -tag 'unit' {
 
         # assert
         it "has 3, mandatory parameter" {
-            Get-Command "New-GLEntry" | Should -HaveParameter ACCOUNTNO -Mandatory
-            Get-Command "New-GLEntry" | Should -HaveParameter TRX_AMOUNT -Mandatory
-            Get-Command "New-GLEntry" | Should -HaveParameter TR_TYPE -Mandatory
+            Get-Command "ConvertTo-GLEntry" | Should -HaveParameter ACCOUNTNO -Mandatory
+            Get-Command "ConvertTo-GLEntry" | Should -HaveParameter TRX_AMOUNT -Mandatory
+            Get-Command "ConvertTo-GLEntry" | Should -HaveParameter TR_TYPE -Mandatory
         }
     
         it "returns the expected values" {
             # act
-            [xml]$Actual = $Entry | New-GLEntry
+            [xml]$Actual = $Entry | ConvertTo-GLEntry
 
             # assert
             $Actual.ENTRIES.GLENTRY.ACCOUNTNO | Should -Be $Entry.ACCOUNTNO
@@ -32,6 +32,23 @@ Describe "New-GLEntry" -tag 'unit' {
     } # /context
 
     Context "Optional fields" {
+
+        # assert
+        it "has 13, optionsl parameter" {
+            Get-Command "ConvertTo-GLEntry" | Should -HaveParameter DOCUMENT
+            Get-Command "ConvertTo-GLEntry" | Should -HaveParameter DESCRIPTION
+            Get-Command "ConvertTo-GLEntry" | Should -HaveParameter ALLOCATION
+            Get-Command "ConvertTo-GLEntry" | Should -HaveParameter DEPARTMENT
+            Get-Command "ConvertTo-GLEntry" | Should -HaveParameter LOCATION
+            Get-Command "ConvertTo-GLEntry" | Should -HaveParameter PROJECTID
+            Get-Command "ConvertTo-GLEntry" | Should -HaveParameter CUSTOMERID
+            Get-Command "ConvertTo-GLEntry" | Should -HaveParameter VENDORID
+            Get-Command "ConvertTo-GLEntry" | Should -HaveParameter EMPLOYEEID
+            Get-Command "ConvertTo-GLEntry" | Should -HaveParameter ITEMID
+            Get-Command "ConvertTo-GLEntry" | Should -HaveParameter CLASSID
+            Get-Command "ConvertTo-GLEntry" | Should -HaveParameter CONTRACTID
+            Get-Command "ConvertTo-GLEntry" | Should -HaveParameter WAREHOUSEID
+        }
 
         # arrange
         $Entry | Add-Member -MemberType NoteProperty -Name 'DOCUMENT' -Value 'yyy'
@@ -50,7 +67,7 @@ Describe "New-GLEntry" -tag 'unit' {
         
         it "returns the expected values" {
             # act
-            [xml]$Actual = $Entry | New-GLEntry
+            [xml]$Actual = $Entry | ConvertTo-GLEntry
 
             # assert
             $Actual.ENTRIES.GLENTRY.DOCUMENT | Should -Be $Entry.DOCUMENT
