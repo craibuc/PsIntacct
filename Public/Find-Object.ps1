@@ -6,7 +6,7 @@ function Find-Object {
         [pscustomobject]$Session,
 
         [Parameter(Mandatory)]
-        [ValidateSet('GLACCOUNT','PROJECT')]
+        [ValidateSet('GLACCOUNT','PROJECT','BOOKING_TYPE')]
         [string]$Object,
 
         [Parameter()]
@@ -26,16 +26,14 @@ function Find-Object {
     Write-Debug "$($MyInvocation.MyCommand.Name)"
 
     $Function =
-@"
-<function controlid='$(New-Guid)'>
-    <readByQuery>
-        <object>$Object</object>
-        <fields>*</fields>
-        <query></query>
-        <pagesize>100</pagesize>
-    </readByQuery>
-</function>
-"@
+        "<function controlid='$(New-Guid)'>
+            <readByQuery>
+                <object>$Object</object>
+                <fields>$Fields</fields>
+                <query>$Query</query>
+                <pagesize>$PageSize</pagesize>
+            </readByQuery>
+        </function>"
     # Write-Debug $Function
 
     try
