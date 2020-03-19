@@ -7,22 +7,70 @@ $Parent = Split-Path -Parent $here
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
-Describe "Find-Object" {
+Describe "Find-Object" -Tag 'unit' {
 
     # arrange
     $Credential = New-MockObject -Type PsCredential
     $Session = [PsCustomObject]@{Credential=$Credential;sessionid='0123456789';endpoint='https://xx.yy.cc'}
 
-    $DefaultPageSize = 100
+    $Object = 'GLACCOUNT'
 
-    Context "Parameters" {
+    Context "Mandatory parameters" {
 
-        it "has one mandatory parameter" -skip {
+        it "has two, mandatory parameters" {
             Get-Command "Find-Object" | Should -HaveParameter Session -Mandatory
             Get-Command "Find-Object" | Should -HaveParameter Object -Mandatory -Type String
         }
+
+        Mock Send-Request {
+            $Content = "<?xml version='1.0' encoding='UTF-8'?>
+            <response>
+                <operation>
+                    <result>
+                        <status>success</status>
+                        <function>readByQuery</function>
+                        <data listtype='$($Object.ToLower())' count='$DefaultPageSize'>
+                            <$($Object.ToLower())/>
+                        </data>
+                    </result>
+                </operation>
+            </response>"
+            Write-Debug $Content
+            [xml]$Content
+        }
+
+        Context "-Object" {
+
+            it "sets the function.readByQuery.object element to the specified value ($Object)" {
+                # act
+                Find-Object -Session $Session -Object $Object
+
+                # assert
+                Assert-MockCalled Send-Request -ParameterFilter {
+                    $xml = [xml]$Function
+                    $xml.function.readByQuery.object -eq $Object
+                }
+            }
+
+            it "returns the expected data type" -Skip {
+                # act
+                $Actual = Find-Object -Session $Session -Object $Object
+
+                Write-Debug "listtype: $( $Actual.response.operation.result.data.listtype )"
+
+                # assert
+                $Actual.response.operation.result.data.listtype | Should -Be ($Object.ToLower())
+                # $Actual.response.operation.result.data.ChildNodes[0].Name | Should -Be ($Object.ToLower())
     
-        it "has four optional parameters" -skip {
+            }
+
+        }
+
+    }
+
+    Context "Optional parameters" {
+
+        it "has four optional parameters" {
             Get-Command "Find-Object" | Should -HaveParameter Fields -Type String -DefaultValue '*'
             Get-Command "Find-Object" | Should -HaveParameter Query -Type String -DefaultValue $null
             Get-Command "Find-Object" | Should -HaveParameter Offset -Type int # page number
@@ -30,6 +78,7 @@ Describe "Find-Object" {
 
             # ((Get-Command "$here\$sut").Parameters['PageSize'].Attributes.Mandatory | Should Be $true
         }
+
     }
 
     Context "Default parameter values" {
@@ -45,13 +94,12 @@ Describe "Find-Object" {
         </function>
         #>
 
-        # arrange
-        $Object = 'GLACCOUNT'
-
         BeforeEach {
 
+            # arrange
             Mock Send-Request {
-                $Content = "<?xml version='1.0' encoding='UTF-8'?>
+                $Content = 
+                "<?xml version='1.0' encoding='UTF-8'?>
                 <response>
                     <operation>
                         <result>
@@ -68,39 +116,24 @@ Describe "Find-Object" {
             }
 
             # act
-            $Actual = Find-Object -Session $Session -Object $Object
-        }
-
-        Context "-Object" {
-
-            it "sets the function.readByQuery.object element correctly" {
-                # assert
-                Assert-MockCalled Send-Request -ParameterFilter {
-                    $xml = [xml]$Function
-                    $xml.function.readByQuery.object -eq $Object
-                }
-            }
-
-            it "returns the expected data type" {
-                Write-Debug "listtype: $()"
-                # assert
-                # $Actual.response.operation.result.data.listtype | Should -Be ($Object.ToLower())
-                # $Actual.response.operation.result.data.ChildNodes[0].Name | Should -Be ($Object.ToLower())
-            }
+            Find-Object -Session $Session -Object $Object
         }
 
         Context "-Fields" {
-            it "sets the function.readByQuery.fields element correctly" -skip {
+
+            it "sets the function.readByQuery.fields element to its default value ('*')" {
                 # assert
                 Assert-MockCalled Send-Request -ParameterFilter {
                     $xml = [xml]$Function
                     $xml.function.readByQuery.fields -eq '*'
                 }
             }
+
         }
 
         Context "-Query" {
-            it "sets the function.readByQuery.query element correctly" -skip {
+
+            it "sets the function.readByQuery.query element to its default value ('')" {
                 # assert
                 Assert-MockCalled Send-Request -ParameterFilter {
                     $xml = [xml]$Function
@@ -118,40 +151,124 @@ Describe "Find-Object" {
 
         Context "-PageSize" {
 
-            it "sets the function.readByQuery.pagesize element correctly" -skip {
+            it "sets the function.readByQuery.pagesize element to its default value (100)" {
                 # assert
                 Assert-MockCalled Send-Request -ParameterFilter {
                     $xml = [xml]$Function
-                    $xml.function.readByQuery.pagesize -eq $DefaultPageSize
+                    $xml.function.readByQuery.pagesize -eq 100
                 }
-            }
-
-            it "returns the expected data type" -skip {
-                # assert
-                $Actual.response.operation.result.data.listtype | Should -Be ($Object.ToLower())
-                $Actual.response.operation.result.data.ChildNodes[0].Name | Should -Be ($Object.ToLower())
             }
 
         }
 
     } # /context
 
-    Context "Default parameter values" {
+    Context "Specified parameter values" {
 
-        # arrange        
-        Mock Send-Request
+        # arrange
+        Mock Send-Request {
+            $Content = "<?xml version='1.0' encoding='UTF-8'?>
+            <response>
+                <operation>
+                    <result>
+                        <status>success</status>
+                        <function>readByQuery</function>
+                        <data listtype='$($Object.ToLower())' count='$DefaultPageSize'>
+                            <$($Object.ToLower())/>
+                        </data>
+                    </result>
+                </operation>
+            </response>"
+            Write-Debug $Content
+            [xml]$Content
+        }
 
-#         <#
-#         <function controlid="{{$guid}}">
-#         <readMore><resultId>7765623638XlglD9MIYIQQc4fECC5@LwAAABU4</resultId></readMore>
-#         <!--<readByQuery>-->
-#         <!--    <object>GLACCOUNT</object>-->
-#         <!--    <fields>RECORDNO,ACCOUNTNO,TITLE,ACCOUNTTYPE</fields>-->
-#         <!--    <query></query>-->
-#         <!--    <pagesize>50</pagesize>-->
-#         <!--</readByQuery>-->
-#         </function>
-#         #>
+        Context "-Object" {
+
+            Context "Valid objects" {
+
+                # arrange
+                $Object = 'PROJECT'
+
+                it "sets the function.readByQuery.fields element to the specified value ($Object)" {
+                    
+                    # act
+                    Find-Object -Session $Session -Object $Object
+
+                    # assert
+                    Assert-MockCalled Send-Request -ParameterFilter {
+                        $xml = [xml]$Function
+                        $xml.function.readByQuery.object -eq $Object
+                    }
+                }
+
+            }
+
+            Context "Invalid object" {
+
+                it "throw an exception" -skip {
+                    # act/assert
+                    {Find-Object -Session $Session -Object $Object 'INVALID'} | Should -Throw    
+                }
+    
+            }
+
+        }
+
+        Context "-Fields" {
+
+            # arrange
+            $Fields = "RECORDNO,ACCOUNTNO"
+
+            it "sets the function.readByQuery.fields element to the specified value ($Fields)" {
+                
+                # act
+                Find-Object -Session $Session -Object $Object -Fields $Fields
+
+                # assert
+                Assert-MockCalled Send-Request -ParameterFilter {
+                    $xml = [xml]$Function
+                    $xml.function.readByQuery.fields -eq $Fields
+                }
+            }
+
+        }
+
+        Context "-Query" {
+
+            # arrange
+            $Query = "RECORDID='00000'"
+
+            it "sets the function.readByQuery.query element to the specified value ($Query)" {
+                # act
+                Find-Object -Session $Session -Object $Object -Query $Query
+
+                # assert
+                Assert-MockCalled Send-Request -ParameterFilter {
+                    $xml = [xml]$Function
+                    $xml.function.readByQuery.query -eq $Query
+                }
+            }
+        }
+
+        Context "-PageSize" {
+
+            # arrange
+            $PageSize = 50
+
+            it "sets the function.readByQuery.pagesize element to the specified value ($PageSize)" {
+                # act
+                Find-Object -Session $Session -Object $Object -PageSize $PageSize
+
+                # assert
+                Assert-MockCalled Send-Request -ParameterFilter {
+                    $xml = [xml]$Function
+                    $xml.function.readByQuery.pagesize -eq $PageSize
+                }
+            }
+
+        }
+
     }
 
 # <#
