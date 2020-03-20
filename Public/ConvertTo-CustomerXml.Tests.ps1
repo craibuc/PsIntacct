@@ -30,7 +30,7 @@ Describe "ConvertTo-CustomerXml" -Tag 'unit' {
     Context "Optional fields" {
 
         it "has 37, optional parameters" {
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter DISPLAYCONTACT -Type string
+            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter DISPLAYCONTACT -Type pscustomobject
             Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter STATUS -Type string
             Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter ONETIME -Type boolean
             Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter HIDEDISPLAYCONTACT -Type boolean
@@ -65,12 +65,12 @@ Describe "ConvertTo-CustomerXml" -Tag 'unit' {
             Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter BILLTO -Type string
             Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter SHIPTO -Type string
             Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter CONTACT_LIST_INFO -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter OBJECTRESTRICTION -Type string
+            # Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter OBJECTRESTRICTION -Type string
             Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter RESTRICTEDLOCATIONS -Type string
             Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter RESTRICTEDDEPARTMENTS -Type string
         }
 
-        $Customer | Add-Member -MemberType NoteProperty -Name 'DISPLAYCONTACT' -Value '<DISPLAYCONTACT/>'
+        $Customer | Add-Member -MemberType NoteProperty -Name 'DISPLAYCONTACT' -Value $null
         $Customer | Add-Member -MemberType NoteProperty -Name 'STATUS' -Value 'inactive'
         $Customer | Add-Member -MemberType NoteProperty -Name 'ONETIME' -Value $true
         $Customer | Add-Member -MemberType NoteProperty -Name 'HIDEDISPLAYCONTACT' -Value $true
@@ -105,7 +105,7 @@ Describe "ConvertTo-CustomerXml" -Tag 'unit' {
         $Customer | Add-Member -MemberType NoteProperty -Name 'BILLTO' -Value 'billto'
         $Customer | Add-Member -MemberType NoteProperty -Name 'SHIPTO' -Value 'shipto'
         $Customer | Add-Member -MemberType NoteProperty -Name 'CONTACT_LIST_INFO' -Value 'contact_list_info'
-        $Customer | Add-Member -MemberType NoteProperty -Name 'OBJECTRESTRICTION' -Value 'Restricted'
+        # $Customer | Add-Member -MemberType NoteProperty -Name 'OBJECTRESTRICTION' -Value 'Restricted'
         $Customer | Add-Member -MemberType NoteProperty -Name 'RESTRICTEDLOCATIONS' -Value 'restrictedlocations'
         $Customer | Add-Member -MemberType NoteProperty -Name 'RESTRICTEDDEPARTMENTS' -Value 'restricteddepartments'
 
@@ -155,5 +155,8 @@ Describe "ConvertTo-CustomerXml" -Tag 'unit' {
         }
 
     }
+
+    # Context "Xml escaping" {
+    # }
 
 }

@@ -136,7 +136,7 @@ function ConvertTo-CustomerXml {
         [string]$NAME,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [string]$DISPLAYCONTACT,
+        [pscustomobject]$DISPLAYCONTACT,
 
         [Parameter(ValueFromPipelineByPropertyName)]
         [ValidateSet('active','inactive')]
@@ -265,7 +265,14 @@ function ConvertTo-CustomerXml {
         if ($NAME) { [void]$SB.Append("<NAME>$NAME</NAME>") }
         # /mandatory
 
-        if ($DISPLAYCONTACT) { [void]$SB.Append($DISPLAYCONTACT) } else { [void]$SB.Append("<DISPLAYCONTACT/>") }
+        if ($DISPLAYCONTACT)
+        { 
+            $dc = $DISPLAYCONTACT | ConvertTo-ContactXml
+            [void]$SB.Append( $dc.OuterXml )
+            # [void]$SB.Append($DISPLAYCONTACT) 
+        } 
+        else { [void]$SB.Append("<DISPLAYCONTACT/>") }
+
         [void]$SB.Append("<HIDEDISPLAYCONTACT>$($HIDEDISPLAYCONTACT.ToString().ToLower())</HIDEDISPLAYCONTACT>")
         if ($STATUS) { [void]$SB.Append("<STATUS>$STATUS</STATUS>") }
         [void]$SB.Append("<ONETIME>$( $ONETIME.ToString().ToLower() )</ONETIME>")
@@ -300,8 +307,8 @@ function ConvertTo-CustomerXml {
         if ($CONTACTINFO) { [void]$SB.Append("<CONTACTINFO>$CONTACTINFO</CONTACTINFO>") }
         if ($BILLTO) { [void]$SB.Append("<BILLTO>$BILLTO</BILLTO>") }
         if ($SHIPTO) { [void]$SB.Append("<SHIPTO>$SHIPTO</SHIPTO>") }
-        if ($CONTACT_LIST_INFO) { [void]$SB.Append($CONTACT_LIST_INFO) } else { [void]$SB.Append("<CONTACT_LIST_INFO/>") }
-        if ($OBJECTRESTRICTION) { [void]$SB.Append("<OBJECTRESTRICTION>$OBJECTRESTRICTION</OBJECTRESTRICTION>") }
+        if ($CONTACT_LIST_INFO) { [void]$SB.Append($CONTACT_LIST_INFO) } # else { [void]$SB.Append("<CONTACT_LIST_INFO/>") }
+        # if ($OBJECTRESTRICTION) { [void]$SB.Append("<OBJECTRESTRICTION>$OBJECTRESTRICTION</OBJECTRESTRICTION>") }
         if ($RESTRICTEDLOCATIONS) { [void]$SB.Append("<RESTRICTEDLOCATIONS>$RESTRICTEDLOCATIONS</RESTRICTEDLOCATIONS>") }
         if ($RESTRICTEDDEPARTMENTS) { [void]$SB.Append("<RESTRICTEDDEPARTMENTS>$RESTRICTEDDEPARTMENTS</RESTRICTEDDEPARTMENTS>") }
     }
