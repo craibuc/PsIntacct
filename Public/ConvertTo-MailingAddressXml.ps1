@@ -17,6 +17,12 @@ Zip/postal code
 .PARAMETER COUNTRYCODE
 Country code.
 
+.INPUTS
+Pipeline by property name
+
+.OUTPUTS
+System.String
+
 #>
 function ConvertTo-MailingAddressXml {
 
@@ -44,21 +50,23 @@ function ConvertTo-MailingAddressXml {
     Begin
     {
         $SB = New-Object -TypeName System.Text.StringBuilder
-        [void]$SB.AppendLine("<MAILADDRESS>")
+        [void]$SB.Append("<MAILADDRESS>")
     }
     Process
     {
-        if ($ADDRESS1) { [void]$SB.Append("<ADDRESS1>$ADDRESS1</ADDRESS1>") }
-        if ($ADDRESS2) { [void]$SB.Append("<ADDRESS2>$ADDRESS2</ADDRESS2>") }
-        if ($CITY) { [void]$SB.Append("<CITY>$CITY</CITY>") }
+        if ($ADDRESS1) { [void]$SB.Append("<ADDRESS1>$( [System.Security.SecurityElement]::Escape($ADDRESS1) )</ADDRESS1>") }
+        if ($ADDRESS2) { [void]$SB.Append("<ADDRESS2>$( [System.Security.SecurityElement]::Escape($ADDRESS2) )</ADDRESS2>") }
+        if ($CITY) { [void]$SB.Append("<CITY>$( [System.Security.SecurityElement]::Escape($CITY) )</CITY>") }
         if ($STATE) { [void]$SB.Append("<STATE>$STATE</STATE>") }
         if ($ZIP) { [void]$SB.Append("<ZIP>$ZIP</ZIP>") }
         if ($COUNTRYCODE) { [void]$SB.Append("<COUNTRYCODE>$COUNTRYCODE</COUNTRYCODE>") }    
     }
     End
     {
-        [void]$SB.AppendLine("</MAILADDRESS>")
-        $SB.ToString()
+        [void]$SB.Append("</MAILADDRESS>")        
+        $xml = $SB.ToString()
+        # Write-Debug $Xml
+        [xml]$Xml
     }
 
 }
