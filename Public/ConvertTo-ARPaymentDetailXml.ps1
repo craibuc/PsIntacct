@@ -45,7 +45,7 @@ Optional	currency	Negative invoice amount to apply to the payment
 .PARAMETER DISCOUNTDATE
 Optional	string	Discount date in the mm/dd/yyyy format. All discounts available at this date are applied. You can supply a date in the past to access a discount whose deadline has already passed. You must provide the correct TRX_PAYMENTAMOUNT for the entire amount due (with the discount amount calculated in) for the discount to apply.
 #>
-function ConvertTo-ARPaymentDetail 
+function ConvertTo-ARPaymentDetailXml
 {
     [CmdletBinding()]
     param (

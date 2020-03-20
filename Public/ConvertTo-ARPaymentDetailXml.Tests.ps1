@@ -2,7 +2,7 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
-Describe "ConvertTo-ARPaymentDetail" {
+Describe "ConvertTo-ARPaymentDetailXml" {
 
     $Detail = [pscustomobject]@{
         RECORDKEY=123
@@ -11,12 +11,12 @@ Describe "ConvertTo-ARPaymentDetail" {
     Context "Required fields" {
 
         it "has 1, mandatory parameters" {
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter RECORDKEY -Mandatory
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter RECORDKEY -Mandatory
         }
 
         it "returns the expected values" {
             # act
-            [xml]$Actual = $Detail | ConvertTo-ARPaymentDetail
+            [xml]$Actual = $Detail | ConvertTo-ARPaymentDetailXml
 
             # assert
             $Actual.ARPYMTDETAIL.RECORDKEY | Should -Be $Detail.RECORDKEY
@@ -27,26 +27,26 @@ Describe "ConvertTo-ARPaymentDetail" {
     Context "Optional fields" {
 
         it "has 19, mandatory parameters" {
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter ENTRYKEY
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter POSADJKEY
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter POSADJENTRYKEY
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter TRX_PAYMENTAMOUNT
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter ADJUSTMENTKEY
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter ADJUSTMENTENTRYKEY
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter TRX_ADJUSTMENTAMOUNT
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter INLINEKEY
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter INLINEENTRYKEY
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter TRX_INLINEAMOUNT
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter ADVANCEKEY
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter ADVANCEENTRYKEY
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter TRX_POSTEDADVANCEAMOUNT
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter OVERPAYMENTKEY
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter OVERPAYMENTENTRYKEY
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter TRX_POSTEDOVERPAYMENTAMOUNT
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter NEGATIVEINVOICEKEY
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter NEGATIVEINVOICEENTRYKEY
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter TRX_NEGATIVEINVOICEAMOUNT
-            Get-Command "ConvertTo-ARPaymentDetail" | Should -HaveParameter DISCOUNTDATE
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter ENTRYKEY
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter POSADJKEY
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter POSADJENTRYKEY
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter TRX_PAYMENTAMOUNT
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter ADJUSTMENTKEY
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter ADJUSTMENTENTRYKEY
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter TRX_ADJUSTMENTAMOUNT
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter INLINEKEY
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter INLINEENTRYKEY
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter TRX_INLINEAMOUNT
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter ADVANCEKEY
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter ADVANCEENTRYKEY
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter TRX_POSTEDADVANCEAMOUNT
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter OVERPAYMENTKEY
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter OVERPAYMENTENTRYKEY
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter TRX_POSTEDOVERPAYMENTAMOUNT
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter NEGATIVEINVOICEKEY
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter NEGATIVEINVOICEENTRYKEY
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter TRX_NEGATIVEINVOICEAMOUNT
+            Get-Command "ConvertTo-ARPaymentDetailXml" | Should -HaveParameter DISCOUNTDATE
         }
     
         $Detail | Add-Member -MemberType NoteProperty -Name 'ENTRYKEY' -Value 111
@@ -72,7 +72,7 @@ Describe "ConvertTo-ARPaymentDetail" {
 
         it "returns the expected values" {
             # act
-            [xml]$Actual = $Detail | ConvertTo-ARPaymentDetail
+            [xml]$Actual = $Detail | ConvertTo-ARPaymentDetailXml
 
             # assert
             $Actual.ARPYMTDETAIL.RECORDKEY | Should -Be $Detail.RECORDKEY
