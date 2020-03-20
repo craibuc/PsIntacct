@@ -2,34 +2,38 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
-Describe "ConvertTo-ARPayment" -Tag 'unit' {
+Describe "ConvertTo-ARPaymentXml" -Tag 'unit' {
 
     $Payment = [pscustomobject]@{
         PAYMENTMETHOD='Cash'
         CUSTOMERID='ABC'
         RECEIPTDATE='02/20/2020'
         CURRENCY='USD'
+        ARPYMTDETAILS = @()
     }
+    $Detail = [pscustomobject]@{RECORDKEY='123'}
+    $Payment.ARPYMTDETAILS += $Detail
 
     Context "Required fields" {
 
         it "has 4, mandatory parameters" {
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter PAYMENTMETHOD -Mandatory
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter CUSTOMERID -Mandatory
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter RECEIPTDATE -Mandatory -Type datetime
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter CURRENCY -Mandatory
-            # Get-Command "ConvertTo-ARPayment" | Should -HaveParameter ARPYMTDETAILS -Mandatory
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter PAYMENTMETHOD -Mandatory
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter CUSTOMERID -Mandatory
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter RECEIPTDATE -Mandatory -Type datetime
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter CURRENCY -Mandatory
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter ARPYMTDETAILS -Mandatory
         }
 
         it "returns the expected values" {
             # act
-            [xml]$Actual = $Payment | ConvertTo-ARPayment
+            $Actual = $Payment | ConvertTo-ARPaymentXml
 
             # assert
             $Actual.ARPYMT.PAYMENTMETHOD | Should -Be $Payment.PAYMENTMETHOD
             $Actual.ARPYMT.CUSTOMERID | Should -Be $Payment.CUSTOMERID
             $Actual.ARPYMT.RECEIPTDATE | Should -Be $Payment.RECEIPTDATE
             $Actual.ARPYMT.CURRENCY | Should -Be $Payment.CURRENCY
+            $Actual.ARPYMT.ARPYMTDETAILS.ARPYMTDETAIL.RECORDKEY | Should -Be $Detail.RECORDKEY
         }
 
     }
@@ -37,23 +41,23 @@ Describe "ConvertTo-ARPayment" -Tag 'unit' {
     Context "Optional fields" {
 
         it "has 16, optional parameters" {
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter FINANCIALENTITY
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter DOCNUMBER
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter DESCRIPTION
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter EXCH_RATE_TYPE_ID
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter EXCHANGE_RATE
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter PAYMENTDATE -Type datetime
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter AMOUNTOPAY -Type decimal
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter TRX_AMOUNTTOPAY -Type decimal
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter PRBATCH
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter WHENPAID -Type datetime
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter BASECURR
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter UNDEPOSITEDACCOUNTNO
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter OVERPAYMENTAMOUNT -Type decimal
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter OVERPAYMENTLOCATIONID
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter OVERPAYMENTDEPARTMENTID
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter BILLTOPAYNAME
-            Get-Command "ConvertTo-ARPayment" | Should -HaveParameter ONLINECARDPAYMENT
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter FINANCIALENTITY
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter DOCNUMBER
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter DESCRIPTION
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter EXCH_RATE_TYPE_ID
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter EXCHANGE_RATE
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter PAYMENTDATE -Type datetime
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter AMOUNTOPAY -Type decimal
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter TRX_AMOUNTTOPAY -Type decimal
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter PRBATCH
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter WHENPAID -Type datetime
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter BASECURR
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter UNDEPOSITEDACCOUNTNO
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter OVERPAYMENTAMOUNT -Type decimal
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter OVERPAYMENTLOCATIONID
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter OVERPAYMENTDEPARTMENTID
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter BILLTOPAYNAME
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter ONLINECARDPAYMENT
         }
 
         $Payment | Add-Member -MemberType NoteProperty -Name 'FINANCIALENTITY' -Value 'financialentity'
@@ -76,7 +80,7 @@ Describe "ConvertTo-ARPayment" -Tag 'unit' {
 
         it "returns the expected values" {
             # act
-            [xml]$Actual = $Payment | ConvertTo-ARPayment
+            $Actual = $Payment | ConvertTo-ARPaymentXml
 
             # assert
             $Actual.ARPYMT.FINANCIALENTITY | Should -Be $Payment.FINANCIALENTITY

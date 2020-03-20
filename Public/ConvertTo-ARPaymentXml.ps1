@@ -69,7 +69,7 @@ string	Customer contact name for adjustments
 object	Online card payment fields. Use only if payment method is Online Charge Card.
 
 #>
-function ConvertTo-ARPayment
+function ConvertTo-ARPaymentXml
 {
 
     [CmdletBinding()]
@@ -84,11 +84,11 @@ function ConvertTo-ARPayment
         [Parameter(ValueFromPipelineByPropertyName,Mandatory)]
         [datetime]$RECEIPTDATE,
 
-        [Parameter(ValueFromPipelineByPropertyName,Mandatory)]
+        [Parameter(ValueFromPipelineByPropertyName)]
         [string]$CURRENCY,
 
-        # [Parameter(ValueFromPipelineByPropertyName,Mandatory)]
-        # [pscustomobject[]]$ARPYMTDETAILS,
+        [Parameter(ValueFromPipelineByPropertyName,Mandatory)]
+        [pscustomobject[]]$ARPYMTDETAILS,
 
         [Parameter(ValueFromPipelineByPropertyName)]
         [string]$FINANCIALENTITY,
@@ -155,7 +155,16 @@ function ConvertTo-ARPayment
         if ($CUSTOMERID) { [void]$SB.Append("<CUSTOMERID>$CUSTOMERID</CUSTOMERID>") }
         if ($RECEIPTDATE) { [void]$SB.Append("<RECEIPTDATE>$( $RECEIPTDATE.ToString('MM/dd/yyyy') )</RECEIPTDATE>") }
         if ($CURRENCY) { [void]$SB.Append("<CURRENCY>$CURRENCY</CURRENCY>") }
-        # if ($ARPYMTDETAILS) { [void]$SB.Append("<CURRENCY>$CURRENCY</CURRENCY>") }
+        if ($ARPYMTDETAILS)
+        { 
+            [void]$SB.Append("<ARPYMTDETAILS>")
+
+            $pd = $ARPYMTDETAILS | ConvertTo-ARPaymentDetailXml
+            [void]$SB.Append( $pd )
+
+            [void]$SB.Append("</ARPYMTDETAILS>")
+        }
+        else { [void]$SB.Append("<ARPYMTDETAILS/>") }
         # /mandatory
         if ($FINANCIALENTITY) { [void]$SB.Append("<FINANCIALENTITY>$FINANCIALENTITY</FINANCIALENTITY>") }
         if ($DOCNUMBER) { [void]$SB.Append("<DOCNUMBER>$DOCNUMBER</DOCNUMBER>") }
@@ -179,7 +188,9 @@ function ConvertTo-ARPayment
     End
     {
         [void]$SB.Append("</ARPYMT>")
-        $SB.ToString()
+        $xml = $SB.ToString()
+        # Write-Debug $xml
+        [xml]$xml
     }
 
 }
