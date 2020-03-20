@@ -120,7 +120,7 @@ function ConvertTo-ContactXml {
         [string]$URL2,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [string]$MAILADDRESS
+        [pscustomobject]$MAILADDRESS
     )
 
     Begin
@@ -131,16 +131,16 @@ function ConvertTo-ContactXml {
     Process
     {
         # mandatory
-        if ($PRINTAS) { [void]$SB.Append("<PRINTAS>$PRINTAS</PRINTAS>") }
-        if ($CONTACTNAME) { [void]$SB.Append("<CONTACTNAME>$CONTACTNAME</CONTACTNAME>") }
+        if ($PRINTAS) { [void]$SB.Append("<PRINTAS>$( [System.Security.SecurityElement]::Escape($PRINTAS) )</PRINTAS>") }
+        if ($CONTACTNAME) { [void]$SB.Append("<CONTACTNAME>$( [System.Security.SecurityElement]::Escape($CONTACTNAME) )</CONTACTNAME>") }
         # /mandatory
 
-        if ($COMPANYNAME) { [void]$SB.Append("<COMPANYNAME>$COMPANYNAME</COMPANYNAME>") }
+        if ($COMPANYNAME) { [void]$SB.Append("<COMPANYNAME>$( [System.Security.SecurityElement]::Escape($COMPANYNAME) )</COMPANYNAME>") }
         [void]$SB.Append("<TAXABLE>$( $TAXABLE.ToString().ToLower() )</TAXABLE>")
         if ($TAXGROUP) { [void]$SB.Append("<TAXGROUP>$TAXGROUP</TAXGROUP>") }
         if ($PREFIX) { [void]$SB.Append("<PREFIX>$PREFIX</PREFIX>") }
-        if ($FIRSTNAME) { [void]$SB.Append("<FIRSTNAME>$FIRSTNAME</FIRSTNAME>") }
-        if ($LASTNAME) { [void]$SB.Append("<LASTNAME>$LASTNAME</LASTNAME>") }
+        if ($FIRSTNAME) { [void]$SB.Append("<FIRSTNAME>$( [System.Security.SecurityElement]::Escape($FIRSTNAME) )</FIRSTNAME>") }
+        if ($LASTNAME) { [void]$SB.Append("<LASTNAME>$( [System.Security.SecurityElement]::Escape($LASTNAME) )</LASTNAME>") }
         if ($INITIAL) { [void]$SB.Append("<INITIAL>$INITIAL</INITIAL>") }
         if ($PHONE1) { [void]$SB.Append("<PHONE1>$PHONE1</PHONE1>") }
         if ($PHONE2) { [void]$SB.Append("<PHONE2>$PHONE2</PHONE2>") }
@@ -149,15 +149,22 @@ function ConvertTo-ContactXml {
         if ($FAX) { [void]$SB.Append("<FAX>$FAX</FAX>") }
         if ($EMAIL1) { [void]$SB.Append("<EMAIL1>$EMAIL1</EMAIL1>") }
         if ($EMAIL2) { [void]$SB.Append("<EMAIL2>$EMAIL2</EMAIL2>") }
-        if ($URL1) { [void]$SB.Append("<URL1>$URL1</URL1>") }
-        if ($URL2) { [void]$SB.Append("<URL2>$URL2</URL2>") }
-        if ($MAILADDRESS) { [void]$SB.Append($MAILADDRESS) } 
+        if ($URL1) { [void]$SB.Append("<URL1>$( [System.Security.SecurityElement]::Escape($URL1) )</URL1>") }
+        if ($URL2) { [void]$SB.Append("<URL2>$( [System.Security.SecurityElement]::Escape($URL2) )</URL2>") }
+        if ($MAILADDRESS)
+        { 
+            $ma = $MAILADDRESS | ConvertTo-MailingAddressXml
+            [void]$SB.Append( $ma.OuterXml )
+            # [void]$SB.Append($MAILADDRESS) 
+        }
         else { [void]$SB.Append("<MAILADDRESS/>") }
     }
     End
     {
         [void]$SB.Append("</DISPLAYCONTACT>")
-        $SB.ToString()    
+        $xml = $SB.ToString()
+        # Write-Debug $xml
+        [xml]$xml
     }
 
 }

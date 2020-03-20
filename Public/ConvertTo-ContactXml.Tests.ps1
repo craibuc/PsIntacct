@@ -12,13 +12,13 @@ Describe "ConvertTo-ContactXml" -Tag 'unit' {
     Context "Required fields" {
 
         it "has 2, mandatory parameter" {
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter PRINTAS -Mandatory
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter CONTACTNAME -Mandatory
+            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter PRINTAS -Mandatory -Type string
+            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter CONTACTNAME -Mandatory -Type string
         }
     
         it "returns the expected values" {
             # act
-            [xml]$Actual = $Contact | ConvertTo-ContactXml
+            $Actual = $Contact | ConvertTo-ContactXml
             
             # assert
             $Actual.DISPLAYCONTACT.PRINTAS | Should -Be $Contact.PRINTAS
@@ -30,22 +30,22 @@ Describe "ConvertTo-ContactXml" -Tag 'unit' {
     Context "Optional fields" {
 
         it "has 17, optional parameter" {
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter COMPANYNAME
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter TAXABLE
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter TAXGROUP
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter PREFIX
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter FIRSTNAME
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter LASTNAME
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter INITIAL
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter PHONE1
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter PHONE2
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter CELLPHONE
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter PAGER
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter FAX
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter EMAIL1
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter EMAIL2
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter URL1
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter URL2
+            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter COMPANYNAME -Type string
+            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter TAXABLE -Type boolean
+            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter TAXGROUP -Type string
+            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter PREFIX -Type string
+            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter FIRSTNAME -Type string
+            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter LASTNAME -Type string
+            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter INITIAL -Type string
+            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter PHONE1 -Type string
+            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter PHONE2 -Type string
+            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter CELLPHONE -Type string
+            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter PAGER -Type string
+            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter FAX -Type string
+            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter EMAIL1 -Type string
+            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter EMAIL2 -Type string
+            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter URL1 -Type string
+            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter URL2 -Type string
             Get-Command "ConvertTo-ContactXml" | Should -HaveParameter MAILADDRESS
         }
     
@@ -69,7 +69,7 @@ Describe "ConvertTo-ContactXml" -Tag 'unit' {
 
         it "returns the expected values" {
             # act
-            [xml]$Actual = $Contact | ConvertTo-ContactXml
+            $Actual = $Contact | ConvertTo-ContactXml
             
             # assert
             $Actual.DISPLAYCONTACT.TAXABLE | Should -Be $Contact.TAXABLE.ToString().ToLower()
@@ -88,6 +88,24 @@ Describe "ConvertTo-ContactXml" -Tag 'unit' {
             $Actual.DISPLAYCONTACT.URL1 | Should -Be $Contact.URL1
             $Actual.DISPLAYCONTACT.URL2 | Should -Be $Contact.URL2
             # $Actual.DISPLAYCONTACT.MAILADDRESS | Should -Be $Contact.MAILADDRESS
+        }
+
+    }
+
+    Context "Xml escaping" {
+
+        it "creates an Xml document w/o throwing an exception" {
+
+            # arrange
+            $Contact.PRINTAS="Steve's, Bobby &"
+            $Contact.CONTACTNAME="Bobby & Steve's"
+            $Contact.FIRSTNAME="Bobby's"
+            $Contact.LASTNAME="Steve's"
+            $Contact.URL1 = "http://www.domain.tld?foo=1&bar=2"
+            $Contact.URL2 = "http://www.domain.tld?foo=1&bar=2"
+
+            # act/assert
+            {$Contact | ConvertTo-ContactXml -ErrorAction Stop} | Should -Not -Throw
         }
 
     }
