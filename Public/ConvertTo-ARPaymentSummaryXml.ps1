@@ -1,5 +1,6 @@
 <#
 .SYNOPSIS
+Convert ARPaymentSummary model to Xml.
 
 .PARAMETER batchtitle
 AR payment summary title
@@ -12,6 +13,9 @@ Undeposited funds GL account. Required if not using bankaccountid.
 
 .PARAMETER datecreated
 GL posting date
+
+.LINK
+https://developer.intacct.com/api/accounts-receivable/ar-summaries/#create-ar-payment-summary-legacy
 
 #>
 function ConvertTo-ARPaymentSummaryXml {
@@ -31,17 +35,17 @@ function ConvertTo-ARPaymentSummaryXml {
         [datetime]$datecreated
     )
 
-<#
-<create_arpaymentbatch>
-    <batchtitle>AR Payments for 2017 Week 03 - CHK-BA1433</batchtitle>
-    <bankaccountid>CHK-BA1433</bankaccountid>
-    <datecreated>
-        <year>2017</year>
-        <month>01</month>
-        <day>20</day>
-    </datecreated>
-</create_arpaymentbatch>
-#>
+    <#
+    <create_arpaymentbatch>
+        <batchtitle>AR Payments for 2017 Week 03 - CHK-BA1433</batchtitle>
+        <bankaccountid>CHK-BA1433</bankaccountid>
+        <datecreated>
+            <year>2017</year>
+            <month>01</month>
+            <day>20</day>
+        </datecreated>
+    </create_arpaymentbatch>
+    #>
 
     begin
     {
@@ -50,10 +54,7 @@ function ConvertTo-ARPaymentSummaryXml {
     }
     process
     {
-        # mandatory
         if ($batchtitle) { [void]$SB.Append("<batchtitle>$batchtitle</batchtitle>") }
-        # /mandatory
-
         if ($bankaccountid) { [void]$SB.Append("<bankaccountid>$bankaccountid</bankaccountid>") }
         if ($undepfundsacct) { [void]$SB.Append("<undepfundsacct>$undepfundsacct</undepfundsacct>") }
         if ($datecreated) 
