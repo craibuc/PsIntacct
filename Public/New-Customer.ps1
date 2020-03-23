@@ -5,8 +5,8 @@ function New-Customer {
         [Parameter(Mandatory)]
         [pscustomobject]$Session,
 
-        [Parameter(ValueFromPipelineByPropertyName,Mandatory)]
-        [string]$CUSTOMER
+        [Parameter(ValueFromPipeline,Mandatory)]
+        [xml]$CustomerXml
     )
 
     begin 
@@ -19,7 +19,7 @@ function New-Customer {
         $Function = 
             "<function controlid='$( New-Guid )'>
                 <create>
-                    $CUSTOMER
+                    $( $CustomerXml.OuterXml )
                 </create>
             </function>"
 
