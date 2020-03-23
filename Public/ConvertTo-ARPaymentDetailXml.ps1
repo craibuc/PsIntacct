@@ -3,47 +3,71 @@
 Convert ARPaymentDetail model to Xml.
 
 .PARAMETER RECORDKEY
-Required	integer	Record number of the invoice being paid. You can pay either an invoice or a debit memo (via POSADJKEY), but not both in one payment detail.
+Record number of the invoice being paid. You can pay either an invoice or a debit memo (via POSADJKEY), but not both in one payment detail.
+
 .PARAMETER ENTRYKEY
-Optional	integer	Record number of the line of the invoice being paid. If not supplied, lines of the invoice are paid using the waterfall method.
+Record number of the line of the invoice being paid. If not supplied, lines of the invoice are paid using the waterfall method.
+
 .PARAMETER POSADJKEY
-Optional	integer	Record number of a debit memo being paid. Use readByQuery on ARADJUSTMENT to get the key. You can pay either a debit memo or an invoice (via RECORDKEY), but not both in one payment detail.
+Record number of a debit memo being paid. Use readByQuery on ARADJUSTMENT to get the key. You can pay either a debit memo or an invoice (via RECORDKEY), but not both in one payment detail.
+
 .PARAMETER POSADJENTRYKEY
-Optional	integer	Record number of debit memo line
+Record number of debit memo line
+
 .PARAMETER TRX_PAYMENTAMOUNT
-Optional	currency	Amount of the cash payment. Must be the full amount of the invoice or debit memo (with the discount amount calculated in) in order to apply a discount.
+Amount of the cash payment. Must be the full amount of the invoice or debit memo (with the discount amount calculated in) in order to apply a discount.
+
 .PARAMETER ADJUSTMENTKEY
-Optional	integer	Record number of a credit memo. Use readByQuery on ARADJUSTMENT to get the key.
+Record number of a credit memo. Use readByQuery on ARADJUSTMENT to get the key.
+
 .PARAMETER ADJUSTMENTENTRYKEY
-Optional	integer	Record number of a credit memo line to apply to the payment
+Record number of a credit memo line to apply to the payment
+
 .PARAMETER TRX_ADJUSTMENTAMOUNT
-Optional	currency	Adjustment transaction amount to apply to the payment
+Adjustment transaction amount to apply to the payment
+
 .PARAMETER INLINEKEY
-Optional	integer	Record number of the invoice with inline credits to apply to the payment (typically from the same invoice that is being paid). Inline credits must be enabled in the AR configuration.
+Record number of the invoice with inline credits to apply to the payment (typically from the same invoice that is being paid). Inline credits must be enabled in the AR configuration.
+
 .PARAMETER INLINEENTRYKEY
-Optional	integer	Record number of the invoice line with the inline credit apply to the payment
+Record number of the invoice line with the inline credit apply to the payment
+
 .PARAMETER TRX_INLINEAMOUNT
-Optional	currency	Inline credit amount to apply to the payment
+Inline credit amount to apply to the payment
+
 .PARAMETER ADVANCEKEY
-Optional	integer	Record number of an advance to apply to the payment
+Record number of an advance to apply to the payment
+
 .PARAMETER ADVANCEENTRYKEY
-Optional	integer	Record number of an advance line to apply to the payment
+Record number of an advance line to apply to the payment
+
 .PARAMETER TRX_POSTEDADVANCEAMOUNT
-Optional	currency	Advance credit amount to apply to the payment
+Advance credit amount to apply to the payment
+
 .PARAMETER OVERPAYMENTKEY
-Optional	integer	Record number of an overpayment to apply to the payment. To find available overpayments, use readByQuery on ARPYMT.
+Record number of an overpayment to apply to the payment. To find available overpayments, use readByQuery on ARPYMT.
+
 .PARAMETER OVERPAYMENTENTRYKEY
-Optional	integer	Record number of an overpayment line to apply to the payment
+Record number of an overpayment line to apply to the payment
+
 .PARAMETER TRX_POSTEDOVERPAYMENTAMOUNT
-Optional	currency	Overpayment credit amount to apply to the payment
+Overpayment credit amount to apply to the payment
+
 .PARAMETER NEGATIVEINVOICEKEY
-Optional	integer	Record number of a negative invoice to apply to the payment
+Record number of a negative invoice to apply to the payment
+
 .PARAMETER NEGATIVEINVOICEENTRYKEY
-Optional	integer	Record number of a negative invoice line to apply to the payment
+Record number of a negative invoice line to apply to the payment
+
 .PARAMETER TRX_NEGATIVEINVOICEAMOUNT
-Optional	currency	Negative invoice amount to apply to the payment
+Negative invoice amount to apply to the payment
+
 .PARAMETER DISCOUNTDATE
-Optional	string	Discount date in the mm/dd/yyyy format. All discounts available at this date are applied. You can supply a date in the past to access a discount whose deadline has already passed. You must provide the correct TRX_PAYMENTAMOUNT for the entire amount due (with the discount amount calculated in) for the discount to apply.
+Discount date in the mm/dd/yyyy format. All discounts available at this date are applied. You can supply a date in the past to access a discount whose deadline has already passed. You must provide the correct TRX_PAYMENTAMOUNT for the entire amount due (with the discount amount calculated in) for the discount to apply.
+
+.LINK
+https://developer.intacct.com/api/accounts-receivable/ar-payments/#create-ar-payment
+
 #>
 function ConvertTo-ARPaymentDetailXml
 {
