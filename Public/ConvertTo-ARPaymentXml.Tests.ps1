@@ -20,7 +20,6 @@ Describe "ConvertTo-ARPaymentXml" -Tag 'unit' {
             Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter PAYMENTMETHOD -Mandatory
             Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter CUSTOMERID -Mandatory
             Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter RECEIPTDATE -Mandatory -Type datetime
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter CURRENCY -Mandatory
             Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter ARPYMTDETAILS -Mandatory
         }
 
@@ -40,7 +39,8 @@ Describe "ConvertTo-ARPaymentXml" -Tag 'unit' {
 
     Context "Optional fields" {
 
-        it "has 16, optional parameters" {
+        it "has 17, optional parameters" {
+            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter CURRENCY
             Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter FINANCIALENTITY
             Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter DOCNUMBER
             Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter DESCRIPTION
