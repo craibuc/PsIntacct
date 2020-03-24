@@ -7,7 +7,7 @@ $Parent = Split-Path -Parent $here
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
-Describe "Send-Request" {
+Describe "Send-Request" -tag 'Unit' {
     
     # sender
     $sender_id = 'sender_id'
