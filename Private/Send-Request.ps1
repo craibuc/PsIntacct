@@ -102,28 +102,35 @@ function Send-Request {
 </request>
 "@
 
-    Write-Debug "** Request **"
     Write-Debug $Body
-    Write-Debug "** /Request **"
 
     try {
 
-        $Response = Invoke-WebRequest -Method POST -Uri $Uri -Body $Body -ContentType 'application/xml'
+        $Response = Invoke-WebRequest -Method POST -Uri $Uri -Body $Body -ContentType 'application/xml'    
+        $Content = [xml]$Response.Content
 
-        # Write-Debug "** Response **"
-        # Write-Debug $Response.Content
-        # Write-Debug "** /Response **"
-    
-        [xml]$Response.Content
+        Write-Debug "status: $($Content.response.control.status)"
+        switch ( $Content.response.control.status )
+        {
+            'success'
+            {
+                $Content
+            }
+            'failure'
+            {
+                throw $Content.response.errormessage.error[0].description2
+            }
+        }
+
     }
-    # catch [Microsoft.PowerShell.Commands.HttpResponseException]
-    # {
-    #   Write-Error "$($_.Exception.Response.ReasonPhrase) [$($_.Exception.Response.StatusCode.value__)]"
-    #     # Write-Error "HttpResponseException: $($_.Exception.Response.ReasonPhrase)" # Internal Server Error
-    #     # Write-Error $_.Exception.Message # Response status code does not indicate success: 500 (Internal Server Error).
-    # }
+    catch [Microsoft.PowerShell.Commands.HttpResponseException]
+    {
+      Write-Error "$($_.Exception.Response.ReasonPhrase) [$($_.Exception.Response.StatusCode.value__)]"
+        # Write-Error "HttpResponseException: $($_.Exception.Response.ReasonPhrase)" # Internal Server Error
+        # Write-Error $_.Exception.Message # Response status code does not indicate success: 500 (Internal Server Error).
+    }
     catch {
-        Write-Error $_
+        throw $_
     }
 
 }
