@@ -180,7 +180,16 @@ function ConvertTo-ARAdjustmentXml {
         if ($exchratetype) { [void]$SB.Append("<exchratetype>$exchratetype</exchratetype>") }
         if ($exchrate) { [void]$SB.Append("<exchrate>$exchrate</exchrate>") }
         [void]$SB.Append("<nogl>$( $nogl.ToString().ToLower() )</nogl>")
-        if ($aradjustmentitems) { [void]$SB.Append("<aradjustmentitems>$aradjustmentitems</aradjustmentitems>") }
+        if ($aradjustmentitems)
+        { 
+            # [void]$SB.Append("<aradjustmentitems>")
+
+            $ai = $aradjustmentitems | ConvertTo-ARAdjustmentItemXml
+            [void]$SB.Append( $ai )
+
+            # [void]$SB.Append("</aradjustmentitems>")
+        }
+        else { void]$SB.Append("<aradjustmentitems/>") }
     }
     end
     {
