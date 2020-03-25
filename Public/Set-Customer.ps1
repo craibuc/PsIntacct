@@ -53,21 +53,11 @@ function Set-Customer {
             {
                 # return the first error
                 $Err = $Content.response.operation.result.errormessage.FirstChild
-                $ErrorNumber = $Err.errorno
-                $ErrorMessage = $Err.description2 -eq '' ? $Err.errorno : $Err.description2
-                # $Correction = $Err.correction
+                $ErrorId = "{0}::{1} - {2}" -f $MyInvocation.MyCommand.Module.Name, $MyInvocation.MyCommand.Name, $Err.errorno
+                $ErrorMessage = "{0} [{1}]: {2}" -f $customerxml.CUSTOMER.NAME, $customerxml.CUSTOMER.CUSTOMERID, $Err.description2 ?? $Err.errorno
+                $Correction = $Err.correction
 
-                $Exception = [Exception]::new($ErrorMessage)
-                $ErrorRecord = [System.Management.Automation.ErrorRecord]::new(
-                    $Exception,
-                    $ErrorNumber,
-                    [System.Management.Automation.ErrorCategory]::InvalidArgument,
-                    $Content.response.operation.result
-                )
-                # $ErrorRecord.ErrorDetails.RecommendedAction = $Correction 
-                $PSCmdlet.WriteError($ErrorRecord)
-
-                # Write-Error -Message $ErrorMessage -ErrorId $ErrorNumber -Category InvalidArgument -RecommendedAction $Correction -TargetObject $Content.response.operation.result
+                Write-Error -Message $ErrorMessage -ErrorId $ErrorId -Category InvalidArgument -RecommendedAction $Correction -TargetObject $Content.response.operation.result
             }
         }
     
