@@ -269,11 +269,10 @@ function ConvertTo-CustomerXml {
         { 
             $dc = $DISPLAYCONTACT | ConvertTo-ContactXml
             [void]$SB.Append( $dc.OuterXml )
-            # [void]$SB.Append($DISPLAYCONTACT) 
         } 
         else { [void]$SB.Append("<DISPLAYCONTACT/>") }
 
-        [void]$SB.Append("<HIDEDISPLAYCONTACT>$($HIDEDISPLAYCONTACT.ToString().ToLower())</HIDEDISPLAYCONTACT>")
+        # [void]$SB.Append("<HIDEDISPLAYCONTACT>$( $HIDEDISPLAYCONTACT.ToString().ToLower() )</HIDEDISPLAYCONTACT>")
         if ($STATUS) { [void]$SB.Append("<STATUS>$STATUS</STATUS>") }
         [void]$SB.Append("<ONETIME>$( $ONETIME.ToString().ToLower() )</ONETIME>")
         if ($CUSTTYPE) { [void]$SB.Append("<CUSTTYPE>$( [System.Security.SecurityElement]::Escape($CUSTTYPE) )</CUSTTYPE>") }
