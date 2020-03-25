@@ -2,9 +2,9 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
-Describe "New-Customer" {
+Describe "New-Customer" -Tag 'unit' {
 
-    Context "" {
+    Context "Default" {
 
         Mock Send-Request {
             $Content = 
@@ -26,7 +26,7 @@ Describe "New-Customer" {
             $Content
         } # /mock
 
-        It "creates a customer" {
+        It "creates a customer" -Skip {
             $true | Should -Be $false
         }
     
