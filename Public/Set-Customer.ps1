@@ -1,3 +1,17 @@
+<#
+.SYNOPSIS
+Update a customer.
+
+.PARAMETER Session
+The Session object returned by New-Session.
+
+.PARAMETER CustomerXml
+The Xml representation of an CustomerXml, from ConvertTo-CustomerXml
+
+.LINK
+https://developer.intacct.com/api/accounts-receivable/invoices/#update-invoice-legacy
+
+#>
 function Set-Customer {
 
     [CmdletBinding()]
@@ -22,12 +36,11 @@ function Set-Customer {
                     $( $CustomerXml.OuterXml )
                 </update>
             </function>"
-
         Write-Debug $Function
 
         $Content = Send-Request -Credential $Session.Credential -Session $Session -Function $Function
-        Write-Debug "status: $($Content.response.operation.result.status)"
 
+        Write-Debug "status: $($Content.response.operation.result.status)"
         switch ($Content.response.operation.result.status)
         {
             'success'
