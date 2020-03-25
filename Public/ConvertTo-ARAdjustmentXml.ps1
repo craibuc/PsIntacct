@@ -1,51 +1,57 @@
 <#
+.SYNOPSIS
+Convert ARAdjustment model to Xml.
+
 .PARAMETER customerid
-Required	string	Customer ID
+Customer ID
 
 .PARAMETER datecreated
-Required	object	Transaction date
+Transaction date
 
 .PARAMETER dateposted
-Optional	object	GL posting date
+GL posting date
 
 .PARAMETER batchkey
-Optional	integer	Summary record number
+Summary record number
 
 .PARAMETER adjustmentno
-Optional	string	Adjustment number
+Adjustment number
 
 .PARAMETER action
-Optional	string	Action. Use Draft or Submit. (Default: Submit)
+Action. Use Draft or Submit. (Default: Submit)
 
 .PARAMETER invoiceno
-Optional	string	Invoice number
+Invoice number
 
 .PARAMETER description
-Optional	string	Description
+Description
 
 .PARAMETER externalid
-Optional	string	External ID
+External ID
 
 .PARAMETER basecurr
-Optional	string	Base currency code
+Base currency code
 
 .PARAMETER currency
-Optional	string	Transaction currency code
+Transaction currency code
 
 .PARAMETER exchratedate
-Optional	object	Exchange rate date.
+Exchange rate date.
 
 .PARAMETER exchratetype
-Optional	string	Exchange rate type. Do not use if exchrate is set. (Leave blank to use Intacct Daily Rate)
+Exchange rate type. Do not use if exchrate is set. (Leave blank to use Intacct Daily Rate)
 
 .PARAMETER exchrate
-Optional	currency	Exchange rate value. Do not use if exchangeratetype is set.
+Exchange rate value. Do not use if exchangeratetype is set.
 
 .PARAMETER nogl
-Optional	boolean	Do not post to GL. Use false for No, true for Yes. (Default: false)
+Do not post to GL. Use false for No, true for Yes. (Default: false)
 
 .PARAMETER aradjustmentitems
-Required	lineitem[1...n]	Invoice lines, must have at least 1.
+lineitem[1...n]	Invoice lines, must have at least 1.
+
+.LINK
+https://developer.intacct.com/api/accounts-receivable/ar-adjustments/#create-ar-adjustment-legacy
 
 #>
 function ConvertTo-ARAdjustmentXml {
