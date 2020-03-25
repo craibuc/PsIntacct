@@ -1,3 +1,17 @@
+<#
+.SYNOPSIS
+Create a customer.
+
+.PARAMETER Session
+The Session object returned by New-Session.
+
+.PARAMETER ARPaymentXml
+The Xml representation of an CustomerXml, from ConvertTo-CustomerXml
+
+.LINK
+https://developer.intacct.com/api/accounts-receivable/customers/#create-customer
+
+#>
 function New-Customer {
 
     [CmdletBinding()]
@@ -11,11 +25,12 @@ function New-Customer {
 
     begin 
     {
-        Write-Debug $MyInvocation.MyCommand.Name
+        # Write-Debug $MyInvocation.MyCommand.Name
     }
     
     process 
     {
+
         $Function = 
             "<function controlid='$( New-Guid )'>
                 <create>
@@ -54,22 +69,16 @@ function New-Customer {
             {
                 # return the first error
                 $Err = $Content.response.operation.result.errormessage.FirstChild
-                $ErrorNumber = $Err.errorno
-                $ErrorMessage = $Err.description2 ?? $Err.errorno
+                $ErrorId = "{0}::{1} - {2}" -f $MyInvocation.MyCommand.Module.Name, $MyInvocation.MyCommand.Name, $Err.errorno
+                $ErrorMessage = "{0} [{1}]: {2}" -f $CustomerXml.CUSTOMER.NAME, $CustomerXml.CUSTOMER.CUSTOMERID, $Err.description2 ?? $Err.errorno
                 $Correction = $Err.correction
 
-                # if duplicate, throw an exception
-                if ( $ErrorNumber -eq 'BL34000061' ) 
-                {
-                    throw New-Object System.ArgumentException $ErrorMessage
-                }
-
-                Write-Error -Message $ErrorMessage -ErrorId $ErrorNumber -Category InvalidArgument -RecommendedAction $Correction -TargetObject $Content.response.operation.result
+                Write-Error -Message $ErrorMessage -ErrorId $ErrorId -Category InvalidArgument -RecommendedAction $Correction -TargetObject $Content.response.operation.result
             }
-        }
+        } # /switch
     
-    }
-    # BL01001973/"Cannot figure out country code from country US"
+    } # /process
+
     end {}
 
 }
