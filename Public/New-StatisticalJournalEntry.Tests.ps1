@@ -8,7 +8,7 @@ $Parent = Split-Path -Parent $here
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
-Describe "New-StatisticalJournalEntry" {
+Describe "New-StatisticalJournalEntry" -Tag 'unit' {
 
     # arrange
     $Credential = New-MockObject -Type PsCredential
