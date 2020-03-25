@@ -147,8 +147,8 @@ function ConvertTo-ContactXml {
         if ($CELLPHONE) { [void]$SB.Append("<CELLPHONE>$CELLPHONE</CELLPHONE>") }
         if ($PAGER) { [void]$SB.Append("<PAGER>$PAGER</PAGER>") }
         if ($FAX) { [void]$SB.Append("<FAX>$FAX</FAX>") }
-        if ($EMAIL1) { [void]$SB.Append("<EMAIL1>$EMAIL1</EMAIL1>") }
-        if ($EMAIL2) { [void]$SB.Append("<EMAIL2>$EMAIL2</EMAIL2>") }
+        if ($EMAIL1) { [void]$SB.Append("<EMAIL1>$( [System.Security.SecurityElement]::Escape($EMAIL1) )</EMAIL1>") }
+        if ($EMAIL2) { [void]$SB.Append("<EMAIL2>$( [System.Security.SecurityElement]::Escape($EMAIL2) )</EMAIL2>") }
         if ($URL1) { [void]$SB.Append("<URL1>$( [System.Security.SecurityElement]::Escape($URL1) )</URL1>") }
         if ($URL2) { [void]$SB.Append("<URL2>$( [System.Security.SecurityElement]::Escape($URL2) )</URL2>") }
         if ($MAILADDRESS)

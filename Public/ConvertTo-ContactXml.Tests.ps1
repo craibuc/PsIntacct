@@ -101,6 +101,8 @@ Describe "ConvertTo-ContactXml" -Tag 'unit' {
             $Contact.CONTACTNAME="Bobby & Steve's"
             $Contact.FIRSTNAME="Bobby's"
             $Contact.LASTNAME="Steve's"
+            $Contact.EMAIL1 = "First Last <first.last@domain.tld>"
+            $Contact.EMAIL2 = "First Last <first.last@domain.tld>"
             $Contact.URL1 = "http://www.domain.tld?foo=1&bar=2"
             $Contact.URL2 = "http://www.domain.tld?foo=1&bar=2"
 
