@@ -1,11 +1,15 @@
 <#
 .SYNOPSIS
+Update an invoice.
 
-.PARAMETER CustomerId
-Customer ID
+.PARAMETER Session
+The Session object returned by New-Session.
 
-.PARAMETER DateCreated
-Transaction date
+.PARAMETER InvoiceXml
+The Xml representation of an InvoiceXml, from ConvertTo-InvoiceXml
+
+.LINK
+https://developer.intacct.com/api/accounts-receivable/invoices/#update-invoice-legacy
 
 #>
 function Set-Invoice {
@@ -16,41 +20,44 @@ function Set-Invoice {
         [pscustomobject]$Session,
 
         [Parameter(Mandatory,ValueFromPipeline)]
-        [string]$InvoiceXml
+        [xml]$InvoiceXml
     )
         
     begin
     {
-        throw [System.NotImplementedException] "Set-Invoice function has not be implemented."
-        
-        Write-Debug "$($MyInvocation.MyCommand.Name)::Begin"
+        # Write-Debug "$($MyInvocation.MyCommand.Name)::Begin"
     }
     
     process 
     {
-        Write-Debug "$($MyInvocation.MyCommand.Name)::Process"
+        throw [System.NotImplementedException] "Set-Invoice function has not be implemented."
 
         $Function = 
-            "
-            <function controlid='$( New-Guid )'>
-                <update_invoice key=''>
-                    $( [xml]$InvoiceXml.invoice.InnerXml )
-                </update_invoice>
-            </function>
-            "
-
+            "<function controlid='$( New-Guid )'>
+                $( $InvoiceXml.OuterXml )
+            </function>"
         Write-Debug $Function
 
-        try
-        {
-            # $Content = Send-Request -Credential $Session.Credential -Session $Session -Function $Function
-            # Write-Debug "status: $($Content.response.operation.result.status)"
-        }
-        catch
-        {
-            $_
-        }
+        $Content = Send-Request -Credential $Session.Credential -Session $Session -Function $Function
 
+        Write-Debug "status: $($Content.response.operation.result.status)"
+        switch ( $Content.response.operation.result.status )
+        {
+            'success'
+            {  
+                $Content.response.operation.result
+            }
+            'failure'
+            { 
+                # return the first error
+                $Err = $Content.response.operation.result.errormessage.FirstChild
+                $ErrorId = "{0}::{1} - {2}" -f $MyInvocation.MyCommand.Module.Name, $MyInvocation.MyCommand.Name, $Err.errorno
+                $ErrorMessage = "{0} [{1}]: {2}" -f $InvoiceXml.update_invoice.invoiceno, $InvoiceXml.update_invoice.customerid, $Err.description2 ?? $Err.errorno
+                $Correction = $Err.correction
+
+                Write-Error -Message $ErrorMessage -ErrorId $ErrorId -Category InvalidArgument -RecommendedAction $Correction -TargetObject $Content.response.operation.result
+            }
+        } # /switch
     }
     
     end {}
