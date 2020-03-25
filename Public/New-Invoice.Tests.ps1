@@ -14,23 +14,23 @@ Describe "New-Invoice" -tag 'unit' {
         # InvoiceItems=@()
     }
     
+    Context "Parameter validation" {
+
+        it "has 2, mandatory parameters" {
+            Get-Command "New-Invoice" | Should -HaveParameter Session -Mandatory
+            Get-Command "New-Invoice" | Should -HaveParameter InvoiceXml -Mandatory -Type xml
+        }
+
+    }
+
     Context "Required fields" {
 
         # arrange    
         Mock Send-Request
 
-        it "has 3, mandatory parameters" {
-
-            Get-Command "New-Invoice" | Should -HaveParameter Session -Mandatory
-            Get-Command "New-Invoice" | Should -HaveParameter CustomerId -Mandatory
-            Get-Command "New-Invoice" | Should -HaveParameter DateCreated -Mandatory
-            # Get-Command "New-Invoice" | Should -HaveParameter InvoiceItems -Mandatory
-
-        }
-
         it "calls Send-Request with the expected parameter values" {
             # act
-            $Invoice | New-Invoice -Session $Session
+            $Invoice | ConvertTo-InvoiceXml -Verb 'create' | New-Invoice -Session $Session
 
             # assert
             Assert-MockCalled Send-Request -ParameterFilter { [xml]$Function }
@@ -76,7 +76,7 @@ Describe "New-Invoice" -tag 'unit' {
 
         it "calls Send-Request with the expected parameter values" {
             # act
-            $Invoice | New-Invoice -Session $Session
+            $Invoice | ConvertTo-InvoiceXml -Verb 'create' | New-Invoice -Session $Session
 
             # assert
             Assert-MockCalled Send-Request -ParameterFilter { [xml]$Function }
