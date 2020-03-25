@@ -19,6 +19,20 @@ Describe "New-ARPayment" -Tag 'unit' {
         CUSTOMERID='ABC'
         RECEIPTDATE='02/20/2020'
         CURRENCY='USD'
+        ARPYMTDETAILS = @()
+    }
+    $Detail = [pscustomobject]@{RECORDKEY='123'}
+    $Payment.ARPYMTDETAILS += $Detail
+
+    Context "Parameter validation" {
+
+        it "has 2, mandatory parameters" {
+
+            Get-Command "New-ARPayment" | Should -HaveParameter Session -Mandatory
+            Get-Command "New-ARPayment" | Should -HaveParameter ARPaymentXml -Mandatory -Type xml
+
+        }
+
     }
 
     Context "Required parameters" {
@@ -26,19 +40,9 @@ Describe "New-ARPayment" -Tag 'unit' {
         # arrange    
         Mock Send-Request
 
-        it "has 5, mandatory parameters" {
-
-            Get-Command "New-ARPayment" | Should -HaveParameter Session -Mandatory
-            Get-Command "New-ARPayment" | Should -HaveParameter PaymentMethod -Mandatory
-            Get-Command "New-ARPayment" | Should -HaveParameter CustomerId -Mandatory
-            Get-Command "New-ARPayment" | Should -HaveParameter ReceiptDate -Mandatory
-            Get-Command "New-ARPayment" | Should -HaveParameter Currency -Mandatory
-
-        }
-
         it "calls Send-Request with the expected parameter values" {
             # act
-            $Payment | New-ARPayment -Session $Session
+            $Payment | ConvertTo-ARPaymentXml | New-ARPayment -Session $Session
 
             # assert
             Assert-MockCalled Send-Request -ParameterFilter {
@@ -86,7 +90,7 @@ Describe "New-ARPayment" -Tag 'unit' {
 
         it "calls Send-Request with the expected parameter values" {
             # act
-            $Payment | New-ARPayment -Session $Session
+            $Payment | ConvertTo-ARPaymentXml | New-ARPayment -Session $Session
 
             # assert
             Assert-MockCalled Send-Request -ParameterFilter {
