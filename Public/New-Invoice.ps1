@@ -1,9 +1,15 @@
 <#
 .SYNOPSIS
+Create an invoice.
 
 .PARAMETER Session
+The Session object returned by New-Session.
 
 .PARAMETER InvoiceXml
+The Xml representation of an InvoiceXml, from ConvertTo-InvoiceXml
+
+.LINK
+https://developer.intacct.com/api/accounts-receivable/invoices/#create-invoice-legacy
 
 #>
 function New-Invoice {
@@ -25,14 +31,13 @@ function New-Invoice {
     process 
     {
 
-        [xml]$Function = 
+        $Function = 
             "<function controlid='$( New-Guid )'>
                 $( $InvoiceXml.OuterXml )
             </function>"
+        Write-Debug $Function
 
-        Write-Debug $Function.OuterXml
-
-        $Content = Send-Request -Credential $Session.Credential -Session $Session -Function $Function.OuterXml
+        $Content = Send-Request -Credential $Session.Credential -Session $Session -Function $Function
 
         Write-Debug "status: $($Content.response.operation.result.status)"
         switch ( $Content.response.operation.result.status )
