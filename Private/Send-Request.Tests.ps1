@@ -7,7 +7,7 @@ $Parent = Split-Path -Parent $here
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
-Describe "Send-Request" {
+Describe "Send-Request" -tag 'Unit' {
     
     # sender
     $sender_id = 'sender_id'
@@ -67,8 +67,10 @@ Describe "Send-Request" {
             Assert-MockCalled Invoke-WebRequest -ParameterFilter { 
                 $xml = ([xml]$Body).request.operation.authentication.login
                 $xml.userid -eq $UserCredential.UserName -and
+                $xml.companyid -eq $CompanyId -and
                 $xml.password -eq $user_password -and
-                $xml.companyid -eq $CompanyId
+                # <password/> must follow <companyid/> or login will fail
+                $xml.SelectSingleNode('companyid').NextSibling.Name -eq 'password'
             }
         }
      

@@ -61,13 +61,17 @@ function Send-Request {
         else {'https://api.intacct.com/ia/xml/xmlgw.phtml'}
     Write-Debug "Uri: $Uri"
 
+    #
+    # <companyid/> must preceed <password/> or login will fail
+    #
+
     $Authentication = 
         if ($Login)
         {
             "<login>
                 <userid>$( $Login.UserName )</userid>
-                <password>$( $Login | ConvertTo-PlainText )</password>
                 <companyid>$( $CompanyId )</companyid>
+                <password>$( $Login | ConvertTo-PlainText )</password>
             </login>"
         }
         elseif ($Session)
@@ -98,21 +102,35 @@ function Send-Request {
 </request>
 "@
 
-    Write-Debug "Body: $Body"
+    Write-Debug $Body
 
     try {
 
-        $Response = Invoke-WebRequest -Method POST -Uri $Uri -Body $Body -ContentType 'application/xml'
-        [xml]$Response.Content
+        $Response = Invoke-WebRequest -Method POST -Uri $Uri -Body $Body -ContentType 'application/xml'    
+        $Content = [xml]$Response.Content
+
+        Write-Debug "status: $($Content.response.control.status)"
+        switch ( $Content.response.control.status )
+        {
+            'success'
+            {
+                $Content
+            }
+            'failure'
+            {
+                throw $Content.response.errormessage.error[0].description2
+            }
+        }
+
     }
-    # catch [Microsoft.PowerShell.Commands.HttpResponseException]
-    # {
-    #   Write-Error "$($_.Exception.Response.ReasonPhrase) [$($_.Exception.Response.StatusCode.value__)]"
-    #     # Write-Error "HttpResponseException: $($_.Exception.Response.ReasonPhrase)" # Internal Server Error
-    #     # Write-Error $_.Exception.Message # Response status code does not indicate success: 500 (Internal Server Error).
-    # }
+    catch [Microsoft.PowerShell.Commands.HttpResponseException]
+    {
+      Write-Error "$($_.Exception.Response.ReasonPhrase) [$($_.Exception.Response.StatusCode.value__)]"
+        # Write-Error "HttpResponseException: $($_.Exception.Response.ReasonPhrase)" # Internal Server Error
+        # Write-Error $_.Exception.Message # Response status code does not indicate success: 500 (Internal Server Error).
+    }
     catch {
-        Write-Error $_
+        throw $_
     }
 
 }

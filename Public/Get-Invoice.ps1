@@ -29,9 +29,11 @@ function Get-Invoice {
         [pscustomobject]$Session,
 
         [Parameter(ParameterSetName='ByID', Mandatory = $true)]
+        [Alias('RECORDNO')]
         [int]$Id,
 
         [Parameter(ParameterSetName='ByNumber', Mandatory = $true)]
+        [Alias('RECORDID','invoiceno')]
         [string]$Number
 
     )
@@ -72,7 +74,6 @@ function Get-Invoice {
         $Content = Send-Request -Credential $Session.Credential -Session $Session -Function $Function
 
         Write-Debug "status: $($Content.response.operation.result.status)"
-
         switch ( $Content.response.operation.result.status )
         {
             'success'
