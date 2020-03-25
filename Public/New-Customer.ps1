@@ -5,7 +5,7 @@ Create a customer.
 .PARAMETER Session
 The Session object returned by New-Session.
 
-.PARAMETER ARPaymentXml
+.PARAMETER CustomerXml
 The Xml representation of an CustomerXml, from ConvertTo-CustomerXml
 
 .LINK
@@ -37,12 +37,11 @@ function New-Customer {
                     $( $CustomerXml.OuterXml )
                 </create>
             </function>"
-
         Write-Debug $Function
 
         $Content = Send-Request -Credential $Session.Credential -Session $Session -Function $Function
-        Write-Debug "status: $($Content.response.operation.result.status)"
 
+        Write-Debug "status: $($Content.response.operation.result.status)"
         switch ($Content.response.operation.result.status)
         {
             'success'
