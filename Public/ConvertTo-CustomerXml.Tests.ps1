@@ -156,7 +156,18 @@ Describe "ConvertTo-CustomerXml" -Tag 'unit' {
 
     }
 
-    # Context "Xml escaping" {
-    # }
+    Context "Xml escaping" {
+
+        it "creates an Xml document w/o throwing an exception" {
+
+            # arrange
+            $Customer.NAME="Bobby & Steve's"
+            $Customer.CUSTTYPE="Foo & Bar"
+
+            # act/assert
+            {$Customer | ConvertTo-CustomerXml -ErrorAction Stop} | Should -Not -Throw
+        }
+
+    }
 
 }

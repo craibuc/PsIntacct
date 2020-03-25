@@ -262,7 +262,7 @@ function ConvertTo-CustomerXml {
     {
         # mandatory
         if ($CUSTOMERID) { [void]$SB.Append("<CUSTOMERID>$CUSTOMERID</CUSTOMERID>") }
-        if ($NAME) { [void]$SB.Append("<NAME>$NAME</NAME>") }
+        if ($NAME) { [void]$SB.Append("<NAME>$( [System.Security.SecurityElement]::Escape($NAME) )</NAME>") }
         # /mandatory
 
         if ($DISPLAYCONTACT)
@@ -276,7 +276,7 @@ function ConvertTo-CustomerXml {
         [void]$SB.Append("<HIDEDISPLAYCONTACT>$($HIDEDISPLAYCONTACT.ToString().ToLower())</HIDEDISPLAYCONTACT>")
         if ($STATUS) { [void]$SB.Append("<STATUS>$STATUS</STATUS>") }
         [void]$SB.Append("<ONETIME>$( $ONETIME.ToString().ToLower() )</ONETIME>")
-        if ($CUSTTYPE) { [void]$SB.Append("<CUSTTYPE>$CUSTTYPE</CUSTTYPE>") }
+        if ($CUSTTYPE) { [void]$SB.Append("<CUSTTYPE>$( [System.Security.SecurityElement]::Escape($CUSTTYPE) )</CUSTTYPE>") }
         if ($CUSTREPID) { [void]$SB.Append("<CUSTREPID>$CUSTREPID</CUSTREPID>") }
         if ($PARENTID) { [void]$SB.Append("<PARENTID>$PARENTID</PARENTID>") }
         if ($GLGROUP) { [void]$SB.Append("<GLGROUP>$GLGROUP</GLGROUP>") }
@@ -292,7 +292,7 @@ function ConvertTo-CustomerXml {
         if ($ONHOLD) { [void]$SB.Append("<ONHOLD>$ONHOLD</ONHOLD>") }
         if ($DELIVERY_OPTIONS) { [void]$SB.Append("<DELIVERY_OPTIONS>$DELIVERY_OPTIONS</DELIVERY_OPTIONS>") }
         if ($CUSTMESSAGEID) { [void]$SB.Append("<CUSTMESSAGEID>$CUSTMESSAGEID</CUSTMESSAGEID>") }
-        if ($COMMENTS) { [void]$SB.Append("<COMMENTS>$COMMENTS</COMMENTS>") }
+        if ($COMMENTS) { [void]$SB.Append("<COMMENTS>$( [System.Security.SecurityElement]::Escape($COMMENTS) )</COMMENTS>") }
         if ($CURRENCY) { [void]$SB.Append("<CURRENCY>$CURRENCY</CURRENCY>") }
 
         if ($ADVBILLBY) { [void]$SB.Append("<ADVBILLBY>$ADVBILLBY</ADVBILLBY>") }
