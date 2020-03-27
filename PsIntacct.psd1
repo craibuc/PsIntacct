@@ -12,7 +12,7 @@
 RootModule = 'PsIntacct'
 
 # Version number of this module.
-ModuleVersion = '0.2.0'
+ModuleVersion = '0.3.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -70,14 +70,14 @@ Description = 'PowerShell module that wraps the Intacct API.'
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @(
-    'ConvertTo-ARPaymentXml','ConvertTo-ContactXml','ConvertTo-CustomerXml','ConvertTo-CustomFieldXml',
-    'ConvertTo-InvoiceXml','ConvertTo-InvoiceItemXml','ConvertTo-MailingAddressXml','ConvertTo-SplitXml','ConvertTo-XmlDocument'
+    'ConvertTo-ContactXml','ConvertTo-CustomFieldXml','ConvertTo-MailingAddressXml','ConvertTo-SplitXml','ConvertTo-XmlDocument'
     'Find-Object'
     'Format-Xml'
-    'New-ARPayment'
-    'Get-Customer','New-Customer','Set-Customer'
+    'ConvertTo-ARAdjustmentXml','New-ARAdjustment'
+    'ConvertTo-ARPaymentXml','New-ARPayment'
+    'ConvertTo-CustomerXml','Get-Customer','New-Customer','Set-Customer'
     'Get-Dimension'
-    'Get-Invoice','New-Invoice','Set-Invoice'
+    'ConvertTo-InvoiceXml','ConvertTo-InvoiceItemXml','Get-Invoice','New-Invoice','Set-Invoice'
     'New-Session','New-GLEntry','New-StatisticalJournalEntry'
 )
 
