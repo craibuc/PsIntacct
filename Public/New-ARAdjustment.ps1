@@ -34,11 +34,8 @@ function New-ARAdjustment {
 
         $Function =
             "<function controlid='$( New-Guid )'>
-                <create>
-                    $( $ARAdjustmentXml.OuterXml )
-                </create>
+                $( $ARAdjustmentXml.OuterXml )
             </function>"
-
         Write-Debug $Function
 
         $Content = Send-Request -Credential $Session.Credential -Session $Session -Function $Function
