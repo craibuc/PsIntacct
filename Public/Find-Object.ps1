@@ -6,7 +6,7 @@ function Find-Object {
         [pscustomobject]$Session,
 
         [Parameter(Mandatory)]
-        [ValidateSet('GLACCOUNT','PROJECT','BOOKING_TYPE')]
+        [ValidateSet('GLACCOUNT','PROJECT','BOOKING_TYPE','ARADJUSTMENT')]
         [string]$Object,
 
         [Parameter()]
