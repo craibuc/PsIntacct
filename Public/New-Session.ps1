@@ -80,10 +80,5 @@ function New-Session {
       # HTTP exceptions
       Write-Error $_ # "$($_.Exception.Response.ReasonPhrase) [$($_.Exception.Response.StatusCode.value__)]"
     }
-    catch
-    {
-      # all other exceptions
-      Write-Error $_ #.Exception.Message
-    }
 
 }

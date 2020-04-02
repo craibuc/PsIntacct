@@ -118,7 +118,29 @@ function Send-Request {
             }
             'failure'
             {
-                throw $Content.response.errormessage.error[0].description2
+                $errorno = $xml.response.errormessage.ChildNodes[0].errorno
+                $description2 = $xml.response.errormessage.ChildNodes[0].description2
+
+                switch ($errorno) {
+                    'XL03000006' # Incorrect Intacct XML Partner ID or password.
+                    {
+                        # create ErrorRecord
+                        $Exception = New-Object -TypeName System.Security.Authentication.InvalidCredentialException($description2)
+                        $ErrorId = "$($MyInvocation.MyCommand.Module.Name).$($MyInvocation.MyCommand.Name) - $description2 [$errorno]"
+                        $ErrorCategory = [System.Management.Automation.ErrorCategory]::AuthenticationError
+                        $ErrorRecord = New-Object Management.Automation.ErrorRecord $Exception, $ErrorId, $ErrorCategory, $Content
+                    }
+                    Default {
+                        # create ErrorRecord
+                        $Exception = New-Object ApplicationException $description2
+                        $ErrorId = "$($MyInvocation.MyCommand.Module.Name).$($MyInvocation.MyCommand.Name) - $($errorno)"
+                        $ErrorCategory = [System.Management.Automation.ErrorCategory]::NotSpecified
+                        $ErrorRecord = New-Object Management.Automation.ErrorRecord $Exception, $ErrorId, $ErrorCategory, $Content
+                    }
+                }
+
+                $PSCmdlet.ThrowTerminatingError($ErrorRecord)
+
             }
         }
 
