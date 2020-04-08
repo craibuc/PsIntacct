@@ -118,8 +118,8 @@ function Send-Request {
             }
             'failure'
             {
-                $errorno = $xml.response.errormessage.ChildNodes[0].errorno
-                $description2 = $xml.response.errormessage.ChildNodes[0].description2
+                $errorno = $Content.response.errormessage.ChildNodes[0].errorno
+                $description2 = $Content.response.errormessage.ChildNodes[0].description2
 
                 switch ($errorno) {
                     'XL03000006' # Incorrect Intacct XML Partner ID or password.
