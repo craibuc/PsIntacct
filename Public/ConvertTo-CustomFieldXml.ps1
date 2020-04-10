@@ -31,7 +31,7 @@ function ConvertTo-CustomFieldXml {
         [Parameter(ValueFromPipelineByPropertyName,Mandatory)]
         [string]$customfieldname,
         
-        [Parameter(ValueFromPipelineByPropertyName,Mandatory)]
+        [Parameter(ValueFromPipelineByPropertyName)]
         [string]$customfieldvalue
     )
 
