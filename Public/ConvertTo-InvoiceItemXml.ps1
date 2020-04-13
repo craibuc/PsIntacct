@@ -177,7 +177,7 @@ function ConvertTo-InvoiceItemXml {
         # /required
 
         if ($offsetglaccountno) { [void]$SB.Append("<offsetglaccountno>$offsetglaccountno</offsetglaccountno>")}
-        if ($amount) { [void]$SB.Append("<amount>$amount</amount>")}
+        [void]$SB.Append("<amount>$amount</amount>")
         if ($allocationid) { [void]$SB.AppendLine("<allocationid>$allocationid</allocationid>") }
         if ($memo) { [void]$SB.Append("<memo>$( [System.Security.SecurityElement]::Escape($memo) )</memo>")}
         if ($locationid) { [void]$SB.AppendLine("<locationid>$locationid</locationid>") }
