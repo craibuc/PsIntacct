@@ -172,12 +172,12 @@ function ConvertTo-InvoiceItemXml {
         [void]$SB.Append('<lineitem>')
         
         # required
-        if ($accountlabel) { [void]$SB.Append("<accountlabel>$accountlabel</accountlabel>")}
         if ($glaccountno) { [void]$SB.Append("<glaccountno>$glaccountno</glaccountno>")}
-        if ($amount) { [void]$SB.Append("<amount>$amount</amount>")}
+        if ($accountlabel) { [void]$SB.Append("<accountlabel>$accountlabel</accountlabel>")}
         # /required
 
         if ($offsetglaccountno) { [void]$SB.Append("<offsetglaccountno>$offsetglaccountno</offsetglaccountno>")}
+        if ($amount) { [void]$SB.Append("<amount>$amount</amount>")}
         if ($allocationid) { [void]$SB.AppendLine("<allocationid>$allocationid</allocationid>") }
         if ($memo) { [void]$SB.Append("<memo>$( [System.Security.SecurityElement]::Escape($memo) )</memo>")}
         if ($locationid) { [void]$SB.AppendLine("<locationid>$locationid</locationid>") }
