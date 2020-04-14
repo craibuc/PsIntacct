@@ -4,17 +4,207 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 
 Describe "ConvertTo-ContactXml" -Tag 'unit' {
 
+    Context "Parameter validation" {
+        $Command = Get-Command "ConvertTo-ContactXml"
+
+        Context 'PRINTAS' {
+            $ParameterName = 'PRINTAS'
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is mandatory" {
+                $Command | Should -HaveParameter $ParameterName -Mandatory
+            }
+        }
+
+        Context 'CONTACTNAME' {
+            $ParameterName = 'CONTACTNAME'
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is mandatory" {
+                $Command | Should -HaveParameter $ParameterName -Mandatory
+            }
+        }
+
+        Context 'COMPANYNAME' {
+            $ParameterName = 'COMPANYNAME'
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+        Context 'TAXABLE' {
+            $ParameterName = 'TAXABLE'
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type boolean
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+        Context 'TAXGROUP' {
+            $ParameterName = 'TAXGROUP'
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+        Context 'PREFIX' {
+            $ParameterName = 'PREFIX'
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+        Context 'FIRSTNAME' {
+            $ParameterName = 'FIRSTNAME'
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+        Context 'LASTNAME' {
+            $ParameterName = 'LASTNAME'
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+        Context 'INITIAL' {
+            $ParameterName = 'INITIAL'
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+        Context 'PHONE1' {
+            $ParameterName = 'PHONE1'
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+        Context 'PHONE2' {
+            $ParameterName = 'PHONE2'
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+        Context 'CELLPHONE' {
+            $ParameterName = 'CELLPHONE'
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+        Context 'PAGER' {
+            $ParameterName = 'PAGER'
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+        Context 'FAX' {
+            $ParameterName = 'FAX'
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+        Context 'EMAIL1' {
+            $ParameterName = 'EMAIL1'
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+        Context 'EMAIL2' {
+            $ParameterName = 'EMAIL2'
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+        Context 'URL1' {
+            $ParameterName = 'URL1'
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+        Context 'URL2' {
+            $ParameterName = 'URL2'
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+        Context 'MAILADDRESS' {
+            $ParameterName = 'MAILADDRESS'
+            It "is a [pscustomobject]" {
+                $Command | Should -HaveParameter $ParameterName -Type pscustomobject
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+    }
+
     $Contact = [pscustomobject]@{
         PRINTAS='Last, First'
         CONTACTNAME='First Last'
     }
 
     Context "Required fields" {
-
-        it "has 2, mandatory parameter" {
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter PRINTAS -Mandatory -Type string
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter CONTACTNAME -Mandatory -Type string
-        }
     
         it "returns the expected values" {
             # act
@@ -29,26 +219,6 @@ Describe "ConvertTo-ContactXml" -Tag 'unit' {
 
     Context "Optional fields" {
 
-        it "has 17, optional parameter" {
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter COMPANYNAME -Type string
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter TAXABLE -Type boolean
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter TAXGROUP -Type string
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter PREFIX -Type string
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter FIRSTNAME -Type string
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter LASTNAME -Type string
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter INITIAL -Type string
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter PHONE1 -Type string
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter PHONE2 -Type string
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter CELLPHONE -Type string
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter PAGER -Type string
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter FAX -Type string
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter EMAIL1 -Type string
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter EMAIL2 -Type string
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter URL1 -Type string
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter URL2 -Type string
-            Get-Command "ConvertTo-ContactXml" | Should -HaveParameter MAILADDRESS
-        }
-    
         # arrange
         $Contact | Add-Member -MemberType NoteProperty -Name 'TAXABLE' -Value $false
         $Contact | Add-Member -MemberType NoteProperty -Name 'TAXGROUP' -Value 'tax group'
@@ -99,6 +269,7 @@ Describe "ConvertTo-ContactXml" -Tag 'unit' {
             # arrange
             $Contact.PRINTAS="Steve's, Bobby &"
             $Contact.CONTACTNAME="Bobby & Steve's"
+            $Contact.PREFIX="Mr. & Mrs."
             $Contact.FIRSTNAME="Bobby's"
             $Contact.LASTNAME="Steve's"
             $Contact.EMAIL1 = "First Last <first.last@domain.tld>"
@@ -107,7 +278,8 @@ Describe "ConvertTo-ContactXml" -Tag 'unit' {
             $Contact.URL2 = "http://www.domain.tld?foo=1&bar=2"
 
             # act/assert
-            {$Contact | ConvertTo-ContactXml -ErrorAction Stop} | Should -Not -Throw
+            { $Contact | ConvertTo-ContactXml -ErrorAction Stop } | Should -Not -Throw
+
         }
 
     }

@@ -138,7 +138,7 @@ function ConvertTo-ContactXml {
         if ($COMPANYNAME) { [void]$SB.Append("<COMPANYNAME>$( [System.Security.SecurityElement]::Escape($COMPANYNAME) )</COMPANYNAME>") }
         [void]$SB.Append("<TAXABLE>$( $TAXABLE.ToString().ToLower() )</TAXABLE>")
         if ($TAXGROUP) { [void]$SB.Append("<TAXGROUP>$TAXGROUP</TAXGROUP>") }
-        if ($PREFIX) { [void]$SB.Append("<PREFIX>$PREFIX</PREFIX>") }
+        if ($PREFIX) { [void]$SB.Append("<PREFIX>$( [System.Security.SecurityElement]::Escape($PREFIX) )</PREFIX>") }
         if ($FIRSTNAME) { [void]$SB.Append("<FIRSTNAME>$( [System.Security.SecurityElement]::Escape($FIRSTNAME) )</FIRSTNAME>") }
         if ($LASTNAME) { [void]$SB.Append("<LASTNAME>$( [System.Security.SecurityElement]::Escape($LASTNAME) )</LASTNAME>") }
         if ($INITIAL) { [void]$SB.Append("<INITIAL>$INITIAL</INITIAL>") }
