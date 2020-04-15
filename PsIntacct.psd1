@@ -12,7 +12,7 @@
 RootModule = 'PsIntacct'
 
 # Version number of this module.
-ModuleVersion = '0.3.4'
+ModuleVersion = '0.4.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -79,6 +79,7 @@ FunctionsToExport = @(
     'Get-Dimension'
     'ConvertTo-InvoiceXml','ConvertTo-InvoiceItemXml','Get-Invoice','New-Invoice','Set-Invoice'
     'New-Session','New-GLEntry','New-StatisticalJournalEntry'
+    'Get-User'
 )
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
