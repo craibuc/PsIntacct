@@ -9,6 +9,77 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 
 Describe "Find-Object" -Tag 'unit' {
 
+    Context "Parameter validation" {
+        $Command = Get-Command 'Find-Object'
+
+        Context "Session" {
+            $ParameterName = 'Session'
+            it "is a [pscustomobject]" {
+                $Command | Should -HaveParameter $ParameterName -Type pscustomobject
+            }
+            it "is mandatory" {
+                $Command | Should -HaveParameter $ParameterName -Mandatory
+            }
+        }
+
+        Context "Object" {
+            $ParameterName = 'Object'
+            it "is a [string]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            it "is mandatory" {
+                $Command | Should -HaveParameter $ParameterName -Mandatory
+            }
+            it "allows the value '<Value>'" -TestCases @(
+                @{Value='GLACCOUNT'},@{Value='PROJECT'},@{Value='BOOKING_TYPE'},@{Value='ARADJUSTMENT'},@{Value='USERINFO'}
+            ) {
+                param($Value)
+                # assert
+                $Command.Parameters.Object.Attributes.ValidValues | Should -Contain $Value
+            }
+        }
+
+        Context "Fields" {
+            $ParameterName = 'Fields'
+            it "is a [string]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            it "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+            it "has a default value of *" {
+                $Command | Should -HaveParameter $ParameterName -DefaultValue '*'
+            }
+        }
+
+        Context "Offset" {
+            $ParameterName = 'Offset'
+            it "is a [int]" {
+                $Command | Should -HaveParameter $ParameterName -Type int
+            }
+            it "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+        Context "PageSize" {
+            $ParameterName = 'PageSize'
+            it "is a [int]" {
+                $Command | Should -HaveParameter $ParameterName -Type int
+            }
+            it "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+            it "has a default value of 100" {
+                $Command | Should -HaveParameter $ParameterName -DefaultValue 100
+            }
+            it "has a valid range from 1 to 2000" -skip {
+                $Command | Should -HaveParameter $ParameterName -DefaultValue 100 #-MinimumValue 1 -MaximumValue 2000
+            }
+        }
+
+    }
+
     # arrange
     $Credential = New-MockObject -Type PsCredential
     $Session = [PsCustomObject]@{Credential=$Credential;sessionid='0123456789';endpoint='https://xx.yy.cc'}
@@ -16,11 +87,6 @@ Describe "Find-Object" -Tag 'unit' {
     $Object = 'GLACCOUNT'
 
     Context "Mandatory parameters" {
-
-        it "has two, mandatory parameters" {
-            Get-Command "Find-Object" | Should -HaveParameter Session -Mandatory
-            Get-Command "Find-Object" | Should -HaveParameter Object -Mandatory -Type String
-        }
 
         Mock Send-Request {
             $Content = "<?xml version='1.0' encoding='UTF-8'?>
@@ -64,19 +130,6 @@ Describe "Find-Object" -Tag 'unit' {
     
             }
 
-        }
-
-    }
-
-    Context "Optional parameters" {
-
-        it "has four optional parameters" {
-            Get-Command "Find-Object" | Should -HaveParameter Fields -Type String -DefaultValue '*'
-            Get-Command "Find-Object" | Should -HaveParameter Query -Type String -DefaultValue $null
-            Get-Command "Find-Object" | Should -HaveParameter Offset -Type int # page number
-            Get-Command "Find-Object" | Should -HaveParameter PageSize -Type int -DefaultValue 100 #-MinimumValue 1 -MaximumValue 2000
-
-            # ((Get-Command "$here\$sut").Parameters['PageSize'].Attributes.Mandatory | Should Be $true
         }
 
     }
