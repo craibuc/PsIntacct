@@ -4,17 +4,139 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 
 Describe "ConvertTo-CustomerXml" -Tag 'unit' {
 
+    Context "Parameter validation" {
+        $Command = Get-Command 'ConvertTo-CustomerXml'
+
+        Context "CUSTOMERID" {
+            $ParameterName = 'CUSTOMERID'
+
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is mandatory" {
+                $Command | Should -HaveParameter $ParameterName -Mandatory
+            }
+        }
+        Context "NAME" {
+            $ParameterName = 'NAME'
+
+            It "is a [String]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is mandatory" {
+                $Command | Should -HaveParameter $ParameterName -Mandatory
+            }
+        }
+        Context "DISPLAYCONTACT" {
+            $ParameterName = 'DISPLAYCONTACT'
+
+            It "is a [pscustomobject]" {
+                $Command | Should -HaveParameter $ParameterName -Type pscustomobject
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+        Context "STATUS" {
+            $ParameterName = 'STATUS'
+
+            It "is a [string]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+            It "has a default value of 'active'" {
+                $Command | Should -HaveParameter $ParameterName -DefaultValue 'active'
+            }
+        }
+        Context "ONETIME" {
+            $ParameterName = 'ONETIME'
+
+            It "is a [boolean]" {
+                $Command | Should -HaveParameter $ParameterName -Type boolean
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+        Context "HIDEDISPLAYCONTACT" {
+            $ParameterName = 'HIDEDISPLAYCONTACT'
+
+            It "is a [boolean]" {
+                $Command | Should -HaveParameter $ParameterName -Type boolean
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+        Context "OBJECTRESTRICTION" {
+            $ParameterName = 'OBJECTRESTRICTION'
+
+            It "is a [string]" {
+                $Command | Should -HaveParameter $ParameterName -Type string
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+            It "has a default value of 'Unrestricted'" {
+                $Command | Should -HaveParameter $ParameterName -DefaultValue 'Unrestricted'
+            }
+        }
+        Context "CUSTOMFIELDS" {
+            $ParameterName = 'CUSTOMFIELDS'
+
+            It "is a [pscustomobject]" {
+                $Command | Should -HaveParameter $ParameterName -Type pscustomobject
+            }
+            It "is optional" {
+                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+            }
+        }
+
+        it "has optional parameters" {
+            $Command | Should -HaveParameter CUSTTYPE -Type string
+            $Command | Should -HaveParameter CUSTREPID -Type string
+            $Command | Should -HaveParameter PARENTID -Type string
+            $Command | Should -HaveParameter GLGROUP -Type string
+            $Command | Should -HaveParameter TERRITORYID -Type string
+            $Command | Should -HaveParameter SUPDOCID -Type string
+            $Command | Should -HaveParameter TERMNAME -Type string
+            $Command | Should -HaveParameter OFFSETGLACCOUNTNO -Type string
+            $Command | Should -HaveParameter ARACCOUNT -Type string
+            $Command | Should -HaveParameter SHIPPINGMETHOD -Type string
+            $Command | Should -HaveParameter RESALENO -Type string
+            $Command | Should -HaveParameter TAXID -Type string
+            $Command | Should -HaveParameter CREDITLIMIT -Type decimal
+            $Command | Should -HaveParameter ONHOLD -Type boolean
+            $Command | Should -HaveParameter DELIVERY_OPTIONS -Type string
+            $Command | Should -HaveParameter CUSTMESSAGEID -Type string
+            $Command | Should -HaveParameter COMMENTS -Type string
+            $Command | Should -HaveParameter CURRENCY -Type string
+            $Command | Should -HaveParameter ADVBILLBY -Type int
+            $Command | Should -HaveParameter ADVBILLBYTYPE -Type string
+            $Command | Should -HaveParameter ARINVOICEPRINTTEMPLATEID -Type string
+            $Command | Should -HaveParameter OEQUOTEPRINTTEMPLATEID -Type string
+            $Command | Should -HaveParameter OEORDERPRINTTEMPLATEID -Type string
+            $Command | Should -HaveParameter OELISTPRINTTEMPLATEID -Type string
+            $Command | Should -HaveParameter OEINVOICEPRINTTEMPLATEID -Type string
+            $Command | Should -HaveParameter OEADJPRINTTEMPLATEID -Type string
+            $Command | Should -HaveParameter OEOTHERPRINTTEMPLATEID -Type string
+            $Command | Should -HaveParameter CONTACTINFO -Type string
+            $Command | Should -HaveParameter BILLTO -Type string
+            $Command | Should -HaveParameter SHIPTO -Type string
+            $Command | Should -HaveParameter CONTACT_LIST_INFO -Type string
+            $Command | Should -HaveParameter RESTRICTEDLOCATIONS -Type string
+            $Command | Should -HaveParameter RESTRICTEDDEPARTMENTS -Type string
+        }
+    }
+
     $Customer = [pscustomobject]@{
         CUSTOMERID='C1234'
         NAME='SaaS Company Inc'
     }
 
     Context "Required fields" {
-
-        it "has 2, mandatory parameters" {
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter CUSTOMERID -Type string -Mandatory
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter NAME -Type string -Mandatory
-        }
 
         it "returns the expected values" {
             # act
@@ -28,47 +150,6 @@ Describe "ConvertTo-CustomerXml" -Tag 'unit' {
     }
 
     Context "Optional fields" {
-
-        it "has 37, optional parameters" {
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter DISPLAYCONTACT -Type pscustomobject
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter STATUS -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter ONETIME -Type boolean
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter HIDEDISPLAYCONTACT -Type boolean
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter CUSTTYPE -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter CUSTREPID -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter PARENTID -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter GLGROUP -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter TERRITORYID -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter SUPDOCID -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter TERMNAME -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter OFFSETGLACCOUNTNO -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter ARACCOUNT -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter SHIPPINGMETHOD -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter RESALENO -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter TAXID -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter CREDITLIMIT -Type decimal
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter ONHOLD -Type boolean
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter DELIVERY_OPTIONS -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter CUSTMESSAGEID -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter COMMENTS -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter CURRENCY -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter ADVBILLBY -Type int
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter ADVBILLBYTYPE -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter ARINVOICEPRINTTEMPLATEID -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter OEQUOTEPRINTTEMPLATEID -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter OEORDERPRINTTEMPLATEID -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter OELISTPRINTTEMPLATEID -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter OEINVOICEPRINTTEMPLATEID -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter OEADJPRINTTEMPLATEID -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter OEOTHERPRINTTEMPLATEID -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter CONTACTINFO -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter BILLTO -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter SHIPTO -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter CONTACT_LIST_INFO -Type string
-            # Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter OBJECTRESTRICTION -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter RESTRICTEDLOCATIONS -Type string
-            Get-Command "ConvertTo-CustomerXml" | Should -HaveParameter RESTRICTEDDEPARTMENTS -Type string
-        }
 
         $Customer | Add-Member -MemberType NoteProperty -Name 'DISPLAYCONTACT' -Value $null
         $Customer | Add-Member -MemberType NoteProperty -Name 'STATUS' -Value 'inactive'
@@ -108,6 +189,8 @@ Describe "ConvertTo-CustomerXml" -Tag 'unit' {
         # $Customer | Add-Member -MemberType NoteProperty -Name 'OBJECTRESTRICTION' -Value 'Restricted'
         $Customer | Add-Member -MemberType NoteProperty -Name 'RESTRICTEDLOCATIONS' -Value 'restrictedlocations'
         $Customer | Add-Member -MemberType NoteProperty -Name 'RESTRICTEDDEPARTMENTS' -Value 'restricteddepartments'
+        $CUSTOMFIELDS = [pscustomobject]@{CUSTOM_NAME='CUSTOM_VALUE'}
+        $Customer | Add-Member -MemberType NoteProperty -Name 'CUSTOMFIELDS' -Value $CUSTOMFIELDS
 
         it "returns the expected values" {
             # act
@@ -152,6 +235,7 @@ Describe "ConvertTo-CustomerXml" -Tag 'unit' {
             $Actual.CUSTOMER.OBJECTRESTRICTION | Should -Be $Customer.OBJECTRESTRICTION
             $Actual.CUSTOMER.RESTRICTEDLOCATIONS | Should -Be $Customer.RESTRICTEDLOCATIONS
             $Actual.CUSTOMER.RESTRICTEDDEPARTMENTS | Should -Be $Customer.RESTRICTEDDEPARTMENTS
+            $Actual.CUSTOMER.CUSTOM_NAME | Should -Be $Customer.CUSTOMFIELDS.CUSTOM_NAME
         }
 
     }
