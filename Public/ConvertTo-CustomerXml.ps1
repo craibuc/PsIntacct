@@ -250,7 +250,10 @@ function ConvertTo-CustomerXml {
         [string]$RESTRICTEDLOCATIONS,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [string]$RESTRICTEDDEPARTMENTS
+        [string]$RESTRICTEDDEPARTMENTS,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [pscustomobject]$CUSTOMFIELDS
     )
 
     Begin
@@ -272,7 +275,7 @@ function ConvertTo-CustomerXml {
         } 
         else { [void]$SB.Append("<DISPLAYCONTACT/>") }
 
-        # [void]$SB.Append("<HIDEDISPLAYCONTACT>$( $HIDEDISPLAYCONTACT.ToString().ToLower() )</HIDEDISPLAYCONTACT>")
+        [void]$SB.Append("<HIDEDISPLAYCONTACT>$( $HIDEDISPLAYCONTACT.ToString().ToLower() )</HIDEDISPLAYCONTACT>")
         if ($STATUS) { [void]$SB.Append("<STATUS>$STATUS</STATUS>") }
         [void]$SB.Append("<ONETIME>$( $ONETIME.ToString().ToLower() )</ONETIME>")
         if ($CUSTTYPE) { [void]$SB.Append("<CUSTTYPE>$( [System.Security.SecurityElement]::Escape($CUSTTYPE) )</CUSTTYPE>") }
@@ -310,6 +313,11 @@ function ConvertTo-CustomerXml {
         # if ($OBJECTRESTRICTION) { [void]$SB.Append("<OBJECTRESTRICTION>$OBJECTRESTRICTION</OBJECTRESTRICTION>") }
         if ($RESTRICTEDLOCATIONS) { [void]$SB.Append("<RESTRICTEDLOCATIONS>$RESTRICTEDLOCATIONS</RESTRICTEDLOCATIONS>") }
         if ($RESTRICTEDDEPARTMENTS) { [void]$SB.Append("<RESTRICTEDDEPARTMENTS>$RESTRICTEDDEPARTMENTS</RESTRICTEDDEPARTMENTS>") }
+        foreach ($property in $CUSTOMFIELDS.PSObject.Properties) {
+            $TEMP = "<{0}>{1}</{0}>" -f $property.Name, $property.Value
+            [void]$SB.Append( $TEMP )
+            # [void]$SB.Append( "<{0}>{1}</{0}>" -f $property.Name, $property.Value )
+        }
     }
     End
     {
