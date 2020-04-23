@@ -31,7 +31,7 @@ Describe "Find-Object" -Tag 'unit' {
                 $Command | Should -HaveParameter $ParameterName -Mandatory
             }
             it "allows the value '<Value>'" -TestCases @(
-                @{Value='ARADJUSTMENT'},@{Value='BOOKING_TYPE'},@{Value='CONTACT'},@{Value='CUSTOMER'},@{Value='GLACCOUNT'},@{Value='PROJECT'},@{Value='USERINFO'}
+                @{Value='ARADJUSTMENT'},@{Value='BOOKING_TYPE'},@{Value='CONTACT'},@{Value='CUSTOMER'},@{Value='EMPLOYEE'},@{Value='GLACCOUNT'},@{Value='PROJECT'},@{Value='USERINFO'}
             ) {
                 param($Value)
                 # assert
