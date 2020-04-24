@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+https://developer.intacct.com/api/platform-services/objects/#list-objects
+<inspect detail="1">
+    <object>EMPLOYEE</object>
+</inspect>
+-->
+<response>
+    <control/>
+    <operation>
+        <authentication/>
+        <result>
+            <status>success</status>
+            <function>inspect</function>
+            <controlid>315d4d6c-7bd7-456a-b0ae-c52b7165f461</controlid>
+            <data listtype='All' count='1'>
+                <Type Name='EMPLOYEE'>
+                    <Attributes>
+                        <SingularName>Employee</SingularName>
+                        <PluralName>Employees</PluralName>
+                        <Description></Description>
+                    </Attributes>
+                    <Fields>
+                        <Field>
+                            <Name>RECORDNO</Name>
+                            <GroupName></GroupName>
+                            <dataName>Pt_FieldInt</dataName>
+                            <externalDataName>integer</externalDataName>
+                            <isRequired>false</isRequired>
+                            <isReadOnly>true</isReadOnly>
+                            <maxLength>8</maxLength>
+                            <DisplayLabel>Record number</DisplayLabel>
+                            <Description>Record Number</Description>
+                            <id>999500400000902</id>
+                        </Field>
+                    </Fields>
+                </Type>
+            </data>
+        </result>
+    </operation>
+</response>
