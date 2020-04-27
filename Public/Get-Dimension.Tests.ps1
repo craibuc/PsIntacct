@@ -1,6 +1,14 @@
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+# /PsIntacct/Public
+$ScriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
+
+# /PsIntacct
+$ModuleDirectory = Split-Path -Parent $ScriptDirectory
+
+# /PsIntacct/Tests/Fixtures/
+$FixturesDirectory = Join-Path $ModuleDirectory "/Tests/Fixtures/"
+
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+. "$ScriptDirectory\$sut"
 
 Describe "Get-Dimension" {
 
@@ -11,33 +19,13 @@ Describe "Get-Dimension" {
     Context "Default" {
 
         BeforeEach {
+
             # arrange
             Mock Send-Request {
-
-                $Content = 
-                "<?xml version='1.0' encoding='UTF-8'?>
-                <response>
-                    <control><status>success</status></control>
-                    <operation>
-                        <result>
-                            <status>success</status>
-                            <data listtype='arinvoice' count='1'>
-                                <dimensions>
-                                    <dimension>
-                                        <objectName>DEPARTMENT</objectName>
-                                        <objectLabel>Department</objectLabel>
-                                        <termLabel>Department</termLabel>
-                                        <userDefinedDimension>false</userDefinedDimension>
-                                        <enabledInGL>true</enabledInGL>
-                                    </dimension>
-                                </dimensions>
-                            </data>
-                        </result>
-                    </operation>
-                </response>"
+                $Fixture = 'Get-Dimension.xml'
+                $Content = Get-Content (Join-Path $FixturesDirectory $Fixture) -Raw
                 # Write-Debug $Content
                 [xml]$Content
-
             }
 
             # act
@@ -45,10 +33,8 @@ Describe "Get-Dimension" {
         }
 
         it "configures the function element properly" {
-            
-            # <function controlid='$Guid'><getDimensions/></function>
-
             # assert
+            # <getDimensions/>
             Assert-MockCalled Send-Request -ParameterFilter {
                 $function = ([xml]$Function).function
                 $function.getDimensions -ne $null

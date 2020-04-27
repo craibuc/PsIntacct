@@ -9,10 +9,8 @@ function Get-Dimension {
 
     Write-Debug "$($MyInvocation.MyCommand.Name)"
 
-    $Guid = New-Guid
-
     $Function =
-        "<function controlid='$Guid'>
+        "<function controlid='$( New-Guid )'>
             <getDimensions/>
         </function>"
 
@@ -20,12 +18,12 @@ function Get-Dimension {
         {
             $Content = Send-Request -Credential $Session.Credential -Session $Session -Function $Function
     
-            Write-Debug "status: $($Content.response.operation.result.status)"
+            # Write-Debug "status: $($Content.response.operation.result.status)"
             switch ( $Content.response.operation.result.status )
             {
                 'success'
-                {  
-                        $Content.response.operation.result.data.dimensions.dimension
+                {
+                    $Content.response.operation.result.data.dimensions.dimension
                 }
                 'failure'
                 { 
