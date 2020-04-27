@@ -8,8 +8,8 @@ $ModuleDirectory = Split-Path -Parent $ScriptDirectory
 . "$ModuleDirectory/Private/ConvertTo-PlainText.ps1"
 . "$ModuleDirectory/Private/Send-Request.ps1"
 
-# /PsIntacct/Tests/Fixtures/Platform Services/Objects
-$FixturesDirectory = Join-Path $ModuleDirectory "/Tests/Fixtures/Platform Services/Objects"
+# /PsIntacct/Tests/Fixtures/
+$FixturesDirectory = Join-Path $ModuleDirectory "/Tests/Fixtures/"
 
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$ScriptDirectory\$sut"
