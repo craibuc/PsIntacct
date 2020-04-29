@@ -94,12 +94,15 @@ function ConvertTo-ARPaymentLegacyXml {
         [int]$batchkey,
 
         [parameter(ValueFromPipelineByPropertyName)]
+        [Alias('FINANCIALENTITY')]
         [string]$bankaccountid,
 
         [parameter(ValueFromPipelineByPropertyName)]
+        [Alias('UNDEPOSITEDACCOUNTNO')]
         [string]$undepfundsacct,
 
         [parameter(ValueFromPipelineByPropertyName)]
+        [Alias('DOCNUMBER')]
         [string]$refid,
 
         [parameter(ValueFromPipelineByPropertyName)]
@@ -109,6 +112,7 @@ function ConvertTo-ARPaymentLegacyXml {
         [string]$overpaydeptid,
 
         [parameter(ValueFromPipelineByPropertyName)]
+        [Alias('RECEIPTDATE')]
         [datetime]$datereceived,
 
         [parameter(ValueFromPipelineByPropertyName)]
@@ -136,6 +140,7 @@ function ConvertTo-ARPaymentLegacyXml {
         [string]$authcode,
 
         [parameter(ValueFromPipelineByPropertyName)]
+        [Alias('ARPYMTDETAILS')]
         [pscustomobject[]]$arpaymentitem,
 
         [parameter(ValueFromPipelineByPropertyName)]
