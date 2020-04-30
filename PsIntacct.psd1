@@ -12,7 +12,7 @@
 RootModule = 'PsIntacct'
 
 # Version number of this module.
-ModuleVersion = '0.6.0'
+ModuleVersion = '0.6.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -70,7 +70,7 @@ Description = 'PowerShell module that wraps the Intacct API.'
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @(
-    'ConvertTo-ContactXml','ConvertTo-CustomFieldXml','ConvertTo-MailingAddressXml','ConvertTo-SplitXml','ConvertTo-XmlDocument'
+    'ConvertTo-ContactXml','ConvertTo-CustomFieldXml','ConvertTo-SplitXml','ConvertTo-XmlDocument'
     'Find-Object','Remove-Object'
     'Format-Xml'
     'ConvertTo-ARAdjustmentXml','New-ARAdjustment'
