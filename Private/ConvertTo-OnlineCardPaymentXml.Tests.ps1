@@ -52,7 +52,7 @@ Describe "ConvertTo-OnlineCardPaymentXml" {
             It "is a [bool]" {
                 $Command | Should -HaveParameter $ParameterName -Type bool
             }
-            It "is mandatory" {
+            It "is optional" {
                 $Command | Should -HaveParameter $ParameterName -Not -Mandatory
             }
         }
