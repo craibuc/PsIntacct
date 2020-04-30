@@ -37,7 +37,9 @@ function ConvertTo-OnlineCardPaymentXml {
         [string]$securitycode,
 
         [parameter(ValueFromPipelineByPropertyName)]
-        [bool]$usedefaultcard
+        [bool]$usedefaultcard,
+
+        [switch]$Legacy
         )
 
     begin
@@ -46,13 +48,26 @@ function ConvertTo-OnlineCardPaymentXml {
     }
     process
     {
-        [void]$SB.Append("<onlinecardpayment>")
-        [void]$SB.Append("<cardnum>$cardnum</cardnum>")
-        [void]$SB.Append("<expirydate>$( $expirydate.ToString('MM/dd/yyyy') )</expirydate>")
-        [void]$SB.Append("<cardtype>$cardtype</cardtype>")
-        [void]$SB.Append("<securitycode>$securitycode</securitycode>")
-        [void]$SB.Append("<usedefaultcard>$( $usedefaultcard.ToString().ToLower() )</usedefaultcard>")
-        [void]$SB.Append("</onlinecardpayment>")
+        if ($Legacy)
+        {
+            [void]$SB.Append("<onlinecardpayment>")
+            [void]$SB.Append("<cardnum>$cardnum</cardnum>")
+            [void]$SB.Append("<expirydate>$( $expirydate.ToString('MM/dd/yyyy') )</expirydate>")
+            [void]$SB.Append("<cardtype>$cardtype</cardtype>")
+            [void]$SB.Append("<securitycode>$securitycode</securitycode>")
+            [void]$SB.Append("<usedefaultcard>$( $usedefaultcard.ToString().ToLower() )</usedefaultcard>")
+            [void]$SB.Append("</onlinecardpayment>")
+        }
+        else
+        {
+            [void]$SB.Append("<ONLINECARDPAYMENT>")
+            [void]$SB.Append("<CARDNUM>$cardnum</CARDNUM>")
+            [void]$SB.Append("<EXPIRYDATE>$( $expirydate.ToString('MM/dd/yyyy') )</EXPIRYDATE>")
+            [void]$SB.Append("<CARDTYPE>$cardtype</CARDTYPE>")
+            [void]$SB.Append("<SECURITYCODE>$securitycode</SECURITYCODE>")
+            [void]$SB.Append("<USEDEFAULTCARD>$( $usedefaultcard.ToString().ToLower() )</USEDEFAULTCARD>")
+            [void]$SB.Append("</ONLINECARDPAYMENT>")
+        }
     }
     end 
     {
