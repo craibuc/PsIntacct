@@ -5,320 +5,227 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 Describe "ConvertTo-ARPaymentLegacyXml" -Tag 'unit' {
 
     Context "Parameter validation" {
+
         $Command = Get-Command "ConvertTo-ARPaymentLegacyXml"
 
-        Context "verb" {
-            $ParameterName = 'verb'
-            It "is a [string]" {
-                $Command | Should -HaveParameter $ParameterName -Type string
-            }
-            It "is mandatory" {
-                $Command | Should -HaveParameter $ParameterName -Mandatory
-            }
-            it "has a list of valid values"{
-                $Command.Parameters[$ParameterName].attributes.ValidValues | Should -Be @('create','apply','reverse')
+        Context "Create" {
+
+            $CreateBatchKey = @{ParameterSetName='Create.batchkey';IsMandatory=$true;ValueFromPipelineByPropertyName=$true}
+            $CreateBankAccountId = @{ParameterSetName='Create.bankaccountid';IsMandatory=$true;ValueFromPipelineByPropertyName=$true}
+            $CreateUndepositedFunds = @{ParameterSetName='Create.undepfundsacct';IsMandatory=$true;ValueFromPipelineByPropertyName=$true}
+            $ParameterSetCreateMandatory = @($CreateBatchKey,$CreateBankAccountId,$CreateUndepositedFunds)
+
+            $CreateBatchKeyOptional = @{ParameterSetName='Create.batchkey';IsMandatory=$false;ValueFromPipelineByPropertyName=$true}
+            $CreateBankAccountIdOptional = @{ParameterSetName='Create.bankaccountid';IsMandatory=$false;ValueFromPipelineByPropertyName=$true}
+            $CreateUndepositedFundsOptional = @{ParameterSetName='Create.undepfundsacct';IsMandatory=$false;ValueFromPipelineByPropertyName=$true}
+            $ParameterSetCreateOptional = @($CreateBatchKeyOptional,$CreateBankAccountIdOptional,$CreateUndepositedFundsOptional)
+
+            @{ParameterName='customerid';Type=[string];Aliases=$null;ParameterSets = $ParameterSetCreateMandatory},
+            @{ParameterName='paymentamount';Type=[decimal];ParameterSets = $ParameterSetCreateMandatory},
+            @{ParameterName='bankaccountid';Type=[string];Aliases=@('FINANCIALENTITY'); ParameterSets=$CreateBankAccountId},
+            @{ParameterName='undepfundsacct';Type=[string];Aliases=@('UNDEPOSITEDACCOUNTNO'); ParameterSets=$CreateUndepositedFunds},
+            @{ParameterName='refid';Type=[string];Aliases=@('DOCNUMBER'); ParameterSets=$ParameterSetCreateOptional},
+            @{ParameterName='overpaylocid';Type=[string];ParameterSets = $ParameterSetCreateOptional},
+            @{ParameterName='overpaydeptid';Type=[string];ParameterSets = $ParameterSetCreateOptional},
+            @{ParameterName='datereceived';Type=[datetime];Aliases=@('RECEIPTDATE');ParameterSets = $ParameterSetCreateOptional},
+            @{ParameterName='paymentmethod';Type=[string];ParameterSets = $ParameterSetCreateOptional},
+            @{ParameterName='basecurr';Type=[string];ParameterSets = $ParameterSetCreateOptional},
+            @{ParameterName='currency';Type=[string];ParameterSets = $ParameterSetCreateOptional},
+            @{ParameterName='exchratedate';Type=[datetime];ParameterSets = $ParameterSetCreateOptional},
+            @{ParameterName='exchratetype';Type=[string];ParameterSets = $ParameterSetCreateOptional},
+            @{ParameterName='exchrate';Type=[decimal];ParameterSets = $ParameterSetCreateOptional},
+            @{ParameterName='cctype';Type=[string];ParameterSets = $ParameterSetCreateOptional},
+            @{ParameterName='authcode';Type=[string];ParameterSets = $ParameterSetCreateOptional},
+            @{ParameterName='arpaymentitem';Type=[pscustomobject[]];Aliases=@('ARPYMTDETAILS');ParameterSets = $ParameterSetCreateMandatory},
+            @{ParameterName='onlinecardpayment';Type=[pscustomobject];ParameterSets = $ParameterSetCreateOptional},
+            @{ParameterName='onlineachpayment';Type=[pscustomobject];ParameterSets = $ParameterSetCreateOptional} |
+            ForEach-Object {
+                Context $_.ParameterName {
+                    $Parameter = $_
+    
+                    It "is a [$($_.Type)]" {
+                        $Command | Should -HaveParameter $_.ParameterName -Type $_.Type
+                    }
+    
+                    if ($Parameter.Aliases) {
+                        $Parameter.Aliases | ForEach-Object {
+                            It "is has an alias of '$_'" {
+                                $Command.Parameters[$Parameter.ParameterName].Aliases | Should -Contain $_
+                            }
+                        }
+                    }
+    
+                    $_.ParameterSets | ForEach-Object {
+                        Context "ParameterSet '$($_.ParameterSetName)'" {
+                            It "is $( $_.IsMandatory ? 'a mandatory': 'an optional') member" {
+                                $Command.parameters[$Parameter.ParameterName].parametersets[$_.ParameterSetName].IsMandatory | Should -Be $_.IsMandatory
+                            }
+                            it "supports ValueFromPipelineByPropertyName"{
+                                $Command.parameters[$Parameter.ParameterName].parametersets[$_.ParameterSetName].ValueFromPipelineByPropertyName | Should -Be $_.ValueFromPipelineByPropertyName
+                            }    
+                        }
+                    }
+    
+                }
             }
 
-        }
+        } # /context (create)
 
-        Context "customerid" {
-            $ParameterName = 'customerid'
-            It "is a [String]" {
-                $Command | Should -HaveParameter $ParameterName -Type string
-            }
-            It "is mandatory" {
-                $Command | Should -HaveParameter $ParameterName -Mandatory
-            }
-        }
+        Context "Apply" {
 
-        Context "paymentamount" {
-            $ParameterName = 'paymentamount'
-            It "is a [decimal]" {
-                $Command | Should -HaveParameter $ParameterName -Type decimal
-            }
-            It "is mandatory" {
-                $Command | Should -HaveParameter $ParameterName -Mandatory
-            }
-        }
+            $ParameterSetApplyMandatory = @{ParameterSetName='Apply';IsMandatory=$true;ValueFromPipelineByPropertyName=$true}
+            $ParameterSetApplyOptional = @{ParameterSetName='Apply';IsMandatory=$false;ValueFromPipelineByPropertyName=$true}
 
-        Context "translatedamount" {
-            $ParameterName = 'translatedamount'
-            It "is a [decimal]" {
-                $Command | Should -HaveParameter $ParameterName -Type decimal
+            @{ParameterName='arpaymentkey';Type=[int];Aliases=$null;ParameterSets=$ParameterSetApplyMandatory},
+            @{ParameterName='paymentdate';Type=[datetime];Aliases=$null;ParameterSets=$ParameterSetApplyMandatory},
+            @{ParameterName='memo';Type=[string];Aliases=$null;ParameterSets=$ParameterSetApplyOptional},
+            @{ParameterName='overpaylocid';Type=[string];Aliases=$null;ParameterSets=$ParameterSetApplyOptional},
+            @{ParameterName='overpaydeptid';Type=[string];Aliases=$null;ParameterSets=$ParameterSetApplyOptional},
+            @{ParameterName='arpaymentitem';Type=[pscustomobject[]];Aliases=@('ARPYMTDETAILS');ParameterSets=$ParameterSetApplyMandatory} |
+            ForEach-Object {
+                Context $_.ParameterName {
+                    $Parameter = $_
+    
+                    It "is a [$($_.Type)]" {
+                        $Command | Should -HaveParameter $_.ParameterName -Type $_.Type
+                    }
+    
+                    if ($Parameter.Aliases) {
+                        $Parameter.Aliases | ForEach-Object {
+                            It "is has an alias of '$_'" {
+                                $Command.Parameters[$Parameter.ParameterName].Aliases | Should -Contain $_
+                            }
+                        }
+                    }
+    
+                    $_.ParameterSets | ForEach-Object {
+                        Context "ParameterSet '$($_.ParameterSetName)'" {
+                            It "is $( $_.IsMandatory ? 'a mandatory': 'an optional') member" {
+                                $Command.parameters[$Parameter.ParameterName].parametersets[$_.ParameterSetName].IsMandatory | Should -Be $_.IsMandatory
+                            }
+                            it "supports ValueFromPipelineByPropertyName"{
+                                $Command.parameters[$Parameter.ParameterName].parametersets[$_.ParameterSetName].ValueFromPipelineByPropertyName | Should -Be $_.ValueFromPipelineByPropertyName
+                            }    
+                        }
+                    }
+    
+                }
             }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
-            }
-        }
 
-        Context "batchkey" {
-            $ParameterName = 'batchkey'
-            It "is a [int]" {
-                $Command | Should -HaveParameter $ParameterName -Type int
-            }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
-            }
-        }
+        } # /context (apply)
 
-        Context "bankaccountid" {
-            $ParameterName = 'bankaccountid'
-            It "is a [string]" {
-                $Command | Should -HaveParameter $ParameterName -Type string
-            }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
-            }
-            it "has an alias of 'FINANCIALENTITY'" {
-                $Command.Parameters[$ParameterName].Aliases | Should -Contain 'FINANCIALENTITY'
-            }
-        }
+    } # /context (parameter validation)
 
-        Context "undepfundsacct" {
-            $ParameterName = 'undepfundsacct'
-            It "is a [string]" {
-                $Command | Should -HaveParameter $ParameterName -Type string
-            }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
-            }
-            it "has an alias of 'UNDEPOSITEDACCOUNTNO'" {
-                $Command.Parameters[$ParameterName].Aliases | Should -Contain 'UNDEPOSITEDACCOUNTNO'
-            }
-        }
+    Context "Usage" {
 
-        Context "refid" {
-            $ParameterName = 'refid'
-            It "is a [string]" {
-                $Command | Should -HaveParameter $ParameterName -Type string
-            }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
-            }
-            it "has an alias of 'DOCNUMBER'" {
-                $Command.Parameters[$ParameterName].Aliases | Should -Contain 'DOCNUMBER'
-            }
-        }
+        Context "Create" {
 
-        Context "overpaylocid" {
-            $ParameterName = 'overpaylocid'
-            It "is a [string]" {
-                $Command | Should -HaveParameter $ParameterName -Type string
-            }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
-            }
-        }
+            it "returns the expected values" {
+                # arrange
+                $Payment = [pscustomobject]@{
+                    customerid = 6
+                    paymentamount = 100.00
+                    translatedamount = 200.00
+                    # batchkey = 100
+                    # bankaccountid = 'abc'
+                    undepfundsacct = 'def'
+                    refid = '123'
+                    overpaylocid = '345'
+                    overpaydeptid = '456'
+                    datereceived = '03/23/2020'
+                    paymentmethod = 'Cash'
+                    basecurr = 'usd'
+                    currency = 'usd'
+                    exchratedate = '03/23/2020'
+                    exchratetype = 'foo'
+                    exchrate = 1.0
+                    cctype = 'abc'
+                    authcode = 'abc123'
+                    arpaymentitem = [pscustomobject]@{invoicekey=123;amount=99.99}
+                    onlinecardpayment = [pscustomobject]@{cardnum='0123456789';expirydate='4/1/2020';cardtype='amex';securitycode='0000';usedefaultcard=$true}
+                    onlineachpayment = [pscustomobject]@{bankname='Acme';accounttype='savings';accountnumber='0123456789';routingnumber='0123456789';accountholder='wile e coyote';usedefaultcard=$true}
+                }
 
-        Context "overpaydeptid" {
-            $ParameterName = 'overpaydeptid'
-            It "is a [string]" {
-                $Command | Should -HaveParameter $ParameterName -Type string
-            }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
-            }
-        }
+                # act
+                $Actual = $Payment | ConvertTo-ARPaymentLegacyXml
+                $DocumentElement = $Actual.DocumentElement
 
-        Context "datereceived" {
-            $ParameterName = 'datereceived'
-            It "is a [datetime]" {
-                $Command | Should -HaveParameter $ParameterName -Type datetime
-            }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
-            }
-            it "has an alias of 'RECEIPTDATE'" {
-                $Command.Parameters[$ParameterName].Aliases | Should -Contain 'RECEIPTDATE'
-            }
-        }
+                # assert
+                $DocumentElement.Name | Should -Be 'create_arpayment'
+                $DocumentElement.customerid | Should -Be $Payment.customerid
+                $DocumentElement.paymentamount | Should -Be $Payment.paymentamount
+                $DocumentElement.translatedamount | Should -Be $Payment.translatedamount
+                $DocumentElement.batchkey | Should -Be $Payment.batchkey
+                $DocumentElement.bankaccountid | Should -Be $Payment.bankaccountid
+                $DocumentElement.undepfundsacct | Should -Be $Payment.undepfundsacct
+                $DocumentElement.refid | Should -Be $Payment.refid
+                $DocumentElement.overpaylocid | Should -Be $Payment.overpaylocid
+                $DocumentElement.overpaydeptid | Should -Be $Payment.overpaydeptid
+                $DocumentElement.datereceived.year | Should -Be ([datetime]$Payment.datereceived).ToString('yyyy')
+                $DocumentElement.datereceived.month | Should -Be ([datetime]$Payment.datereceived).ToString('MM')
+                $DocumentElement.datereceived.day | Should -Be ([datetime]$Payment.datereceived).ToString('dd')
+                $DocumentElement.paymentmethod | Should -Be $Payment.paymentmethod
+                $DocumentElement.basecurr | Should -Be $Payment.basecurr
+                $DocumentElement.currency | Should -Be $Payment.currency
+                $DocumentElement.exchratedate.year | Should -Be ([datetime]$Payment.exchratedate).ToString('yyyy')
+                $DocumentElement.exchratedate.month | Should -Be ([datetime]$Payment.exchratedate).ToString('MM')
+                $DocumentElement.exchratedate.day | Should -Be ([datetime]$Payment.exchratedate).ToString('dd')
+                $DocumentElement.exchratetype | Should -Be $Payment.exchratetype
+                $DocumentElement.exchrate | Should -Be $Payment.exchrate
+                $DocumentElement.cctype | Should -Be $Payment.cctype
+                $DocumentElement.authcode | Should -Be $Payment.authcode
 
-        Context "paymentmethod" {
-            $ParameterName = 'paymentmethod'
-            It "is a [string]" {
-                $Command | Should -HaveParameter $ParameterName -Type string
-            }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
-            }
-        }
+                $DocumentElement.arpaymentitem.invoicekey | Should -Be $Payment.arpaymentitem.invoicekey
+                $DocumentElement.arpaymentitem.amount | Should -Be $Payment.arpaymentitem.amount
 
-        Context "basecurr" {
-            $ParameterName = 'basecurr'
-            It "is a [string]" {
-                $Command | Should -HaveParameter $ParameterName -Type string
-            }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
-            }
-        }
+                $DocumentElement.onlinecardpayment.cardnum | Should -Be $Payment.onlinecardpayment.cardnum
+                $DocumentElement.onlinecardpayment.expirydate | Should -Be ([datetime]$Payment.onlinecardpayment.expirydate).ToString('MM/dd/yyyy')
+                $DocumentElement.onlinecardpayment.cardtype | Should -Be $Payment.onlinecardpayment.cardtype
+                $DocumentElement.onlinecardpayment.securitycode | Should -Be $Payment.onlinecardpayment.securitycode
+                $DocumentElement.onlinecardpayment.usedefaultcard | Should -Be $Payment.onlinecardpayment.usedefaultcard.ToString().ToLower()
 
-        Context "currency" {
-            $ParameterName = 'currency'
-            It "is a [string]" {
-                $Command | Should -HaveParameter $ParameterName -Type string
+                $DocumentElement.onlineachpayment.bankname | Should -Be $Payment.onlineachpayment.bankname
+                $DocumentElement.onlineachpayment.accounttype | Should -Be $Payment.onlineachpayment.accounttype
+                $DocumentElement.onlineachpayment.accountnumber | Should -Be $Payment.onlineachpayment.accountnumber
+                $DocumentElement.onlineachpayment.routingnumber | Should -Be $Payment.onlineachpayment.routingnumber
+                $DocumentElement.onlineachpayment.accountholder | Should -Be $Payment.onlineachpayment.accountholder
+                $DocumentElement.onlineachpayment.usedefaultcard | Should -Be $Payment.onlineachpayment.usedefaultcard.ToString().ToLower()
             }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+
+        } # /context (create)
+
+        Context "Apply" {
+            
+            # arrange
+            $Payment = [pscustomobject]@{
+                arpaymentkey = 6
+                paymentdate = '4/1/2020'
+                memo = 'lorem ipsum'
+                overpaylocid = '345'
+                overpaydeptid = '678'
+                arpaymentitem = [pscustomobject]@{invoicekey=123;amount=99.99}
             }
-        }
-
-        Context "exchratedate" {
-            $ParameterName = 'exchratedate'
-            It "is a [datetime]" {
-                $Command | Should -HaveParameter $ParameterName -Type datetime
+        
+            it "returns the expected values" {
+                # act
+                $Actual = $Payment | ConvertTo-ARPaymentLegacyXml
+                $DocumentElement = $Actual.DocumentElement
+    
+                # assert
+                $DocumentElement.Name | Should -Be 'apply_arpayment'
+                $DocumentElement.arpaymentkey | Should -Be $Payment.arpaymentkey
+                $DocumentElement.paymentdate.year | Should -Be ([datetime]$Payment.paymentdate).ToString('yyyy')
+                $DocumentElement.paymentdate.month | Should -Be ([datetime]$Payment.paymentdate).ToString('MM')
+                $DocumentElement.paymentdate.day | Should -Be ([datetime]$Payment.paymentdate).ToString('dd')
+                $DocumentElement.memo | Should -Be $Payment.memo
+                $DocumentElement.overpaylocid | Should -Be $Payment.overpaylocid
+                $DocumentElement.overpaydeptid | Should -Be $Payment.overpaydeptid    
+                $DocumentElement.arpaymentitems.arpaymentitem.invoicekey | Should -Be $Payment.arpaymentitem.invoicekey
+                $DocumentElement.arpaymentitems.arpaymentitem.amount | Should -Be $Payment.arpaymentitem.amount
             }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
-            }
-        }
 
-        Context "exchratetype" {
-            $ParameterName = 'exchratetype'
-            It "is a [string]" {
-                $Command | Should -HaveParameter $ParameterName -Type string
-            }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
-            }
-        }
+        } # /context (apply)
 
-        Context "exchrate" {
-            $ParameterName = 'exchrate'
-            It "is a [decimal]" {
-                $Command | Should -HaveParameter $ParameterName -Type decimal
-            }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
-            }
-        }
-
-        Context "cctype" {
-            $ParameterName = 'cctype'
-            It "is a [string]" {
-                $Command | Should -HaveParameter $ParameterName -Type string
-            }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
-            }
-        }
-
-        Context "authcode" {
-            $ParameterName = 'authcode'
-            It "is a [string]" {
-                $Command | Should -HaveParameter $ParameterName -Type string
-            }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
-            }
-        }
-
-        Context "arpaymentitem" {
-            $ParameterName = 'arpaymentitem'
-            It "is a [pscustomobject]" {
-                $Command | Should -HaveParameter $ParameterName -Type pscustomobject[]
-            }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
-            }
-            it "has an alias of 'ARPYMTDETAILS'" {
-                $Command.Parameters[$ParameterName].Aliases | Should -Contain 'ARPYMTDETAILS'
-            }
-        }
-
-        Context "onlinecardpayment" {
-            $ParameterName = 'onlinecardpayment'
-            It "is a [pscustomobject]" {
-                $Command | Should -HaveParameter $ParameterName -Type pscustomobject
-            }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
-            }
-        }
-
-        Context "onlineachpayment" {
-            $ParameterName = 'onlineachpayment'
-            It "is a [pscustomobject]" {
-                $Command | Should -HaveParameter $ParameterName -Type pscustomobject
-            }
-            It "is optional" {
-                $Command | Should -HaveParameter $ParameterName -Not -Mandatory
-            }
-        }
-
-    }
-
-    # arrange
-    $Payment = [pscustomobject]@{
-        customerid=6
-        paymentamount=100.00
-    }
-
-    Context "Required fields" {
-
-        it "returns the expected values" {
-            # act
-            $Actual = $Payment | ConvertTo-ARPaymentLegacyXml -Verb 'create'
-
-            # assert
-            $Actual.create_arpayment.customerid | Should -Be $Payment.customerid
-            $Actual.create_arpayment.paymentamount | Should -Be $Payment.paymentamount
-        }
-
-    }
-
-    Context "Optional fields" {
-
-        $Payment | Add-Member -MemberType NoteProperty -Name 'translatedamount' -Value 200.00
-        $Payment | Add-Member -MemberType NoteProperty -Name 'batchkey' -Value 100
-        $Payment | Add-Member -MemberType NoteProperty -Name 'bankaccountid' -Value 'abc'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'undepfundsacct' -Value 'def'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'refid' -Value '123'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'overpaylocid' -Value '345'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'overpaydeptid' -Value '456'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'datereceived' -Value '03/23/2020'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'paymentmethod' -Value 'foo'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'basecurr' -Value 'usd'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'currency' -Value 'usd'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'exchratedate' -Value '03/23/2020'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'exchratetype' -Value 'foo'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'exchrate' -Value 1.0
-        $Payment | Add-Member -MemberType NoteProperty -Name 'cctype' -Value 'abc'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'authcode' -Value 'abc123'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'arpaymentitem' -Value 111
-        $Payment | Add-Member -MemberType NoteProperty -Name 'onlinecardpayment' -Value 111
-        $Payment | Add-Member -MemberType NoteProperty -Name 'onlineachpayment' -Value 111
-
-        it "returns the expected values" {
-            # act
-            $Actual = $Payment | ConvertTo-ARPaymentLegacyXml -Verb 'create'
-
-            # assert
-            $Actual.create_arpayment.translatedamount | Should -Be $Payment.translatedamount
-            $Actual.create_arpayment.batchkey | Should -Be $Payment.batchkey
-            $Actual.create_arpayment.bankaccountid | Should -Be $Payment.bankaccountid
-            $Actual.create_arpayment.undepfundsacct | Should -Be $Payment.undepfundsacct
-            $Actual.create_arpayment.refid | Should -Be $Payment.refid
-            $Actual.create_arpayment.overpaylocid | Should -Be $Payment.overpaylocid
-            $Actual.create_arpayment.overpaydeptid | Should -Be $Payment.overpaydeptid
-            $Actual.create_arpayment.datereceived.year | Should -Be ([datetime]$Payment.datereceived).ToString('yyyy')
-            $Actual.create_arpayment.datereceived.month | Should -Be ([datetime]$Payment.datereceived).ToString('MM')
-            $Actual.create_arpayment.datereceived.day | Should -Be ([datetime]$Payment.datereceived).ToString('dd')
-            $Actual.create_arpayment.paymentmethod | Should -Be $Payment.paymentmethod
-            $Actual.create_arpayment.basecurr | Should -Be $Payment.basecurr
-            $Actual.create_arpayment.currency | Should -Be $Payment.currency
-            $Actual.create_arpayment.exchratedate.year | Should -Be ([datetime]$Payment.exchratedate).ToString('yyyy')
-            $Actual.create_arpayment.exchratedate.month | Should -Be ([datetime]$Payment.exchratedate).ToString('MM')
-            $Actual.create_arpayment.exchratedate.day | Should -Be ([datetime]$Payment.exchratedate).ToString('dd')
-            $Actual.create_arpayment.exchratetype | Should -Be $Payment.exchratetype
-            $Actual.create_arpayment.exchrate | Should -Be $Payment.exchrate
-            $Actual.create_arpayment.cctype | Should -Be $Payment.cctype
-            $Actual.create_arpayment.authcode | Should -Be $Payment.authcode
-            $Actual.create_arpayment.arpaymentitem | Should -Be $Payment.arpaymentitem
-            $Actual.create_arpayment.onlinecardpayment | Should -Be $Payment.onlinecardpayment
-            $Actual.create_arpayment.onlineachpayment | Should -Be $Payment.onlineachpayment
-        }
-
-    }
+    } # /context (usage)
 
 }
