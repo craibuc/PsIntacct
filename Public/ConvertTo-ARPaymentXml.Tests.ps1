@@ -1,107 +1,165 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
+
+# dot-source dependencies
+$Parent = Split-Path -Parent $here
+. "$Parent/Private/ConvertTo-ARPaymentDetailXml.ps1"
+. "$Parent/Private/ConvertTo-OnlineCardPaymentXml.ps1"
+
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
 Describe "ConvertTo-ARPaymentXml" -Tag 'unit' {
 
-    $Payment = [pscustomobject]@{
-        PAYMENTMETHOD='Cash'
-        CUSTOMERID='ABC'
-        RECEIPTDATE='02/20/2020'
-        CURRENCY='USD'
-        ARPYMTDETAILS = @()
-    }
-    $Detail = [pscustomobject]@{RECORDKEY='123'}
-    $Payment.ARPYMTDETAILS += $Detail
+    Context "Parameter validation" {
 
-    Context "Required fields" {
+        $Command = Get-Command "ConvertTo-ARPaymentXml"
 
-        it "has 4, mandatory parameters" {
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter PAYMENTMETHOD -Mandatory
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter CUSTOMERID -Mandatory
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter RECEIPTDATE -Mandatory -Type datetime
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter ARPYMTDETAILS -Mandatory
+        $PRBATCH = @{ParameterSetName='PRBATCH';IsMandatory=$true;ValueFromPipelineByPropertyName=$true}
+        $FINANCIALENTITY = @{ParameterSetName='FINANCIALENTITY';IsMandatory=$true;ValueFromPipelineByPropertyName=$true}
+        $UNDEPOSITEDACCOUNTNO = @{ParameterSetName='UNDEPOSITEDACCOUNTNO';IsMandatory=$true;ValueFromPipelineByPropertyName=$true}
+
+        @{ParameterName='CUSTOMERID';Type=[string];IsMandatory=$true},
+        @{ParameterName='PAYMENTMETHOD';Type=[string];IsMandatory=$true},
+        @{ParameterName='RECEIPTDATE';Type=[datetime];IsMandatory=$true},
+        @{ParameterName='FINANCIALENTITY';Type=[string];ParameterSets = @($FINANCIALENTITY)},
+        @{ParameterName='UNDEPOSITEDACCOUNTNO';Type=[string];ParameterSets = @($UNDEPOSITEDACCOUNTNO)},
+        @{ParameterName='PRBATCH';Type=[string];ParameterSets = @($PRBATCH)},
+        @{ParameterName='ARPYMTDETAILS';Type=[pscustomobject[]];IsMandatory=$true},
+        @{ParameterName='DOCNUMBER';Type=[string];IsMandatory=$false},
+        @{ParameterName='DESCRIPTION';Type=[string];IsMandatory=$false},
+        @{ParameterName='EXCH_RATE_TYPE_ID';Type=[string];IsMandatory=$false},
+        @{ParameterName='EXCHANGE_RATE';Type=[string];IsMandatory=$false},
+        @{ParameterName='PAYMENTDATE';Type=[datetime];IsMandatory=$false},
+        @{ParameterName='AMOUNTOPAY';Type=[decimal];IsMandatory=$false},
+        @{ParameterName='TRX_AMOUNTTOPAY';Type=[decimal];IsMandatory=$false},
+        @{ParameterName='WHENPAID';Type=[datetime];IsMandatory=$false},
+        @{ParameterName='BASECURR';Type=[string];IsMandatory=$false},
+        @{ParameterName='CURRENCY';Type=[string];IsMandatory=$false},
+        @{ParameterName='OVERPAYMENTAMOUNT';Type=[decimal];IsMandatory=$false},
+        @{ParameterName='OVERPAYMENTLOCATIONID';Type=[string];IsMandatory=$false},
+        @{ParameterName='OVERPAYMENTDEPARTMENTID';Type=[string];IsMandatory=$false},
+        @{ParameterName='BILLTOPAYNAME';Type=[string];IsMandatory=$false},
+        @{ParameterName='ONLINECARDPAYMENT';Type=[pscustomobject];IsMandatory=$false} |
+        ForEach-Object {
+
+            $Parameter = $_
+
+            Context $Parameter.ParameterName {
+
+                It "is a [$($Parameter.Type)]" {
+                    $Command | Should -HaveParameter $Parameter.ParameterName -Type $Parameter.Type
+                }
+
+                if ($Parameter.Aliases) {
+                    $Parameter.Aliases | ForEach-Object {
+                        It "is has an alias of '$_'" {
+                            $Command.Parameters[$Parameter.ParameterName].Aliases | Should -Contain $_
+                        }
+                    }
+                }
+
+                if ($Parameter.ParameterSets) {
+                    $_.ParameterSets | ForEach-Object {
+                        Context "ParameterSet '$($_.ParameterSetName)'" {
+                            It "is $( $_.IsMandatory ? 'a mandatory': 'an optional') member" {
+                                $Command.parameters[$Parameter.ParameterName].parametersets[$_.ParameterSetName].IsMandatory | Should -Be $_.IsMandatory
+                            }
+                            it "supports ValueFromPipelineByPropertyName"{
+                                $Command.parameters[$Parameter.ParameterName].parametersets[$_.ParameterSetName].ValueFromPipelineByPropertyName | Should -Be $_.ValueFromPipelineByPropertyName
+                            }    
+                        }
+                    }
+                }
+                else
+                {
+                    It "is $( $_.IsMandatory ? 'a mandatory': 'an optional')" {
+                        $Command.parameters[$Parameter.ParameterName].Attributes.Mandatory | Should -Be $_.IsMandatory
+                    }    
+                }
+            }
         }
 
-        it "returns the expected values" {
-            # act
-            $Actual = $Payment | ConvertTo-ARPaymentXml
+    } # /context (parameter validation)
 
-            # assert
-            $Actual.ARPYMT.PAYMENTMETHOD | Should -Be $Payment.PAYMENTMETHOD
-            $Actual.ARPYMT.CUSTOMERID | Should -Be $Payment.CUSTOMERID
-            $Actual.ARPYMT.RECEIPTDATE | Should -Be $Payment.RECEIPTDATE
-            $Actual.ARPYMT.CURRENCY | Should -Be $Payment.CURRENCY
-            $Actual.ARPYMT.ARPYMTDETAILS.ARPYMTDETAIL.RECORDKEY | Should -Be $Detail.RECORDKEY
+    Context "Usage" {
+
+        BeforeEach {
+            $Payment = [pscustomobject]@{
+                PAYMENTMETHOD='Cash'
+                CUSTOMERID='ABC'
+                RECEIPTDATE='02/20/2020'
+                CURRENCY='USD'
+                ARPYMTDETAILS = @()
+                FINANCIALENTITY = $null
+                DOCNUMBER = 'docnumber'
+                DESCRIPTION = 'description'
+                EXCH_RATE_TYPE_ID = 'exch_rate_type_id'
+                EXCHANGE_RATE = 'exchange_rate'
+                PAYMENTDATE = '01/01/2020'
+                AMOUNTOPAY = 100.00
+                TRX_AMOUNTTOPAY = 200.00
+                PRBATCH = $null
+                WHENPAID = '01/31/2020'
+                BASECURR = 'USD'
+                UNDEPOSITEDACCOUNTNO = $null
+                OVERPAYMENTAMOUNT = 300.00
+                OVERPAYMENTLOCATIONID = 'overpaymentlocationid'
+                OVERPAYMENTDEPARTMENTID = 'overpaymentdepartmentid'
+                BILLTOPAYNAME = 'billtopayname'
+                ONLINECARDPAYMENT = [pscustomobject]@{
+                    CARDNUM = '0123456789'
+                    EXPIRYDATE = '4/1/2020'
+                    CARDTYPE = 'AMEX'
+                    SECURITYCODE = '0123'
+                    USEDEFAULTCARD = $true
+                }
+            }
+            $Detail = [pscustomobject]@{RECORDKEY='123'}
+            $Payment.ARPYMTDETAILS += $Detail
         }
 
-    }
+        @{ParameterSetName='FINANCIALENTITY'; Field='FINANCIALENTITY'; Value='financialentity'},
+        @{ParameterSetName='UNDEPOSITEDACCOUNTNO'; Field='UNDEPOSITEDACCOUNTNO'; Value='undepositedaccountno'},
+        @{ParameterSetName='PRBATCH'; Field='PRBATCH'; Value='prbatch'} | 
+        ForEach-Object {
+            Context $_.ParameterSetName {
 
-    Context "Optional fields" {
+                it "returns the expected values" {
+                    # arrange
+                    $Payment."$($_.Field)" = $_.Value
 
-        it "has 17, optional parameters" {
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter CURRENCY
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter FINANCIALENTITY
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter DOCNUMBER
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter DESCRIPTION
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter EXCH_RATE_TYPE_ID
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter EXCHANGE_RATE
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter PAYMENTDATE -Type datetime
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter AMOUNTOPAY -Type decimal
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter TRX_AMOUNTTOPAY -Type decimal
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter PRBATCH
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter WHENPAID -Type datetime
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter BASECURR
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter UNDEPOSITEDACCOUNTNO
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter OVERPAYMENTAMOUNT -Type decimal
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter OVERPAYMENTLOCATIONID
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter OVERPAYMENTDEPARTMENTID
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter BILLTOPAYNAME
-            Get-Command "ConvertTo-ARPaymentXml" | Should -HaveParameter ONLINECARDPAYMENT
+                    # act
+                    $Actual = $Payment | ConvertTo-ARPaymentXml
+        
+                    # assert
+                    $Actual.ARPYMT.CUSTOMERID | Should -Be $Payment.CUSTOMERID
+                    $Actual.ARPYMT.PAYMENTMETHOD | Should -Be $Payment.PAYMENTMETHOD
+                    $Actual.ARPYMT.RECEIPTDATE | Should -Be $Payment.RECEIPTDATE
+                    $Actual.ARPYMT.FINANCIALENTITY | Should -Be $Payment.FINANCIALENTITY
+                    $Actual.ARPYMT.UNDEPOSITEDACCOUNTNO | Should -Be $Payment.UNDEPOSITEDACCOUNTNO
+                    $Actual.ARPYMT.ARPYMTDETAILS.ARPYMTDETAIL.RECORDKEY | Should -Be $Detail.RECORDKEY
+                    $Actual.ARPYMT.DOCNUMBER | Should -Be $Payment.DOCNUMBER
+                    $Actual.ARPYMT.DESCRIPTION | Should -Be $Payment.DESCRIPTION
+                    $Actual.ARPYMT.EXCH_RATE_TYPE_ID | Should -Be $Payment.EXCH_RATE_TYPE_ID
+                    $Actual.ARPYMT.EXCHANGE_RATE | Should -Be $Payment.EXCHANGE_RATE
+                    $Actual.ARPYMT.PAYMENTDATE | Should -Be $Payment.PAYMENTDATE
+                    $Actual.ARPYMT.AMOUNTOPAY | Should -Be $Payment.AMOUNTOPAY
+                    $Actual.ARPYMT.TRX_AMOUNTTOPAY | Should -Be $Payment.TRX_AMOUNTTOPAY
+                    $Actual.ARPYMT.PRBATCH | Should -Be $Payment.PRBATCH
+                    $Actual.ARPYMT.WHENPAID | Should -Be $Payment.WHENPAID
+                    $Actual.ARPYMT.CURRENCY | Should -Be $Payment.CURRENCY
+                    $Actual.ARPYMT.BASECURR | Should -Be $Payment.BASECURR
+                    $Actual.ARPYMT.OVERPAYMENTAMOUNT | Should -Be $Payment.OVERPAYMENTAMOUNT
+                    $Actual.ARPYMT.OVERPAYMENTLOCATIONID | Should -Be $Payment.OVERPAYMENTLOCATIONID
+                    $Actual.ARPYMT.OVERPAYMENTDEPARTMENTID | Should -Be $Payment.OVERPAYMENTDEPARTMENTID
+                    $Actual.ARPYMT.BILLTOPAYNAME | Should -Be $Payment.BILLTOPAYNAME
+                    $Actual.ARPYMT.ONLINECARDPAYMENT.Name | Should -Be 'ONLINECARDPAYMENT'
+                }
+
+            } # /context (parameterset)
+
         }
 
-        $Payment | Add-Member -MemberType NoteProperty -Name 'FINANCIALENTITY' -Value 'financialentity'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'DOCNUMBER' -Value 'docnumber'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'DESCRIPTION' -Value 'description'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'EXCH_RATE_TYPE_ID' -Value 'exch_rate_type_id'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'EXCHANGE_RATE' -Value 'exchange_rate'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'PAYMENTDATE' -Value '01/01/2020'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'AMOUNTOPAY' -Value 100.00
-        $Payment | Add-Member -MemberType NoteProperty -Name 'TRX_AMOUNTTOPAY' -Value 200.00
-        $Payment | Add-Member -MemberType NoteProperty -Name 'PRBATCH' -Value 'prbatch'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'WHENPAID' -Value '01/31/2020'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'BASECURR' -Value 'USD'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'UNDEPOSITEDACCOUNTNO' -Value 'undepositedaccountno'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'OVERPAYMENTAMOUNT' -Value 300.00
-        $Payment | Add-Member -MemberType NoteProperty -Name 'OVERPAYMENTLOCATIONID' -Value 'overpaymentlocationid'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'OVERPAYMENTDEPARTMENTID' -Value 'overpaymentdepartmentid'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'BILLTOPAYNAME' -Value 'billtopayname'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'ONLINECARDPAYMENT' -Value 'onlinecardpayment'
-
-        it "returns the expected values" {
-            # act
-            $Actual = $Payment | ConvertTo-ARPaymentXml
-
-            # assert
-            $Actual.ARPYMT.FINANCIALENTITY | Should -Be $Payment.FINANCIALENTITY
-            $Actual.ARPYMT.DOCNUMBER | Should -Be $Payment.DOCNUMBER
-            $Actual.ARPYMT.DESCRIPTION | Should -Be $Payment.DESCRIPTION
-            $Actual.ARPYMT.EXCH_RATE_TYPE_ID | Should -Be $Payment.EXCH_RATE_TYPE_ID
-            $Actual.ARPYMT.EXCHANGE_RATE | Should -Be $Payment.EXCHANGE_RATE
-            $Actual.ARPYMT.PAYMENTDATE | Should -Be $Payment.PAYMENTDATE
-            $Actual.ARPYMT.AMOUNTOPAY | Should -Be $Payment.AMOUNTOPAY
-            $Actual.ARPYMT.TRX_AMOUNTTOPAY | Should -Be $Payment.TRX_AMOUNTTOPAY
-            $Actual.ARPYMT.PRBATCH | Should -Be $Payment.PRBATCH
-            $Actual.ARPYMT.WHENPAID | Should -Be $Payment.WHENPAID
-            $Actual.ARPYMT.BASECURR | Should -Be $Payment.BASECURR
-            $Actual.ARPYMT.UNDEPOSITEDACCOUNTNO | Should -Be $Payment.UNDEPOSITEDACCOUNTNO
-            $Actual.ARPYMT.OVERPAYMENTAMOUNT | Should -Be $Payment.OVERPAYMENTAMOUNT
-            $Actual.ARPYMT.OVERPAYMENTLOCATIONID | Should -Be $Payment.OVERPAYMENTLOCATIONID
-            $Actual.ARPYMT.OVERPAYMENTDEPARTMENTID | Should -Be $Payment.OVERPAYMENTDEPARTMENTID
-            $Actual.ARPYMT.BILLTOPAYNAME | Should -Be $Payment.BILLTOPAYNAME
-            $Actual.ARPYMT.ONLINECARDPAYMENT | Should -Be $Payment.ONLINECARDPAYMENT
-        }
-
-    }
+    } # /context (usage)
 
 }
