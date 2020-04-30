@@ -3,6 +3,7 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 # dot-source dependencies
 $Parent = Split-Path -Parent $here
 . "$Parent/Private/ConvertTo-PlainText.ps1"
+. "$Parent/Private/Send-Request.ps1"
 
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
