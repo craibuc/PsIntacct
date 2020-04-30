@@ -277,25 +277,14 @@ function ConvertTo-ARPaymentLegacyXml {
 
                 if ($onlinecardpayment) 
                 { 
-                    [void]$SB.Append("<onlinecardpayment>") 
-                    [void]$SB.Append("<cardnum>$( $onlinecardpayment.cardnum )</cardnum>") 
-                    [void]$SB.Append("<expirydate>$( ([datetime]$onlinecardpayment.expirydate).ToString("MM/dd/yyyy") )</expirydate>") 
-                    [void]$SB.Append("<cardtype>$( $onlinecardpayment.cardtype )</cardtype>") 
-                    [void]$SB.Append("<securitycode>$( $onlinecardpayment.securitycode )</securitycode>") 
-                    [void]$SB.Append("<usedefaultcard>$( $onlinecardpayment.usedefaultcard.ToString().ToLower() )</usedefaultcard>") 
-                    [void]$SB.Append("</onlinecardpayment>") 
+                    $xml = $onlinecardpayment | ConvertTo-OnlineCardPaymentXml
+                    [void]$SB.Append( $xml.onlinecardpayment.OuterXml )
                 }
 
                 if ($onlineachpayment) 
                 { 
-                    [void]$SB.Append("<onlineachpayment>") 
-                    [void]$SB.Append("<bankname>$( $onlineachpayment.bankname )</bankname>") 
-                    [void]$SB.Append("<accounttype>$( $onlineachpayment.accounttype )</accounttype>") 
-                    [void]$SB.Append("<accountnumber>$( $onlineachpayment.accountnumber )</accountnumber>") 
-                    [void]$SB.Append("<routingnumber>$( $onlineachpayment.routingnumber )</routingnumber>") 
-                    [void]$SB.Append("<accountholder>$( $onlineachpayment.accountholder )</accountholder>") 
-                    [void]$SB.Append("<usedefaultcard>$( $onlineachpayment.usedefaultcard.ToString().ToLower() )</usedefaultcard>") 
-                    [void]$SB.Append("</onlineachpayment>") 
+                    $xml = $onlineachpayment | ConvertTo-OnlineAchPaymentXml
+                    [void]$SB.Append( $xml.onlineachpayment.OuterXml )
                 }
 
                 [void]$SB.Append("</create_arpayment>")

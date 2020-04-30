@@ -1,4 +1,10 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
+
+# dot-source dependencies
+$Parent = Split-Path -Parent $here
+. "$Parent/Private/ConvertTo-OnlineCardPaymentXml.ps1"
+. "$Parent/Private/ConvertTo-OnlineAchPaymentXml.ps1"
+
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
