@@ -2,6 +2,7 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 # dot-source dependencies
 $Parent = Split-Path -Parent $here
+. "$Parent/Private/ConvertTo-ARPaymentItemXml.ps1"
 . "$Parent/Private/ConvertTo-OnlineCardPaymentXml.ps1"
 . "$Parent/Private/ConvertTo-OnlineAchPaymentXml.ps1"
 
