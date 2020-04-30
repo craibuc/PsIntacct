@@ -75,23 +75,26 @@ function ConvertTo-ARPaymentXml
     [CmdletBinding()]
     param (
         [Parameter(ValueFromPipelineByPropertyName,Mandatory)]
+        [string]$CUSTOMERID,
+
+        [Parameter(ValueFromPipelineByPropertyName,Mandatory)]
         [ValidateSet('Printed Check', 'Cash', 'EFT', 'Credit Card', 'Online Charge Card', 'Online ACH Debit')]
         [string]$PAYMENTMETHOD,
 
         [Parameter(ValueFromPipelineByPropertyName,Mandatory)]
-        [string]$CUSTOMERID,
-
-        [Parameter(ValueFromPipelineByPropertyName,Mandatory)]
         [datetime]$RECEIPTDATE,
 
-        [Parameter(ValueFromPipelineByPropertyName)]
-        [string]$CURRENCY,
+        [Parameter(ValueFromPipelineByPropertyName,Mandatory,ParameterSetName='FINANCIALENTITY')]
+        [string]$FINANCIALENTITY,
+
+        [Parameter(ValueFromPipelineByPropertyName,Mandatory,ParameterSetName='UNDEPOSITEDACCOUNTNO')]
+        [string]$UNDEPOSITEDACCOUNTNO,
+
+        [Parameter(ValueFromPipelineByPropertyName,Mandatory,ParameterSetName='PRBATCH')]
+        [string]$PRBATCH,
 
         [Parameter(ValueFromPipelineByPropertyName,Mandatory)]
         [pscustomobject[]]$ARPYMTDETAILS,
-
-        [Parameter(ValueFromPipelineByPropertyName)]
-        [string]$FINANCIALENTITY,
 
         [Parameter(ValueFromPipelineByPropertyName)]
         [string]$DOCNUMBER,
@@ -115,16 +118,13 @@ function ConvertTo-ARPaymentXml
         [decimal]$TRX_AMOUNTTOPAY,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [string]$PRBATCH,
-
-        [Parameter(ValueFromPipelineByPropertyName)]
         [datetime]$WHENPAID,
 
         [Parameter(ValueFromPipelineByPropertyName)]
         [string]$BASECURR,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [string]$UNDEPOSITEDACCOUNTNO,
+        [string]$CURRENCY,
 
         [Parameter(ValueFromPipelineByPropertyName)]
         [decimal]$OVERPAYMENTAMOUNT,
@@ -139,7 +139,7 @@ function ConvertTo-ARPaymentXml
         [string]$BILLTOPAYNAME,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [string]$ONLINECARDPAYMENT
+        [pscustomobject]$ONLINECARDPAYMENT
     )
 
     Begin
@@ -182,15 +182,17 @@ function ConvertTo-ARPaymentXml
         if ($OVERPAYMENTLOCATIONID) { [void]$SB.Append("<OVERPAYMENTLOCATIONID>$OVERPAYMENTLOCATIONID</OVERPAYMENTLOCATIONID>") }
         if ($OVERPAYMENTDEPARTMENTID) { [void]$SB.Append("<OVERPAYMENTDEPARTMENTID>$OVERPAYMENTDEPARTMENTID</OVERPAYMENTDEPARTMENTID>") }
         if ($BILLTOPAYNAME) { [void]$SB.Append("<BILLTOPAYNAME>$BILLTOPAYNAME</BILLTOPAYNAME>") }
-        if ($ONLINECARDPAYMENT) { [void]$SB.Append("<ONLINECARDPAYMENT>$ONLINECARDPAYMENT</ONLINECARDPAYMENT>") }
+        if ($ONLINECARDPAYMENT)
+        { 
+            $xml = $ONLINECARDPAYMENT | ConvertTo-OnlineCardPaymentXml
+            [void]$SB.Append( $xml.ONLINECARDPAYMENT.OuterXml )
+        }
     }
 
     End
     {
         [void]$SB.Append("</ARPYMT>")
-        $xml = $SB.ToString()
-        # Write-Debug $xml
-        [xml]$xml
+        [xml]$SB.ToString()
     }
 
 }
