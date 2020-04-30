@@ -2,7 +2,7 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
-Describe "ConvertTo-OnlineAchPaymentXml" {
+Describe "ConvertTo-OnlineAchPaymentXml" -tag 'Unit' {
 
     Context "Parameter validation" {
         $Command = Get-Command "ConvertTo-OnlineAchPaymentXml"
