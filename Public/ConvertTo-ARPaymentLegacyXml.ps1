@@ -77,132 +77,235 @@ function ConvertTo-ARPaymentLegacyXml {
 
     [CmdletBinding()]
     param (
-        [parameter(Mandatory)]
-        [ValidateSet('create','apply','reverse')]
-        [string]$Verb,
-
-        [parameter(ValueFromPipelineByPropertyName,Mandatory)]
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
         [string]$customerid,
 
-        [parameter(ValueFromPipelineByPropertyName,Mandatory)]
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
         [decimal]$paymentamount,
 
-        [parameter(ValueFromPipelineByPropertyName)]
-        [decimal]$translatedamount,
-
-        [parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
         [int]$batchkey,
 
-        [parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
         [Alias('FINANCIALENTITY')]
         [string]$bankaccountid,
 
-        [parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
         [Alias('UNDEPOSITEDACCOUNTNO')]
         [string]$undepfundsacct,
 
-        [parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
+        [decimal]$translatedamount,
+
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
         [Alias('DOCNUMBER')]
         [string]$refid,
 
-        [parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Apply')]
+        [int]$arpaymentkey,
+
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Apply')]
+        [datetime]$paymentdate,
+
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Apply')]
+        [string]$memo,
+
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Apply')]
         [string]$overpaylocid,
 
-        [parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Apply')]
         [string]$overpaydeptid,
 
-        [parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
         [Alias('RECEIPTDATE')]
         [datetime]$datereceived,
 
-        [parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
+        [ValidateSet('Printed Check', 'Cash', 'EFT', 'Credit Card', 'Online Charge Card', 'Online ACH Debit')]
         [string]$paymentmethod,
 
-        [parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
         [string]$basecurr,
 
-        [parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
         [string]$currency,
 
-        [parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
         [datetime]$exchratedate,
 
-        [parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
         [string]$exchratetype,
 
-        [parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
         [decimal]$exchrate,
 
-        [parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
         [string]$cctype,
 
-        [parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
         [string]$authcode,
 
-        [parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Apply')]
         [Alias('ARPYMTDETAILS')]
         [pscustomobject[]]$arpaymentitem,
 
-        [parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
         [pscustomobject]$onlinecardpayment,
 
-        [parameter(ValueFromPipelineByPropertyName)]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
         [pscustomobject]$onlineachpayment
     )
 
     begin
     {
         $SB = New-Object -TypeName System.Text.StringBuilder
-        [void]$SB.Append("<$($Verb)_arpayment>")
     }
     process
     {
-        # mandatory
-        if ($customerid) { [void]$SB.Append("<customerid>$customerid</customerid>")}
-        if ($paymentamount) { [void]$SB.Append("<paymentamount>$paymentamount</paymentamount>")}
-        # /mandatory
+        switch -Wildcard ($PSCmdlet.ParameterSetName) 
+        {
+            'Apply' 
+            {
+                [void]$SB.Append("<apply_arpayment>")
 
-        # optional
-        if ($translatedamount) { [void]$SB.Append("<translatedamount>$translatedamount</translatedamount>") }
-        if ($batchkey) { [void]$SB.Append("<batchkey>$batchkey</batchkey>") }
-        if ($bankaccountid) { [void]$SB.Append("<bankaccountid>$bankaccountid</bankaccountid>") }
-        if ($undepfundsacct) { [void]$SB.Append("<undepfundsacct>$undepfundsacct</undepfundsacct>") }
-        if ($refid) { [void]$SB.Append("<refid>$refid</refid>") }
-        if ($overpaylocid) { [void]$SB.Append("<overpaylocid>$overpaylocid</overpaylocid>") }
-        if ($overpaydeptid) { [void]$SB.Append("<overpaydeptid>$overpaydeptid</overpaydeptid>") }
-        if ($datereceived) 
-        {
-            [void]$SB.Append(
-            "<datereceived>
-                <year>$( $datereceived.ToString('yyyy') )</year>
-                <month>$( $datereceived.ToString('MM') )</month>
-                <day>$( $datereceived.ToString('dd') )</day>
-            </datereceived>")
+                if ($arpaymentkey) { [void]$SB.Append("<arpaymentkey>$arpaymentkey</arpaymentkey>") }
+                if ($paymentdate) 
+                {
+                    [void]$SB.Append(
+                    "<paymentdate>
+                        <year>$( $paymentdate.ToString('yyyy') )</year>
+                        <month>$( $paymentdate.ToString('MM') )</month>
+                        <day>$( $paymentdate.ToString('dd') )</day>
+                    </paymentdate>")
+                }
+                if ($memo) { [void]$SB.Append("<memo>$memo</memo>") }
+                if ($overpaylocid) { [void]$SB.Append("<overpaylocid>$overpaylocid</overpaylocid>") }
+                if ($overpaydeptid) { [void]$SB.Append("<overpaydeptid>$overpaydeptid</overpaydeptid>") }
+                if ($arpaymentitem) 
+                {
+                    $xml = $arpaymentitem | ConvertTo-ARPaymentItemXml
+                    [void]$SB.Append( $xml.OuterXml )
+                }
+
+                [void]$SB.Append("</apply_arpayment>")
+            }
+            'Create.*'
+            {
+                [void]$SB.Append("<create_arpayment>")
+
+                if ($customerid) { [void]$SB.Append("<customerid>$customerid</customerid>") }    
+                if ($paymentamount) { [void]$SB.Append("<paymentamount>$paymentamount</paymentamount>")}
+                if ($translatedamount) { [void]$SB.Append("<translatedamount>$translatedamount</translatedamount>") }
+                
+                if ($batchkey) { [void]$SB.Append("<batchkey>$batchkey</batchkey>") }
+                if ($bankaccountid) { [void]$SB.Append("<bankaccountid>$bankaccountid</bankaccountid>") }
+                if ($undepfundsacct) { [void]$SB.Append("<undepfundsacct>$undepfundsacct</undepfundsacct>") }
+
+                if ($refid) { [void]$SB.Append("<refid>$refid</refid>") }
+                if ($overpaylocid) { [void]$SB.Append("<overpaylocid>$overpaylocid</overpaylocid>") }
+                if ($overpaydeptid) { [void]$SB.Append("<overpaydeptid>$overpaydeptid</overpaydeptid>") }
+                if ($datereceived) 
+                {
+                    [void]$SB.Append(
+                    "<datereceived>
+                        <year>$( $datereceived.ToString('yyyy') )</year>
+                        <month>$( $datereceived.ToString('MM') )</month>
+                        <day>$( $datereceived.ToString('dd') )</day>
+                    </datereceived>")
+                }
+                if ($paymentmethod) { [void]$SB.Append("<paymentmethod>$paymentmethod</paymentmethod>") }
+                if ($basecurr) { [void]$SB.Append("<basecurr>$basecurr</basecurr>") }
+                if ($currency) { [void]$SB.Append("<currency>$currency</currency>") }
+                if ($exchratedate) 
+                {
+                    [void]$SB.Append(
+                    "<exchratedate>
+                        <year>$( $exchratedate.ToString('yyyy') )</year>
+                        <month>$( $exchratedate.ToString('MM') )</month>
+                        <day>$( $exchratedate.ToString('dd') )</day>
+                    </exchratedate>")
+                }
+                if ($exchratetype) { [void]$SB.Append("<exchratetype>$exchratetype</exchratetype>") }
+                if ($exchrate) { [void]$SB.Append("<exchrate>$exchrate</exchrate>") }
+                if ($cctype) { [void]$SB.Append("<cctype>$cctype</cctype>") }
+                if ($authcode) { [void]$SB.Append("<authcode>$authcode</authcode>") }
+
+                if ($arpaymentitem) 
+                {
+                    $xml = $arpaymentitem | ConvertTo-ARPaymentItemXml
+                    [void]$SB.Append( $xml.arpaymentitems.ChildNodes.OuterXml )
+                }
+
+                if ($onlinecardpayment) 
+                { 
+                    [void]$SB.Append("<onlinecardpayment>") 
+                    [void]$SB.Append("<cardnum>$( $onlinecardpayment.cardnum )</cardnum>") 
+                    [void]$SB.Append("<expirydate>$( ([datetime]$onlinecardpayment.expirydate).ToString("MM/dd/yyyy") )</expirydate>") 
+                    [void]$SB.Append("<cardtype>$( $onlinecardpayment.cardtype )</cardtype>") 
+                    [void]$SB.Append("<securitycode>$( $onlinecardpayment.securitycode )</securitycode>") 
+                    [void]$SB.Append("<usedefaultcard>$( $onlinecardpayment.usedefaultcard.ToString().ToLower() )</usedefaultcard>") 
+                    [void]$SB.Append("</onlinecardpayment>") 
+                }
+
+                if ($onlineachpayment) 
+                { 
+                    [void]$SB.Append("<onlineachpayment>") 
+                    [void]$SB.Append("<bankname>$( $onlineachpayment.bankname )</bankname>") 
+                    [void]$SB.Append("<accounttype>$( $onlineachpayment.accounttype )</accounttype>") 
+                    [void]$SB.Append("<accountnumber>$( $onlineachpayment.accountnumber )</accountnumber>") 
+                    [void]$SB.Append("<routingnumber>$( $onlineachpayment.routingnumber )</routingnumber>") 
+                    [void]$SB.Append("<accountholder>$( $onlineachpayment.accountholder )</accountholder>") 
+                    [void]$SB.Append("<usedefaultcard>$( $onlineachpayment.usedefaultcard.ToString().ToLower() )</usedefaultcard>") 
+                    [void]$SB.Append("</onlineachpayment>") 
+                }
+
+                [void]$SB.Append("</create_arpayment>")
+
+            }
         }
-        if ($paymentmethod) { [void]$SB.Append("<paymentmethod>$paymentmethod</paymentmethod>") }
-        if ($basecurr) { [void]$SB.Append("<basecurr>$basecurr</basecurr>") }
-        if ($currency) { [void]$SB.Append("<currency>$currency</currency>") }
-        if ($exchratedate) 
-        {
-            [void]$SB.Append(
-            "<exchratedate>
-                <year>$( $exchratedate.ToString('yyyy') )</year>
-                <month>$( $exchratedate.ToString('MM') )</month>
-                <day>$( $exchratedate.ToString('dd') )</day>
-            </exchratedate>")
-        }
-        if ($exchratetype) { [void]$SB.Append("<exchratetype>$exchratetype</exchratetype>") }
-        if ($exchrate) { [void]$SB.Append("<exchrate>$exchrate</exchrate>") }
-        if ($cctype) { [void]$SB.Append("<cctype>$cctype</cctype>") }
-        if ($authcode) { [void]$SB.Append("<authcode>$authcode</authcode>") }
-        if ($arpaymentitem) { [void]$SB.Append("<arpaymentitem>$arpaymentitem</arpaymentitem>") }
-        if ($onlinecardpayment) { [void]$SB.Append("<onlinecardpayment>$onlinecardpayment</onlinecardpayment>") }
-        if ($onlineachpayment) { [void]$SB.Append("<onlineachpayment>$onlineachpayment</onlineachpayment>") }
-        # /optional
+
     }
     end 
     {
-        [void]$SB.Append("</$($Verb)_arpayment>")
         [xml]$SB.ToString()
     }
 
