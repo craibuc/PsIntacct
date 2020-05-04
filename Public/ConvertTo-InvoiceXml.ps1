@@ -95,181 +95,101 @@ function ConvertTo-InvoiceXml {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
-        # [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Reverse')]
         [int]$key,
 
         [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [string]$customerid,
 
         [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [datetime]$datecreated,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [datetime]$dateposted,
 
         [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
         [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
         [datetime]$datedue,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [string]$termname,
 
         [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Reverse')]
         [datetime]$datereversed,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [int]$batchkey,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [ValidateSet('Draft','Submit')]
         [string]$action='Submit',
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [string]$invoiceno,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [string]$ponumber,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Reverse')]
         [string]$description,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [string]$externalid,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [string]$billto,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [string]$shipto,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [string]$payto,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [string]$returnto,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [string]$basecurr,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [string]$currency,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [datetime]$exchratedate,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [string]$exchratetype,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [string]$exchrate,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [bool]$nogl,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [string]$supdocid,
 
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [pscustomobject[]]$customfields,
 
         [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create')]
-        # [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.datedue')]
-        # [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.termname')]
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.datedue')]
-        # [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Update.termname')]
         [pscustomobject[]]$invoiceitems
     )
 
