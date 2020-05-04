@@ -1,8 +1,8 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 # dot-source dependencies
-# $Parent = Split-Path -Parent $here
-# . "$Parent/Private/ConvertTo-CustomFieldXml.ps1"
+$Parent = Split-Path -Parent $here
+. "$Parent/Private/ConvertTo-CustomFieldXml.ps1"
 # . "$Parent/Private/ConvertTo-InvoiceItemXml.ps1"
 
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
@@ -16,34 +16,59 @@ Describe "ConvertTo-InvoiceXml" -Tag 'unit' {
 
         Context "Create" {
 
-            $DueDate = @{ParameterSetName='Create.datedue';IsMandatory=$true;ValueFromPipelineByPropertyName=$true}
-            $TermName = @{ParameterSetName='Create.termname';IsMandatory=$true;ValueFromPipelineByPropertyName=$true}
+            $CreateMandatory = @{ParameterSetName='Create';IsMandatory=$true;ValueFromPipelineByPropertyName=$true}
+            # $DueDate = @{ParameterSetName='Create.datedue';IsMandatory=$true;ValueFromPipelineByPropertyName=$true}
+            # $TermName = @{ParameterSetName='Create.termname';IsMandatory=$true;ValueFromPipelineByPropertyName=$true}
 
-            $DueDateOptional = @{ParameterSetName='Create.datedue';IsMandatory=$false;ValueFromPipelineByPropertyName=$true}
-            $TermNameOptional = @{ParameterSetName='Create.termname';IsMandatory=$false;ValueFromPipelineByPropertyName=$true}
+            $CreateOptional = @{ParameterSetName='Create';IsMandatory=$false;ValueFromPipelineByPropertyName=$true}
+            # $DueDateOptional = @{ParameterSetName='Create.datedue';IsMandatory=$false;ValueFromPipelineByPropertyName=$true}
+            # $TermNameOptional = @{ParameterSetName='Create.termname';IsMandatory=$false;ValueFromPipelineByPropertyName=$true}
 
-            @{ParameterName='customerid';Type=[string];ParameterSets = $DueDate,$TermName},
-            @{ParameterName='datecreated';Type=[datetime];ParameterSets = $DueDate,$TermName},
-            @{ParameterName='dateposted';Type=[datetime];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='datedue';Type=[datetime];ParameterSets = $DueDate},
-            @{ParameterName='termname';Type=[string];ParameterSets = $TermName},
-            @{ParameterName='batchkey';Type=[int];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='action';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='invoiceno';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='ponumber';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='description';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='externalid';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='billto';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='shipto';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='basecurr';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='currency';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='exchratedate';Type=[datetime];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='exchratetype';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='exchrate';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='nogl';Type=[bool];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='supdocid';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='customfields';Type=[pscustomobject[]];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='invoiceitems';Type=[pscustomobject[]];ParameterSets = $DueDate,$TermName} |
+            # @{ParameterName='customerid';Type=[string];ParameterSets = $DueDate,$TermName},
+            # @{ParameterName='datecreated';Type=[datetime];ParameterSets = $DueDate,$TermName},
+            # @{ParameterName='dateposted';Type=[datetime];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='datedue';Type=[datetime];ParameterSets = $DueDate},
+            # @{ParameterName='termname';Type=[string];ParameterSets = $TermName},
+            # @{ParameterName='batchkey';Type=[int];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='action';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='invoiceno';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='ponumber';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='description';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='externalid';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='billto';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='shipto';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='basecurr';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='currency';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='exchratedate';Type=[datetime];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='exchratetype';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='exchrate';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='nogl';Type=[bool];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='supdocid';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='customfields';Type=[pscustomobject[]];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='invoiceitems';Type=[pscustomobject[]];ParameterSets = $DueDate,$TermName} |
+
+            @{ParameterName='customerid';Type=[string];ParameterSets = $CreateMandatory},
+            @{ParameterName='datecreated';Type=[datetime];ParameterSets = $CreateMandatory},
+            @{ParameterName='dateposted';Type=[datetime];ParameterSets = $CreateOptional},
+            @{ParameterName='datedue';Type=[datetime];ParameterSets = $CreateMandatory},
+            @{ParameterName='termname';Type=[string];ParameterSets = $CreateOptional},
+            @{ParameterName='batchkey';Type=[int];ParameterSets = $CreateOptional},
+            @{ParameterName='action';Type=[string];ParameterSets = $CreateOptional},
+            @{ParameterName='invoiceno';Type=[string];ParameterSets = $CreateOptional},
+            @{ParameterName='ponumber';Type=[string];ParameterSets = $CreateOptional},
+            @{ParameterName='description';Type=[string];ParameterSets = $CreateOptional},
+            @{ParameterName='externalid';Type=[string];ParameterSets = $CreateOptional},
+            @{ParameterName='billto';Type=[string];ParameterSets = $CreateOptional},
+            @{ParameterName='shipto';Type=[string];ParameterSets = $CreateOptional},
+            @{ParameterName='basecurr';Type=[string];ParameterSets = $CreateOptional},
+            @{ParameterName='currency';Type=[string];ParameterSets = $CreateOptional},
+            @{ParameterName='exchratedate';Type=[datetime];ParameterSets = $CreateOptional},
+            @{ParameterName='exchratetype';Type=[string];ParameterSets = $CreateOptional},
+            @{ParameterName='exchrate';Type=[string];ParameterSets = $CreateOptional},
+            @{ParameterName='nogl';Type=[bool];ParameterSets = $CreateOptional},
+            @{ParameterName='supdocid';Type=[string];ParameterSets = $CreateOptional},
+            @{ParameterName='customfields';Type=[pscustomobject[]];ParameterSets = $CreateOptional},
+            @{ParameterName='invoiceitems';Type=[pscustomobject[]];ParameterSets = $CreateMandatory} |
             ForEach-Object {
                 Context $_.ParameterName {
                     $Parameter = $_
@@ -78,32 +103,55 @@ Describe "ConvertTo-InvoiceXml" -Tag 'unit' {
 
         Context "Update" {
 
-            $DueDate = @{ParameterSetName='Update.datedue';IsMandatory=$true;ValueFromPipelineByPropertyName=$true}
-            $TermName = @{ParameterSetName='Update.termname';IsMandatory=$true;ValueFromPipelineByPropertyName=$true}
+            $UpdateMandatory = @{ParameterSetName='Update';IsMandatory=$true;ValueFromPipelineByPropertyName=$true}
+            # $DueDate = @{ParameterSetName='Update.datedue';IsMandatory=$true;ValueFromPipelineByPropertyName=$true}
+            # $TermName = @{ParameterSetName='Update.termname';IsMandatory=$true;ValueFromPipelineByPropertyName=$true}
 
-            $DueDateOptional = @{ParameterSetName='Update.datedue';IsMandatory=$false;ValueFromPipelineByPropertyName=$true}
-            $TermNameOptional = @{ParameterSetName='Update.termname';IsMandatory=$false;ValueFromPipelineByPropertyName=$true}
+            $UpdateOptional = @{ParameterSetName='Update';IsMandatory=$false;ValueFromPipelineByPropertyName=$true}
+            # $DueDateOptional = @{ParameterSetName='Update.datedue';IsMandatory=$false;ValueFromPipelineByPropertyName=$true}
+            # $TermNameOptional = @{ParameterSetName='Update.termname';IsMandatory=$false;ValueFromPipelineByPropertyName=$true}
 
-            @{ParameterName='key';Type=[int];ParameterSets = $DueDate,$TermName},
-            @{ParameterName='customerid';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='datecreated';Type=[datetime];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='dateposted';Type=[datetime];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='datedue';Type=[datetime];ParameterSets = $DueDate},
-            @{ParameterName='termname';Type=[string];ParameterSets = $TermName},
-            @{ParameterName='action';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='invoiceno';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='ponumber';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='description';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='payto';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='returnto';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='basecurr';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='currency';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='exchratedate';Type=[datetime];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='exchratetype';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='exchrate';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='supdocid';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='customfields';Type=[pscustomobject[]];ParameterSets = $DueDateOptional,$TermNameOptional},
-            @{ParameterName='invoiceitems';Type=[pscustomobject[]];ParameterSets = $DueDateOptional,$TermNameOptional} |
+            # @{ParameterName='key';Type=[int];ParameterSets = $DueDate,$TermName},
+            # @{ParameterName='customerid';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='datecreated';Type=[datetime];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='dateposted';Type=[datetime];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='datedue';Type=[datetime];ParameterSets = $DueDate},
+            # @{ParameterName='termname';Type=[string];ParameterSets = $TermName},
+            # @{ParameterName='action';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='invoiceno';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='ponumber';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='description';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='payto';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='returnto';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='basecurr';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='currency';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='exchratedate';Type=[datetime];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='exchratetype';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='exchrate';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='supdocid';Type=[string];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='customfields';Type=[pscustomobject[]];ParameterSets = $DueDateOptional,$TermNameOptional},
+            # @{ParameterName='invoiceitems';Type=[pscustomobject[]];ParameterSets = $DueDateOptional,$TermNameOptional} |
+
+            @{ParameterName='key';Type=[int];ParameterSets = $UpdateMandatory},
+            @{ParameterName='customerid';Type=[string];ParameterSets = $UpdateOptional},
+            @{ParameterName='datecreated';Type=[datetime];ParameterSets = $UpdateOptional},
+            @{ParameterName='dateposted';Type=[datetime];ParameterSets = $UpdateOptional},
+            @{ParameterName='datedue';Type=[datetime];ParameterSets = $UpdateMandatory},
+            @{ParameterName='termname';Type=[string];ParameterSets = $UpdateOptional},
+            @{ParameterName='action';Type=[string];ParameterSets = $UpdateOptional},
+            @{ParameterName='invoiceno';Type=[string];ParameterSets = $UpdateOptional},
+            @{ParameterName='ponumber';Type=[string];ParameterSets = $UpdateOptional},
+            @{ParameterName='description';Type=[string];ParameterSets = $UpdateOptional},
+            @{ParameterName='payto';Type=[string];ParameterSets = $UpdateOptional},
+            @{ParameterName='returnto';Type=[string];ParameterSets = $UpdateOptional},
+            @{ParameterName='basecurr';Type=[string];ParameterSets = $UpdateOptional},
+            @{ParameterName='currency';Type=[string];ParameterSets = $UpdateOptional},
+            @{ParameterName='exchratedate';Type=[datetime];ParameterSets = $UpdateOptional},
+            @{ParameterName='exchratetype';Type=[string];ParameterSets = $UpdateOptional},
+            @{ParameterName='exchrate';Type=[string];ParameterSets = $UpdateOptional},
+            @{ParameterName='supdocid';Type=[string];ParameterSets = $UpdateOptional},
+            @{ParameterName='customfields';Type=[pscustomobject[]];ParameterSets = $UpdateOptional},
+            @{ParameterName='invoiceitems';Type=[pscustomobject[]];ParameterSets = $UpdateOptional} |
             ForEach-Object {
                 Context $_.ParameterName {
                     $Parameter = $_
@@ -188,6 +236,8 @@ Describe "ConvertTo-InvoiceXml" -Tag 'unit' {
                     customerid='ABC123'
                     datecreated = '02/20/2020'
                     dateposted = '02/20/2020'
+                    datedue = '02/20/2020'
+                    termname = 'Net 30'
                     batchkey = 111
                     action = 'Draft'
                     invoiceno = 'invoiceno'
@@ -210,16 +260,17 @@ Describe "ConvertTo-InvoiceXml" -Tag 'unit' {
                 $Invoice.invoiceitems += [pscustomobject]@{glaccountno='10001000';amount=99.99}
             }
 
-            $TestCases = @(
-                @{PropertyName='datedue';PropertyValue='02/20/2020'}
-                @{PropertyName='termname';PropertyValue='Net 30'}
-            )
+            # $TestCases = @(
+            #     @{PropertyName='datedue';PropertyValue='02/20/2020'}
+            #     @{PropertyName='termname';PropertyValue='Net 30'}
+            # )
 
-            it "returns the expected values when using '<PropertyName>'" -TestCases $TestCases {
-                param($PropertyName, $PropertyValue, $PropertyType)
+            # it "returns the expected values when using '<PropertyName>'" -TestCases $TestCases {
+            #     param($PropertyName, $PropertyValue, $PropertyType)
+            it "returns the expected values" {
 
                 # arrange
-                $Invoice | Add-Member -NotePropertyName $PropertyName -NotePropertyValue $PropertyValue
+                # $Invoice | Add-Member -NotePropertyName $PropertyName -NotePropertyValue $PropertyValue
 
                 # act
                 $Actual = $Invoice | ConvertTo-InvoiceXml
@@ -237,20 +288,19 @@ Describe "ConvertTo-InvoiceXml" -Tag 'unit' {
                 $DocumentElement.dateposted.month | Should -Be ([datetime]$Invoice.dateposted).month.ToString('00')
                 $DocumentElement.dateposted.day | Should -Be ([datetime]$Invoice.dateposted).day.ToString('00')
 
-                switch ($PropertyName)
-                {
-                    'datedue'
-                    {
+                # switch ($PropertyName)
+                # {
+                #     'datedue'
+                #     {
                         $DocumentElement.datedue.year | Should -Be ([datetime]$Invoice.datedue).year.ToString('0000')
                         $DocumentElement.datedue.month | Should -Be ([datetime]$Invoice.datedue).month.ToString('00')
-                        $DocumentElement.datedue.day | Should -Be ([datetime]$Invoice.datedue).day.ToString('00')
-        
-                    }
-                    'termname'
-                    {
+                        $DocumentElement.datedue.day | Should -Be ([datetime]$Invoice.datedue).day.ToString('00')        
+                    # }
+                    # 'termname'
+                    # {
                         $DocumentElement.termname | Should -Be $Invoice.termname
-                    }
-                }
+                #     }
+                # }
 
                 $DocumentElement.batchkey | Should -Be $Invoice.batchkey
                 $DocumentElement.action | Should -Be $Invoice.action
@@ -290,6 +340,8 @@ Describe "ConvertTo-InvoiceXml" -Tag 'unit' {
                     customerid='ABC123'
                     datecreated = '02/20/2020'
                     dateposted = '02/20/2020'
+                    datedue = '02/20/2020'
+                    termname = 'Net 30'
                     action = 'Draft'
                     invoiceno = 'invoiceno'
                     ponumber = 'ponumber'
@@ -310,16 +362,17 @@ Describe "ConvertTo-InvoiceXml" -Tag 'unit' {
 
             } # /beforeeach
 
-            $TestCases = @(
-                @{PropertyName='datedue';PropertyValue='02/20/2020'}
-                @{PropertyName='termname';PropertyValue='Net 30'}
-            )
+            # $TestCases = @(
+            #     @{PropertyName='datedue';PropertyValue='02/20/2020'}
+            #     @{PropertyName='termname';PropertyValue='Net 30'}
+            # )
 
-            it "returns the expected values when using '<PropertyName>'" -TestCases $TestCases {
-                param($PropertyName, $PropertyValue, $PropertyType)
-
+            # it "returns the expected values when using '<PropertyName>'" -TestCases $TestCases {
+            #     param($PropertyName, $PropertyValue, $PropertyType)
+            it "returns the expected values when using '<PropertyName>'" {
+    
                 # arrange
-                $Invoice | Add-Member -NotePropertyName $PropertyName -NotePropertyValue $PropertyValue
+                # $Invoice | Add-Member -NotePropertyName $PropertyName -NotePropertyValue $PropertyValue
 
                 # act
                 $Actual = $Invoice | ConvertTo-InvoiceXml
@@ -338,20 +391,19 @@ Describe "ConvertTo-InvoiceXml" -Tag 'unit' {
                 $DocumentElement.dateposted.month | Should -Be ([datetime]$Invoice.dateposted).month.ToString('00')
                 $DocumentElement.dateposted.day | Should -Be ([datetime]$Invoice.dateposted).day.ToString('00')
 
-                switch ($PropertyName)
-                {
-                    'datedue'
-                    {
+                # switch ($PropertyName)
+                # {
+                #     'datedue'
+                #     {
                         $DocumentElement.datedue.year | Should -Be ([datetime]$Invoice.datedue).year.ToString('0000')
                         $DocumentElement.datedue.month | Should -Be ([datetime]$Invoice.datedue).month.ToString('00')
-                        $DocumentElement.datedue.day | Should -Be ([datetime]$Invoice.datedue).day.ToString('00')
-        
-                    }
-                    'termname'
-                    {
+                        $DocumentElement.datedue.day | Should -Be ([datetime]$Invoice.datedue).day.ToString('00')        
+                    # }
+                    # 'termname'
+                    # {
                         $DocumentElement.termname | Should -Be $Invoice.termname
-                    }
-                }
+                #     }
+                # }
 
                 $DocumentElement.action | Should -Be $Invoice.action
                 $DocumentElement.invoiceno | Should -Be $Invoice.invoiceno
