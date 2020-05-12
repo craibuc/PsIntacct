@@ -1,6 +1,17 @@
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+# /PsIntacct
+$ProjectDirectory = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
+
+# /PsIntacct/PsIntacct/Private
+$PrivatePath = Join-Path $ProjectDirectory "/PsIntacct/Private/"
+
+# /PsIntacct/Tests/Fixtures/
+# $FixturesDirectory = Join-Path $ProjectDirectory "/Tests/Fixtures/"
+
+# ConvertTo-ARPaymentDetailXml.ps1
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+
+# . /PsIntacct/PsIntacct/Private/ConvertTo-ARPaymentDetailXml.ps1
+. (Join-Path $PrivatePath $sut)
 
 Describe "ConvertTo-ARPaymentDetailXml" -tag 'Unit' {
 
