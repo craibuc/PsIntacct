@@ -1,12 +1,22 @@
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+# /PsIntacct
+$ProjectDirectory = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
 
-# dot-source dependencies
-$Parent = Split-Path -Parent $here
-. "$Parent/Private/Send-Request.ps1"
-. "$here\New-GLEntry.ps1"
+# /PsIntacct/PsIntacct/Public
+$PublicPath = Join-Path $ProjectDirectory "/PsIntacct/Public/"
+$PrivatePath = Join-Path $ProjectDirectory "/PsIntacct/Private/"
 
+# /PsIntacct/Tests/Fixtures/
+# $FixturesDirectory = Join-Path $ProjectDirectory "/Tests/Fixtures/"
+
+# New-StatisticalJournalEntry.ps1
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+
+# . /PsIntacct/PsIntacct/Public/New-StatisticalJournalEntry.ps1
+. (Join-Path $PublicPath $sut)
+
+# dependencies
+. (Join-Path $PrivatePath "Send-Request.ps1")
+. (Join-Path $PublicPath "ConvertTo-GLEntry.ps1")
 
 Describe "New-StatisticalJournalEntry" -Tag 'unit' {
 
@@ -14,7 +24,7 @@ Describe "New-StatisticalJournalEntry" -Tag 'unit' {
     $Credential = New-MockObject -Type PsCredential
     $Session = [PsCustomObject]@{Credential=$Credential;sessionid='abcdefghi';endpoint='https://x.y.z'}
     
-    $Entries = [pscustomobject]@{ACCOUNTNO='HEADS';TRX_AMOUNT=2.00;TR_TYPE=1} | New-GLEntry
+    $Entries = [pscustomobject]@{ACCOUNTNO='HEADS';TRX_AMOUNT=2.00;TR_TYPE=1} | ConvertTo-GLEntry
     # $Entries += [pscustomobject]@{
     #     ACCOUNTNO='HEADS'
     #     TRX_AMOUNT=2.00
