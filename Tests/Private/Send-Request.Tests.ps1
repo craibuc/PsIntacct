@@ -1,11 +1,20 @@
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+# /PsIntacct
+$ProjectDirectory = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
 
-# dot-source dependencies
-$Parent = Split-Path -Parent $here
-. "$Parent/Private/ConvertTo-PlainText.ps1"
+# /PsIntacct/PsIntacct/Private
+$PrivatePath = Join-Path $ProjectDirectory "/PsIntacct/Private/"
 
+# /PsIntacct/Tests/Fixtures/
+# $FixturesDirectory = Join-Path $ProjectDirectory "/Tests/Fixtures/"
+
+# Send-Request.ps1
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+
+# . /PsIntacct/PsIntacct/Private/Send-Request.ps1
+. (Join-Path $PrivatePath $sut)
+
+# dependencies
+. (Join-Path $PrivatePath "ConvertTo-PlainText.ps1")
 
 Describe "Send-Request" -tag 'Unit' {
     
