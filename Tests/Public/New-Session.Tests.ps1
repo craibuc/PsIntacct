@@ -1,12 +1,22 @@
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+# /PsIntacct
+$ProjectDirectory = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
 
-# dot-source dependencies
-$Parent = Split-Path -Parent $here
-. "$Parent/Private/ConvertTo-PlainText.ps1"
-. "$Parent/Private/Send-Request.ps1"
+# /PsIntacct/PsIntacct/Public
+$PublicPath = Join-Path $ProjectDirectory "/PsIntacct/Public/"
+$PrivatePath = Join-Path $ProjectDirectory "/PsIntacct/Private/"
 
+# /PsIntacct/Tests/Fixtures/
+# $FixturesDirectory = Join-Path $ProjectDirectory "/Tests/Fixtures/"
+
+# New-Session.ps1
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+
+# . /PsIntacct/PsIntacct/Public/New-Session.ps1
+. (Join-Path $PublicPath $sut)
+
+# dependencies
+. (Join-Path $PrivatePath "Send-Request.ps1")
+. (Join-Path $PrivatePath "ConvertTo-PlainText.ps1")
 
 Describe "New-Session" -Tag 'unit' {
 
@@ -169,8 +179,12 @@ Describe "New-Session" -Tag 'unit' {
         # }
 
         It "throws an exception" {
+            # arrange
+            $Message = 'Unauthorized [401]'
+            # $Message = 'Response status code does not indicate success: 401 (Unauthorized).'
+
             # act / assert
-            { New-Session -SenderCredential $SenderCredential -UserCredential $UserCredential -CompanyId $CompanyId -ErrorAction Stop } | Should -Throw 'Response status code does not indicate success: 401 (Unauthorized).'
+            { New-Session -SenderCredential $SenderCredential -UserCredential $UserCredential -CompanyId $CompanyId -ErrorAction Stop } | Should -Throw $Message
         }
     }
 
