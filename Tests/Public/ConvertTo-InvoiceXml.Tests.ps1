@@ -1,12 +1,20 @@
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+# /PsIntacct
+$ProjectDirectory = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
 
-# dot-source dependencies
-$Parent = Split-Path -Parent $here
-. "$Parent/Private/ConvertTo-CustomFieldXml.ps1"
-# . "$Parent/Private/ConvertTo-InvoiceItemXml.ps1"
+# /PsIntacct/PsIntacct/Public
+$PublicPath = Join-Path $ProjectDirectory "/PsIntacct/Public/"
+$PrivatePath = Join-Path $ProjectDirectory "/PsIntacct/Private/"
 
+# /PsIntacct/Tests/Fixtures/
+# $FixturesDirectory = Join-Path $ProjectDirectory "/Tests/Fixtures/"
+
+# ConvertTo-ARAdjustmentXml.ps1
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+
+. (Join-Path $PublicPath $sut)
+
+# dependencies
+. (Join-Path $PrivatePath "ConvertTo-CustomFieldXml.ps1")
 
 Describe "ConvertTo-InvoiceXml" -Tag 'unit' {
 
