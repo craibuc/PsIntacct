@@ -1,14 +1,21 @@
-# /PsIntacct/Public
-$ScriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
-
 # /PsIntacct
-$ModuleDirectory = Split-Path -Parent $ScriptDirectory
+$ProjectDirectory = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
+
+# /PsIntacct/PsIntacct/Public
+$PublicPath = Join-Path $ProjectDirectory "/PsIntacct/Public/"
+$PrivatePath = Join-Path $ProjectDirectory "/PsIntacct/Private/"
 
 # /PsIntacct/Tests/Fixtures/
-$FixturesDirectory = Join-Path $ModuleDirectory "/Tests/Fixtures/"
+$FixturesDirectory = Join-Path $ProjectDirectory "/Tests/Fixtures/"
 
+# Get-Dimension.ps1
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$ScriptDirectory\$sut"
+
+# . /PsIntacct/PsIntacct/Public/Get-Dimension.ps1
+. (Join-Path $PublicPath $sut)
+
+# dependencies
+. (Join-Path $PrivatePath "Send-Request.ps1")
 
 Describe "Get-Dimension" {
 
