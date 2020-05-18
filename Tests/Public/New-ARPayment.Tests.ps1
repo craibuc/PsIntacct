@@ -1,38 +1,62 @@
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+# /PsIntacct
+$ProjectDirectory = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
 
-# dot-source dependencies
-$Parent = Split-Path -Parent $here
-. "$Parent/Private/ConvertTo-PlainText.ps1"
-. "$Parent/Private/Send-Request.ps1"
+# /PsIntacct/PsIntacct/Public
+$PublicPath = Join-Path $ProjectDirectory "/PsIntacct/Public/"
+$PrivatePath = Join-Path $ProjectDirectory "/PsIntacct/Private/"
 
+# /PsIntacct/Tests/Fixtures/
+# $FixturesDirectory = Join-Path $ProjectDirectory "/Tests/Fixtures/"
+
+# Get-Dimension.ps1
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+
+# . /PsIntacct/PsIntacct/Public/Get-Dimension.ps1
+. (Join-Path $PublicPath $sut)
+
+# dependencies
+. (Join-Path $PrivatePath "Send-Request.ps1")
+. (Join-Path $PublicPath "ConvertTo-ARPaymentXml.ps1")
+. (Join-Path $PrivatePath "ConvertTo-ARPaymentDetailXml.ps1")
 
 Describe "New-ARPayment" -Tag 'unit' {
 
-    # arrange
-    $Credential = New-MockObject -Type PsCredential
-    $Session = [PsCustomObject]@{Credential=$Credential;sessionid='abcdefghi';endpoint='https://intacct.com'}
-
-    $Payment = [pscustomobject]@{
-        PAYMENTMETHOD='Cash'
-        CUSTOMERID='ABC'
-        RECEIPTDATE='02/20/2020'
-        CURRENCY='USD'
-        ARPYMTDETAILS = @()
-    }
-    $Detail = [pscustomobject]@{RECORDKEY='123'}
-    $Payment.ARPYMTDETAILS += $Detail
-
     Context "Parameter validation" {
+        $Command = Get-Command "New-ARPayment"
 
-        it "has 2, mandatory parameters" {
-
-            Get-Command "New-ARPayment" | Should -HaveParameter Session -Mandatory
-            Get-Command "New-ARPayment" | Should -HaveParameter ARPaymentXml -Mandatory -Type xml
-
+        Context "Session" {
+            $ParameterName='Session'
+            it "is a [pscustobject]" {
+                Get-Command "New-ARPayment" | Should -HaveParameter $ParameterName -Type pscustomobject
+            }
+            it "is mandatory" {
+                $Command | Should -HaveParameter $ParameterName -Mandatory
+            }
         }
 
+        Context "ARPaymentXml" {
+            $ParameterName='ARPaymentXml'
+            it "is a [xml]" {
+                Get-Command "New-ARPayment" | Should -HaveParameter $ParameterName -Type xml
+            }
+            it "is mandatory" {
+                $Command | Should -HaveParameter $ParameterName -Mandatory
+            }
+        }
+    } # /context (parameter validation)
+
+    # arrange
+    $Credential = New-MockObject -Type PsCredential
+    $Expected = @{
+        Session = [PsCustomObject]@{Credential=$Credential;sessionid='abcdefghi';endpoint='https://intacct.com'}
+        Payment = [pscustomobject]@{
+            UNDEPOSITEDACCOUNTNO='0123456789'
+            PAYMENTMETHOD='Cash'
+            CUSTOMERID='ABC'
+            RECEIPTDATE='02/20/2020'
+            CURRENCY='USD'
+            ARPYMTDETAILS = @( [pscustomobject]@{RECORDKEY='123'} )
+        }
     }
 
     Context "Required parameters" {
@@ -42,75 +66,12 @@ Describe "New-ARPayment" -Tag 'unit' {
 
         it "calls Send-Request with the expected parameter values" {
             # act
-            $Payment | ConvertTo-ARPaymentXml | New-ARPayment -Session $Session
+            $Expected.Payment | ConvertTo-ARPaymentXml | New-ARPayment -Session $Expected.Session
 
             # assert
             Assert-MockCalled Send-Request -ParameterFilter {
-                $create = ([xml]$Function).function.create
-                $create.ARPYMT.PAYMENTMETHOD -eq $Payment.PAYMENTMETHOD -and 
-                $create.ARPYMT.CUSTOMERID -eq $Payment.CUSTOMERID -and 
-                $create.ARPYMT.RECEIPTDATE -eq $Payment.RECEIPTDATE -and
-                $create.ARPYMT.CURRENCY -eq $Payment.CURRENCY -and 
-                $create.ARPYMT.FINANCIALENTITY -eq '' -and 
-                $create.ARPYMT.DOCNUMBER -eq '' -and 
-                $create.ARPYMT.DESCRIPTION -eq '' -and 
-                $create.ARPYMT.EXCH_RATE_TYPE_ID -eq '' -and 
-                $create.ARPYMT.EXCHANGE_RATE -eq '' -and
-                $create.ARPYMT.PAYMENTDATE -eq '' -and
-                $create.ARPYMT.AMOUNTOPAY -eq 0 -and
-                $create.ARPYMT.TRX_AMOUNTTOPAY -eq 0 -and
-                $create.ARPYMT.PRBATCH -eq '' -and
-                $create.ARPYMT.WHENPAID -eq '' -and
-                $create.ARPYMT.BASECURR -eq '' # -and
-                # $create.ARPYMT.OVERPAYMENTAMOUNT -eq '' -and
-                # $create.ARPYMT.OVERPAYMENTLOCATIONID -eq '' -and
-                # $create.ARPYMT.OVERPAYMENTDEPARTMENTID -eq '' -and
-                # $create.ARPYMT.BILLTOPAYNAME -eq '' -and
-            }
-        }
-
-    } # /context
-
-    Context "Optional parameters" {
-
-        # arrange
-        Mock Send-Request
-
-        $Payment | Add-Member -MemberType NoteProperty -Name 'DESCRIPTION' -Value 'lorem ipsum'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'DOCNUMBER' -Value 'INV-007'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'FinancialEntity' -Value 'Acme'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'ExchangeRateTypeId' -Value 'Intacct Daily Rate'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'ExchangeRate' -Value '0.98'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'PaymentDate' -Value '02/20/2020'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'PaymentAmount' -Value 1000.00
-        $Payment | Add-Member -MemberType NoteProperty -Name 'TxPaymentAmount' -Value 1000.00
-        $Payment | Add-Member -MemberType NoteProperty -Name 'PrBatch' -Value '100'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'InvoicePaidDate' -Value '02/20/2020'
-        $Payment | Add-Member -MemberType NoteProperty -Name 'BaseCurrency' -Value 'USD'
-
-        it "calls Send-Request with the expected parameter values" {
-            # act
-            $Payment | ConvertTo-ARPaymentXml | New-ARPayment -Session $Session
-
-            # assert
-            Assert-MockCalled Send-Request -ParameterFilter {
-                $create = ([xml]$Function).function.create
-                $create.ARPYMT.DESCRIPTION -eq $Payment.DESCRIPTION -and 
-                $create.ARPYMT.DOCNUMBER -eq $Payment.DOCNUMBER -and 
-                $create.ARPYMT.FINANCIALENTITY -eq $Payment.FINANCIALENTITY -and 
-                $create.ARPYMT.EXCH_RATE_TYPE_ID -eq $Payment.ExchangeRateTypeId -and 
-                $create.ARPYMT.EXCHANGE_RATE -eq $Payment.ExchangeRate -and
-                $create.ARPYMT.PAYMENTDATE -eq $Payment.PaymentDate -and
-                $create.ARPYMT.AMOUNTOPAY -eq $Payment.PaymentAmount -and
-                $create.ARPYMT.TRX_AMOUNTTOPAY -eq $Payment.TxPaymentAmount -and
-                $create.ARPYMT.PRBATCH -eq $Payment.PrBatch -and
-                $create.ARPYMT.WHENPAID -eq $Payment.InvoicePaidDate -and
-                $create.ARPYMT.BASECURR -eq $Payment.BaseCurrency # -and
-                $create.ARPYMT.UNDEPOSITEDACCOUNTNO -eq $Payment.BaseCurrency # -and
-                # $create.ARPYMT.OVERPAYMENTAMOUNT -eq $Payment. -and
-                # $create.ARPYMT.OVERPAYMENTLOCATIONID -eq $Payment. -and
-                # $create.ARPYMT.OVERPAYMENTDEPARTMENTID -eq $Payment. -and
-                # $create.ARPYMT.BILLTOPAYNAME -eq $Payment. -and
+                $Session -eq $Expected.Session -and
+                ([xml]$Function).function.create -ne $null
             }
         }
 
