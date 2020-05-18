@@ -1,12 +1,21 @@
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+# /PsIntacct
+$ProjectDirectory = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
 
-# dot-source dependencies
-$Parent = Split-Path -Parent $here
-. "$Parent/Private/ConvertTo-PlainText.ps1"
-. "$Parent/Private/Send-Request.ps1"
+# /PsIntacct/PsIntacct/Public
+$PublicPath = Join-Path $ProjectDirectory "/PsIntacct/Public/"
+$PrivatePath = Join-Path $ProjectDirectory "/PsIntacct/Private/"
 
+# /PsIntacct/Tests/Fixtures/
+# $FixturesDirectory = Join-Path $ProjectDirectory "/Tests/Fixtures/"
+
+# ConvertTo-ArPayment.ps1
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+
+# . /PsIntacct/PsIntacct/Public/ConvertTo-ArPayment.ps1
+. (Join-Path $PublicPath $sut)
+
+# dependencies
+. (Join-Path $PrivatePath "Send-Request.ps1")
 
 Describe "Get-ArPayment" -Tag 'unit' {
 
@@ -123,7 +132,7 @@ Describe "Get-ArPayment" -Tag 'unit' {
     
         it "generates a non-terminating error" {
             # act / assert
-            {Get-ArPayment -Session $Session -Id 0 -ErrorAction Stop } | Should -Throw "There was an error processing the request."
+            { Get-ArPayment -Session $Session -Id -100 -ErrorAction Stop } | Should -Throw "There was an error processing the request."
         }
 
     } # /context
