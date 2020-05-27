@@ -1,6 +1,20 @@
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+# /PsIntacct
+$ProjectDirectory = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
+
+# /PsIntacct/PsIntacct/Public
+$PublicPath = Join-Path $ProjectDirectory "/PsIntacct/Public/"
+$PrivatePath = Join-Path $ProjectDirectory "/PsIntacct/Private/"
+
+# /PsIntacct/Tests/Fixtures/
+# $FixturesDirectory = Join-Path $ProjectDirectory "/Tests/Fixtures/"
+
+# ConvertTo-ARAdjustmentXml.ps1
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+
+. (Join-Path $PublicPath $sut)
+
+# dependencies
+. (Join-Path $PublicPath "ConvertTo-ARAdjustmentItemXml.ps1")
 
 Describe "ConvertTo-ARAdjustmentXml" {
 
