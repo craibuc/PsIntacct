@@ -11,10 +11,10 @@ namespace PsIntacct
         public string Name { get; set; }
 
         [XmlElement("PREFIX")]
-        public string Prefox { get; set; }
+        public string Prefix { get; set; }
 
         [XmlElement("FIRSTNAME")]
-        public string FirsName { get; set; }
+        public string FirstName { get; set; }
 
         [XmlElement("LASTNAME")]
         public string LastName { get; set; }
