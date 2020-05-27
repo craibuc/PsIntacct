@@ -78,6 +78,13 @@ Describe "ConvertTo-OnlineAchPaymentXml" -tag 'Unit' {
             }
         }
 
+        Context "Legacy" {
+            $ParameterName = 'Legacy'
+            It "is a [switch]" {
+                $Command | Should -HaveParameter $ParameterName -Type switch
+            }
+        }
+
     }
 
     Context "Usage" {
