@@ -54,6 +54,32 @@ Describe "ConvertTo-ARPaymentItemXml" -tag 'Unit' {
             # assert
             $Actual.arpaymentitems.arpaymentitem.invoicekey | Should -Be $PaymentItem.invoicekey
             $Actual.arpaymentitems.arpaymentitem.amount | Should -Be $PaymentItem.amount
-        }    
+        }
     }
+
+    Context "Multiple PaymentItems" {
+        # arrange
+        $PaymentItem = [pscustomobject]@{
+            invoicekey=100
+            amount=100.00
+        },
+        [pscustomobject]@{
+            invoicekey=200
+            amount=200.00
+        }
+    
+        it "returns the expected values" {
+            # act
+            $Actual = $PaymentItem | ConvertTo-ARPaymentItemXml
+    
+            # assert
+            $Actual.arpaymentitems.arpaymentitem[0].invoicekey | Should -Be $PaymentItem[0].invoicekey
+            $Actual.arpaymentitems.arpaymentitem[0].amount | Should -Be $PaymentItem[0].amount
+
+            $Actual.arpaymentitems.arpaymentitem[1].invoicekey | Should -Be $PaymentItem[1].invoicekey
+            $Actual.arpaymentitems.arpaymentitem[1].amount | Should -Be $PaymentItem[1].amount
+
+        }
+    }
+
 }
