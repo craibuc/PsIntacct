@@ -9,10 +9,10 @@
 @{
 
 # Script module or binary module file associated with this manifest.
-RootModule = 'PsIntacct'
+RootModule = 'PsIntacct.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.6.2'
+ModuleVersion = '0.7.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -74,7 +74,7 @@ FunctionsToExport = @(
     'Find-Object','Remove-Object'
     'Format-Xml'
     'ConvertTo-ARAdjustmentXml','New-ARAdjustment'
-    'ConvertTo-ARPaymentXml','New-ARPayment'
+    'ConvertTo-ARPaymentXml','ConvertTo-ARPaymentLegacyXml','New-ARPayment'
     'ConvertTo-CustomerXml','Get-Customer','New-Customer','Set-Customer'
     'Get-Dimension'
     'ConvertTo-InvoiceXml','ConvertTo-InvoiceItemXml','Get-Invoice','New-Invoice','Set-Invoice'
@@ -114,7 +114,7 @@ PrivateData = @{
         # LicenseUri = ''
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/craibuc/PsIntacct'
 
         # A URL to an icon representing this module.
         # IconUri = ''
