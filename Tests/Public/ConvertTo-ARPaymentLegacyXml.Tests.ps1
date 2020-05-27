@@ -53,7 +53,7 @@ Describe "ConvertTo-ARPaymentLegacyXml" -Tag 'unit' {
             @{ParameterName='exchrate';Type=[decimal];ParameterSets = $ParameterSetCreateOptional},
             @{ParameterName='cctype';Type=[string];ParameterSets = $ParameterSetCreateOptional},
             @{ParameterName='authcode';Type=[string];ParameterSets = $ParameterSetCreateOptional},
-            @{ParameterName='arpaymentitem';Type=[pscustomobject[]];Aliases=@('ARPYMTDETAILS');ParameterSets = $ParameterSetCreateMandatory},
+            @{ParameterName='arpaymentitem';Type=[pscustomobject[]];Aliases=@('ARPYMTDETAILS');ParameterSets = $ParameterSetCreateOptional},
             @{ParameterName='onlinecardpayment';Type=[pscustomobject];ParameterSets = $ParameterSetCreateOptional},
             @{ParameterName='onlineachpayment';Type=[pscustomobject];ParameterSets = $ParameterSetCreateOptional} |
             ForEach-Object {
@@ -158,7 +158,7 @@ Describe "ConvertTo-ARPaymentLegacyXml" -Tag 'unit' {
                     exchrate = 1.0
                     cctype = 'abc'
                     authcode = 'abc123'
-                    arpaymentitem = [pscustomobject]@{invoicekey=123;amount=99.99}
+                    arpaymentitem = [pscustomobject]@{invoicekey=100;amount=100.00},[pscustomobject]@{invoicekey=200;amount=200.00}
                     onlinecardpayment = [pscustomobject]@{cardnum='0123456789';expirydate='4/1/2020';cardtype='amex';securitycode='0000';usedefaultcard=$true}
                     onlineachpayment = [pscustomobject]@{bankname='Acme';accounttype='savings';accountnumber='0123456789';routingnumber='0123456789';accountholder='wile e coyote';usedefaultcard=$true}
                 }
