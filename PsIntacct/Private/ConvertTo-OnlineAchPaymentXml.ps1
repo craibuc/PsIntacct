@@ -40,7 +40,9 @@ function ConvertTo-OnlineAchPaymentXml {
         [string]$accountholder,
 
         [parameter(ValueFromPipelineByPropertyName)]
-        [bool]$usedefaultcard
+        [bool]$usedefaultcard,
+
+        [switch]$Legacy
     )
 
     begin
@@ -49,14 +51,28 @@ function ConvertTo-OnlineAchPaymentXml {
     }
     process
     {
-        [void]$SB.Append("<onlineachpayment>")
-        [void]$SB.Append("<accounttype>$accounttype</accounttype>")
-        [void]$SB.Append("<bankname>$bankname</bankname>")
-        [void]$SB.Append("<accountnumber>$accountnumber</accountnumber>")
-        [void]$SB.Append("<routingnumber>$routingnumber</routingnumber>")
-        [void]$SB.Append("<accountholder>$accountholder</accountholder>")
-        [void]$SB.Append("<usedefaultcard>$( $usedefaultcard.ToString().ToLower() )</usedefaultcard>")
-        [void]$SB.Append("</onlineachpayment>")
+        if ($Legacy)
+        {
+            [void]$SB.Append("<onlineachpayment>")
+            [void]$SB.Append("<accounttype>$accounttype</accounttype>")
+            [void]$SB.Append("<bankname>$bankname</bankname>")
+            [void]$SB.Append("<accountnumber>$accountnumber</accountnumber>")
+            [void]$SB.Append("<routingnumber>$routingnumber</routingnumber>")
+            [void]$SB.Append("<accountholder>$accountholder</accountholder>")
+            [void]$SB.Append("<usedefaultcard>$( $usedefaultcard.ToString().ToLower() )</usedefaultcard>")
+            [void]$SB.Append("</onlineachpayment>")
+        }
+        else
+        {
+            [void]$SB.Append("<ONLINEACHPAYMENT>")
+            [void]$SB.Append("<ACCOUNTTYPE>$accounttype</ACCOUNTTYPE>")
+            [void]$SB.Append("<BANKNAME>$bankname</BANKNAME>")
+            [void]$SB.Append("<ACCOUNTNUMBER>$accountnumber</ACCOUNTNUMBER>")
+            [void]$SB.Append("<ROUTINGNUMBER>$routingnumber</ROUTINGNUMBER>")
+            [void]$SB.Append("<ACCOUNTHOLDER>$accountholder</ACCOUNTHOLDER>")
+            [void]$SB.Append("<USEDEFAULTCARD>$( $usedefaultcard.ToString().ToLower() )</USEDEFAULTCARD>")
+            [void]$SB.Append("</ONLINEACHPAYMENT>")
+        }
     }
     end 
     {
