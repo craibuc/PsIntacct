@@ -177,10 +177,11 @@ function ConvertTo-ARPaymentLegacyXml {
         [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
         [string]$authcode,
 
-        [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
-        [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
-        [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.batchkey')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.bankaccountid')]
+        [Parameter(ValueFromPipelineByPropertyName,ParameterSetName='Create.undepfundsacct')]
         [Parameter(Mandatory,ValueFromPipelineByPropertyName,ParameterSetName='Apply')]
+        [AllowEmptyCollection()]
         [Alias('ARPYMTDETAILS')]
         [pscustomobject[]]$arpaymentitem,
 
@@ -201,6 +202,8 @@ function ConvertTo-ARPaymentLegacyXml {
     }
     process
     {
+        Write-Debug "ParameterSet: $($PSCmdlet.ParameterSetName)"
+
         switch -Wildcard ($PSCmdlet.ParameterSetName) 
         {
             'Apply' 
@@ -272,18 +275,22 @@ function ConvertTo-ARPaymentLegacyXml {
                 if ($arpaymentitem) 
                 {
                     $xml = $arpaymentitem | ConvertTo-ARPaymentItemXml
-                    [void]$SB.Append( $xml.arpaymentitems.ChildNodes.OuterXml )
+                    [void]$SB.Append( $xml.arpaymentitems.InnerXml )
                 }
-
+                elseif ($arpaymentitem.count -eq 0 -and $PSCmdlet.ParameterSetName -eq 'Apply' ) {
+                    Write-Error 'arpaymentitem is required when using the `Apply` parameterset'
+                    return
+                }
+        
                 if ($onlinecardpayment) 
                 { 
-                    $xml = $onlinecardpayment | ConvertTo-OnlineCardPaymentXml
+                    $xml = $onlinecardpayment | ConvertTo-OnlineCardPaymentXml -Legacy
                     [void]$SB.Append( $xml.onlinecardpayment.OuterXml )
                 }
 
                 if ($onlineachpayment) 
                 { 
-                    $xml = $onlineachpayment | ConvertTo-OnlineAchPaymentXml
+                    $xml = $onlineachpayment | ConvertTo-OnlineAchPaymentXml -Legacy
                     [void]$SB.Append( $xml.onlineachpayment.OuterXml )
                 }
 
