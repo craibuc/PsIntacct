@@ -21,7 +21,9 @@ function New-ARPayment {
         [pscustomobject]$Session,
         
         [Parameter(ValueFromPipeline,Mandatory)]
-        [xml]$ARPaymentXml
+        [xml]$ARPaymentXml,
+
+        [switch]$Legacy
     )
 
     begin 
@@ -32,12 +34,21 @@ function New-ARPayment {
     process 
     {
 
-        $Function =
+        $Function = 
+        if ( $Legacy )
+        {
+            "<function controlid='$( New-Guid )'>
+                    $( $ARPaymentXml.OuterXml )
+            </function>"
+        }
+        else
+        {
             "<function controlid='$( New-Guid )'>
                 <create>
                     $( $ARPaymentXml.OuterXml )
                 </create>
             </function>"
+        }
 
         Write-Debug $Function
 
