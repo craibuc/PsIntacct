@@ -65,6 +65,10 @@ function ConvertTo-ContactXml {
     [CmdletBinding()]
     param
     (
+        [Parameter()]
+        [ValidateSet('DISPLAYCONTACT','CONTACT','CONTACTINFO','PAYTO','RETURNTO')]
+        [string]$ROOT_ELEMENT='DISPLAYCONTACT',
+
         [Parameter(ValueFromPipelineByPropertyName,Mandatory)]
         [string]$PRINTAS,
 
@@ -126,7 +130,7 @@ function ConvertTo-ContactXml {
     Begin
     {
         $SB = New-Object -TypeName System.Text.StringBuilder
-        [void]$SB.Append("<DISPLAYCONTACT>")    
+        [void]$SB.Append("<$ROOT_ELEMENT>")
     }
     Process
     {
@@ -155,16 +159,14 @@ function ConvertTo-ContactXml {
         { 
             $ma = $MAILADDRESS | ConvertTo-MailingAddressXml
             [void]$SB.Append( $ma.OuterXml )
-            # [void]$SB.Append($MAILADDRESS) 
         }
         else { [void]$SB.Append("<MAILADDRESS/>") }
     }
     End
     {
-        [void]$SB.Append("</DISPLAYCONTACT>")
-        $xml = $SB.ToString()
-        # Write-Debug $xml
-        [xml]$xml
+        [void]$SB.Append("</$ROOT_ELEMENT>")
+        Write-Debug $SB.ToString()
+        [xml]$SB.ToString()
     }
 
 }
