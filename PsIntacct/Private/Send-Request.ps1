@@ -106,7 +106,7 @@ function Send-Request {
 
     try {
 
-        $Response = Invoke-WebRequest -Method POST -Uri $Uri -Body $Body -ContentType 'application/xml'    
+        $Response = Invoke-WebRequest -Method POST -Uri $Uri -Body $Body -ContentType 'application/xml' -Verbose:$false
         $Content = [xml]$Response.Content
 
         Write-Debug "status: $($Content.response.control.status)"
