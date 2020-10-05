@@ -105,6 +105,9 @@ function ConvertTo-VendorXml {
     [CmdletBinding()]
     param (
         [Parameter(ValueFromPipelineByPropertyName)]
+        [int]$RECORDNO,
+
+        [Parameter(ValueFromPipelineByPropertyName)]
         [string]$VENDORID,
 
         [Parameter(ValueFromPipelineByPropertyName,Mandatory)]
@@ -247,7 +250,7 @@ function ConvertTo-VendorXml {
 
     Begin
     {
-        $SB = New-Object -TypeName System.Text.StringBuilder
+        $SB = [Text.StringBuilder]::new()
         [void]$SB.Append("<VENDOR>")
     }
     Process
