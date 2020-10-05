@@ -129,7 +129,7 @@ function ConvertTo-ContactXml {
 
     Begin
     {
-        $SB = New-Object -TypeName System.Text.StringBuilder
+        $SB = [Text.StringBuilder]::new()
         [void]$SB.Append("<$ROOT_ELEMENT>")
     }
     Process
