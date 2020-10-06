@@ -12,7 +12,7 @@
 RootModule = 'PsIntacct.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.10.0'
+ModuleVersion = '0.11.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -73,6 +73,7 @@ FunctionsToExport = @(
     'ConvertTo-ContactXml','ConvertTo-SplitXml','ConvertTo-XmlDocument'
     'Find-Object','Remove-Object','Save-Object'
     'Format-Xml'
+    'ConvertTo-APBill'
     'ConvertTo-ARAdjustmentXml','New-ARAdjustment'
     'ConvertTo-ARPaymentXml','ConvertTo-ARPaymentLegacyXml','New-ARPayment'
     'ConvertTo-CustomerXml','Get-Customer','New-Customer','Set-Customer'
