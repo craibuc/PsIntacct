@@ -114,10 +114,11 @@ function ConvertTo-APBillItem
     
     begin {
         $SB = [Text.StringBuilder]::new()
-        [void]$SB.Append("<APBILLITEM>")        
+        [void]$SB.Append("<APBILLITEMS>")
     }
     
     process {
+        [void]$SB.Append("<APBILLITEM>")
         
         foreach($parameter in $PSBoundParameters.GetEnumerator())
         {
@@ -150,10 +151,11 @@ function ConvertTo-APBillItem
             } # /switch
         } # /foreach
 
+        [void]$SB.Append("</APBILLITEM>")
     }
     
     end {
-        [void]$SB.Append("</APBILLITEM>")
+        [void]$SB.Append("</APBILLITEMS>")
         Write-Debug $SB.ToString()
         [xml]$SB.ToString()   
     }

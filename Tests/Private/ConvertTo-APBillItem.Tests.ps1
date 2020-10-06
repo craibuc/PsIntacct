@@ -101,34 +101,34 @@ Describe "ConvertTo-APBillItem" -tag 'Unit' {
             $Actual = [pscustomobject]$Expected | ConvertTo-APBillItem
 
             # assert
-            $Actual.APBILLITEM.ACCOUNTNO | Should -Be $Expected.ACCOUNTNO
-            $Actual.APBILLITEM.OFFSETGLACCOUNTNO | Should -Be $Expected.OFFSETGLACCOUNTNO
-            $Actual.APBILLITEM.TRX_AMOUNT | Should -Be $Expected.TRX_AMOUNT
-            $Actual.APBILLITEM.TOTALTRXAMOUNT | Should -Be $Expected.TOTALTRXAMOUNT
-            $Actual.APBILLITEM.ENTRYDESCRIPTION | Should -Be $Expected.ENTRYDESCRIPTION
-            $Actual.APBILLITEM.FORM1099 | Should -Be $Expected.FORM1099
-            $Actual.APBILLITEM.FORM1099TYPE | Should -Be $Expected.FORM1099TYPE
-            $Actual.APBILLITEM.FORM1099BOX | Should -Be $Expected.FORM1099BOX
-            $Actual.APBILLITEM.BILLABLE | Should -Be $Expected.BILLABLE
-            $Actual.APBILLITEM.ALLOCATION | Should -Be $Expected.ALLOCATION
-            $Actual.APBILLITEM.LOCATIONID | Should -Be $Expected.LOCATIONID
-            $Actual.APBILLITEM.DEPARTMENTID | Should -Be $Expected.DEPARTMENTID
-            $Actual.APBILLITEM.PROJECTID | Should -Be $Expected.PROJECTID
-            $Actual.APBILLITEM.TASKID | Should -Be $Expected.TASKID
-            $Actual.APBILLITEM.COSTTYPEID | Should -Be $Expected.COSTTYPEID
-            $Actual.APBILLITEM.CUSTOMERID | Should -Be $Expected.CUSTOMERID
-            $Actual.APBILLITEM.VENDORID | Should -Be $Expected.VENDORID
-            $Actual.APBILLITEM.EMPLOYEEID | Should -Be $Expected.EMPLOYEEID
-            $Actual.APBILLITEM.ITEMID | Should -Be $Expected.ITEMID
-            $Actual.APBILLITEM.CLASSID | Should -Be $Expected.CLASSID
-            $Actual.APBILLITEM.CONTRACTID | Should -Be $Expected.CONTRACTID
-            $Actual.APBILLITEM.WAREHOUSEID | Should -Be $Expected.WAREHOUSEID
-            $Actual.APBILLITEM.GLDIM | Should -Be $Expected.GLDIM
+            $Actual.APBILLITEMS.APBILLITEM.ACCOUNTNO | Should -Be $Expected.ACCOUNTNO
+            $Actual.APBILLITEMS.APBILLITEM.OFFSETGLACCOUNTNO | Should -Be $Expected.OFFSETGLACCOUNTNO
+            $Actual.APBILLITEMS.APBILLITEM.TRX_AMOUNT | Should -Be $Expected.TRX_AMOUNT
+            $Actual.APBILLITEMS.APBILLITEM.TOTALTRXAMOUNT | Should -Be $Expected.TOTALTRXAMOUNT
+            $Actual.APBILLITEMS.APBILLITEM.ENTRYDESCRIPTION | Should -Be $Expected.ENTRYDESCRIPTION
+            $Actual.APBILLITEMS.APBILLITEM.FORM1099 | Should -Be $Expected.FORM1099
+            $Actual.APBILLITEMS.APBILLITEM.FORM1099TYPE | Should -Be $Expected.FORM1099TYPE
+            $Actual.APBILLITEMS.APBILLITEM.FORM1099BOX | Should -Be $Expected.FORM1099BOX
+            $Actual.APBILLITEMS.APBILLITEM.BILLABLE | Should -Be $Expected.BILLABLE
+            $Actual.APBILLITEMS.APBILLITEM.ALLOCATION | Should -Be $Expected.ALLOCATION
+            $Actual.APBILLITEMS.APBILLITEM.LOCATIONID | Should -Be $Expected.LOCATIONID
+            $Actual.APBILLITEMS.APBILLITEM.DEPARTMENTID | Should -Be $Expected.DEPARTMENTID
+            $Actual.APBILLITEMS.APBILLITEM.PROJECTID | Should -Be $Expected.PROJECTID
+            $Actual.APBILLITEMS.APBILLITEM.TASKID | Should -Be $Expected.TASKID
+            $Actual.APBILLITEMS.APBILLITEM.COSTTYPEID | Should -Be $Expected.COSTTYPEID
+            $Actual.APBILLITEMS.APBILLITEM.CUSTOMERID | Should -Be $Expected.CUSTOMERID
+            $Actual.APBILLITEMS.APBILLITEM.VENDORID | Should -Be $Expected.VENDORID
+            $Actual.APBILLITEMS.APBILLITEM.EMPLOYEEID | Should -Be $Expected.EMPLOYEEID
+            $Actual.APBILLITEMS.APBILLITEM.ITEMID | Should -Be $Expected.ITEMID
+            $Actual.APBILLITEMS.APBILLITEM.CLASSID | Should -Be $Expected.CLASSID
+            $Actual.APBILLITEMS.APBILLITEM.CONTRACTID | Should -Be $Expected.CONTRACTID
+            $Actual.APBILLITEMS.APBILLITEM.WAREHOUSEID | Should -Be $Expected.WAREHOUSEID
+            $Actual.APBILLITEMS.APBILLITEM.GLDIM | Should -Be $Expected.GLDIM
             foreach ($property in $Expected.CUSTOMFIELDS.PSObject.Properties) {
                 Write-Debug "$($property.Name): $($property.Value)"
-                $Actual.APBILLITEM[$property.Name].'#text' | Should -Be $property.Value
+                $Actual.APBILLITEMS.APBILLITEM[$property.Name].'#text' | Should -Be $property.Value
             }
-            # $Actual.APBILLITEM.TAXENTRIES | Should -Be $Expected.TAXENTRIES
+            # $Actual.APBILLITEMS.APBILLITEM.TAXENTRIES | Should -Be $Expected.TAXENTRIES
         }
 
     }
@@ -172,34 +172,34 @@ Describe "ConvertTo-APBillItem" -tag 'Unit' {
             $Actual = [pscustomobject]$Expected | ConvertTo-APBillItem
 
             # assert
-            $Actual.APBILLITEM.ACCOUNTLABEL | Should -Be $Expected.ACCOUNTLABEL
-            $Actual.APBILLITEM.OFFSETGLACCOUNTNO | Should -Be $Expected.OFFSETGLACCOUNTNO
-            $Actual.APBILLITEM.TRX_AMOUNT | Should -Be $Expected.TRX_AMOUNT
-            $Actual.APBILLITEM.TOTALTRXAMOUNT | Should -Be $Expected.TOTALTRXAMOUNT
-            $Actual.APBILLITEM.ENTRYDESCRIPTION | Should -Be $Expected.ENTRYDESCRIPTION
-            $Actual.APBILLITEM.FORM1099 | Should -Be $Expected.FORM1099
-            $Actual.APBILLITEM.FORM1099TYPE | Should -Be $Expected.FORM1099TYPE
-            $Actual.APBILLITEM.FORM1099BOX | Should -Be $Expected.FORM1099BOX
-            $Actual.APBILLITEM.BILLABLE | Should -Be $Expected.BILLABLE
-            $Actual.APBILLITEM.ALLOCATION | Should -Be $Expected.ALLOCATION
-            $Actual.APBILLITEM.LOCATIONID | Should -Be $Expected.LOCATIONID
-            $Actual.APBILLITEM.DEPARTMENTID | Should -Be $Expected.DEPARTMENTID
-            $Actual.APBILLITEM.PROJECTID | Should -Be $Expected.PROJECTID
-            $Actual.APBILLITEM.TASKID | Should -Be $Expected.TASKID
-            $Actual.APBILLITEM.COSTTYPEID | Should -Be $Expected.COSTTYPEID
-            $Actual.APBILLITEM.CUSTOMERID | Should -Be $Expected.CUSTOMERID
-            $Actual.APBILLITEM.VENDORID | Should -Be $Expected.VENDORID
-            $Actual.APBILLITEM.EMPLOYEEID | Should -Be $Expected.EMPLOYEEID
-            $Actual.APBILLITEM.ITEMID | Should -Be $Expected.ITEMID
-            $Actual.APBILLITEM.CLASSID | Should -Be $Expected.CLASSID
-            $Actual.APBILLITEM.CONTRACTID | Should -Be $Expected.CONTRACTID
-            $Actual.APBILLITEM.WAREHOUSEID | Should -Be $Expected.WAREHOUSEID
-            $Actual.APBILLITEM.GLDIM | Should -Be $Expected.GLDIM
+            $Actual.APBILLITEMS.APBILLITEM.ACCOUNTLABEL | Should -Be $Expected.ACCOUNTLABEL
+            $Actual.APBILLITEMS.APBILLITEM.OFFSETGLACCOUNTNO | Should -Be $Expected.OFFSETGLACCOUNTNO
+            $Actual.APBILLITEMS.APBILLITEM.TRX_AMOUNT | Should -Be $Expected.TRX_AMOUNT
+            $Actual.APBILLITEMS.APBILLITEM.TOTALTRXAMOUNT | Should -Be $Expected.TOTALTRXAMOUNT
+            $Actual.APBILLITEMS.APBILLITEM.ENTRYDESCRIPTION | Should -Be $Expected.ENTRYDESCRIPTION
+            $Actual.APBILLITEMS.APBILLITEM.FORM1099 | Should -Be $Expected.FORM1099
+            $Actual.APBILLITEMS.APBILLITEM.FORM1099TYPE | Should -Be $Expected.FORM1099TYPE
+            $Actual.APBILLITEMS.APBILLITEM.FORM1099BOX | Should -Be $Expected.FORM1099BOX
+            $Actual.APBILLITEMS.APBILLITEM.BILLABLE | Should -Be $Expected.BILLABLE
+            $Actual.APBILLITEMS.APBILLITEM.ALLOCATION | Should -Be $Expected.ALLOCATION
+            $Actual.APBILLITEMS.APBILLITEM.LOCATIONID | Should -Be $Expected.LOCATIONID
+            $Actual.APBILLITEMS.APBILLITEM.DEPARTMENTID | Should -Be $Expected.DEPARTMENTID
+            $Actual.APBILLITEMS.APBILLITEM.PROJECTID | Should -Be $Expected.PROJECTID
+            $Actual.APBILLITEMS.APBILLITEM.TASKID | Should -Be $Expected.TASKID
+            $Actual.APBILLITEMS.APBILLITEM.COSTTYPEID | Should -Be $Expected.COSTTYPEID
+            $Actual.APBILLITEMS.APBILLITEM.CUSTOMERID | Should -Be $Expected.CUSTOMERID
+            $Actual.APBILLITEMS.APBILLITEM.VENDORID | Should -Be $Expected.VENDORID
+            $Actual.APBILLITEMS.APBILLITEM.EMPLOYEEID | Should -Be $Expected.EMPLOYEEID
+            $Actual.APBILLITEMS.APBILLITEM.ITEMID | Should -Be $Expected.ITEMID
+            $Actual.APBILLITEMS.APBILLITEM.CLASSID | Should -Be $Expected.CLASSID
+            $Actual.APBILLITEMS.APBILLITEM.CONTRACTID | Should -Be $Expected.CONTRACTID
+            $Actual.APBILLITEMS.APBILLITEM.WAREHOUSEID | Should -Be $Expected.WAREHOUSEID
+            $Actual.APBILLITEMS.APBILLITEM.GLDIM | Should -Be $Expected.GLDIM
             foreach ($property in $Expected.CUSTOMFIELDS.PSObject.Properties) {
                 Write-Debug "$($property.Name): $($property.Value)"
-                $Actual.APBILLITEM[$property.Name].'#text' | Should -Be $property.Value
+                $Actual.APBILLITEMS.APBILLITEM[$property.Name].'#text' | Should -Be $property.Value
             }
-            # $Actual.APBILLITEM.TAXENTRIES | Should -Be $Expected.TAXENTRIES
+            # $Actual.APBILLITEMS.APBILLITEM.TAXENTRIES | Should -Be $Expected.TAXENTRIES
         }
 
     }
