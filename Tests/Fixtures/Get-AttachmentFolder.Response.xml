@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+    <control>
+        <status>success</status>
+        <senderid>senderid</senderid>
+        <controlid>1605539036</controlid>
+        <uniqueid>false</uniqueid>
+        <dtdversion>3.0</dtdversion>
+    </control>
+    <operation>
+        <authentication>
+            <status>success</status>
+            <userid>userid</userid>
+            <companyid>companyid</companyid>
+            <locationid></locationid>
+            <sessiontimestamp>2020-11-16T15:03:57+00:00</sessiontimestamp>
+            <sessiontimeout>2020-11-16T23:03:57+00:00</sessiontimeout>
+        </authentication>
+        <result>
+            <status>success</status>
+            <function>get_list</function>
+            <controlid>276403b7-d1f6-4552-b908-dace25f59243</controlid>
+            <listtype start="0" end="1" total="2">supdocfolder</listtype>
+            <data>
+                <supdocfolder>
+                    <name>folder0</name>
+                    <description>folder 0</description>
+                    <parentfolder/>
+                    <creationdate>10/08/2020</creationdate>
+                    <createdby>createdby</createdby>
+                    <lastmodified>10/08/2020</lastmodified>
+                    <lastmodifiedby>6</lastmodifiedby>
+                    <status>active</status>
+                </supdocfolder>
+                <supdocfolder>
+                    <name>folder1</name>
+                    <description/>
+                    <parentfolder/>
+                    <creationdate>01/15/2020</creationdate>
+                    <createdby>createdby</createdby>
+                    <lastmodified>01/15/2020</lastmodified>
+                    <lastmodifiedby>5</lastmodifiedby>
+                    <status>active</status>
+                </supdocfolder>
+            </data>
+        </result>
+    </operation>
+</response>
