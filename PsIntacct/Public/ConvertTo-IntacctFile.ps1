@@ -45,15 +45,16 @@ function ConvertTo-IntacctFile {
     begin 
     {
         $SB = New-Object -TypeName System.Text.StringBuilder
-        [void]$SB.Append("<attachments>")    
+        [void]$SB.Append("<attachments>")
     }
     
     process 
     {
-        [void]$SB.Append("<attachment>")
 
         try 
         {
+            [void]$SB.Append("<attachment>")
+
             foreach($P in $Path)
             {    
                 Write-Host "Processing $P..."
@@ -65,20 +66,16 @@ function ConvertTo-IntacctFile {
                 [void]$SB.Append("<attachmenttype>$( $Item.Extension.Substring(1, ($Item.Extension.Length -1)) )</attachmenttype>")
 
                 # data
-                # $Content = Get-Content -Path $P -Raw -AsByteStream
                 $Content = [System.IO.File]::ReadAllBytes($Path)
                 $Encoded = [Convert]::ToBase64String($Content)
                 [void]$SB.Append("<attachmentdata>$Encoded</attachmentdata>")
             }
 
+            [void]$SB.Append("</attachment>")
         }
         catch 
         {
-            Write-Host "ERROR: $( $_.Exception.Message )"
-        }
-        finally
-        {
-            [void]$SB.Append("</attachment>")
+            Write-Error $_.Exception.Message
         }
 
     }
