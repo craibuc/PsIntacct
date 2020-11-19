@@ -86,7 +86,7 @@ function Get-Invoice {
                 }
                 else
                 {
-                    Write-Error "Invoice $( if ($Id) { "$Id" } elseif ($Number) { "'$Number'" } ) not found"
+                    Write-Warning "Invoice $( if ($Id) { "$Id" } elseif ($Number) { "'$Number'" } ) not found"
                 }
 
             }
