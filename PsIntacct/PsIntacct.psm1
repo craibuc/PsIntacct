@@ -8,3 +8,5 @@
             # dot-source script
             . $_
         }
+
+Set-Alias -Name 'New-Session' -Value New-IntacctSession
