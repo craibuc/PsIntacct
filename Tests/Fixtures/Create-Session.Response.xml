@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+    <control>
+        <status>success</status>
+        <senderid>senderid</senderid>
+        <controlid>1605800378</controlid>
+        <uniqueid>false</uniqueid>
+        <dtdversion>3.0</dtdversion>
+    </control>
+    <operation>
+        <authentication>
+            <status>success</status>
+            <userid>userid</userid>
+            <companyid>companyid</companyid>
+            <locationid></locationid>
+            <sessiontimestamp>2020-11-19T15:39:40+00:00</sessiontimestamp>
+            <sessiontimeout>2020-11-20T03:39:40+00:00</sessiontimeout>
+        </authentication>
+        <result>
+            <status>success</status>
+            <function>getAPISession</function>
+            <controlid>96264639-21bc-4525-90bd-027179da9c9c</controlid>
+            <data>
+                <api>
+                    <sessionid>4dfZhgdAZ3jR-tyznJZ_UUbCeND_3A..</sessionid>
+                    <endpoint>https://api.intacct.com/ia/xml/xmlgw.phtml</endpoint>
+                    <locationid></locationid>
+                </api>
+            </data>
+        </result>
+    </operation>
+</response>
