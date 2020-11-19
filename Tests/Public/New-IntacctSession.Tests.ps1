@@ -11,14 +11,14 @@ BeforeAll {
     . (Join-Path $PrivatePath "Send-Request.ps1")
     . (Join-Path $PrivatePath "ConvertTo-PlainText.ps1")
 
-    # New-Session.ps1
+    # New-IntacctSession.ps1
     $sut = (Split-Path -Leaf $PSCommandPath) -replace '\.Tests\.', '.'
 
-    # . /PsIntacct/PsIntacct/Public/New-Session.ps1
+    # . /PsIntacct/PsIntacct/Public/New-IntacctSession.ps1
     . (Join-Path $PublicPath $sut)
 }
 
-Describe "New-Session" -Tag 'unit' {
+Describe "New-IntacctSession" -Tag 'unit' {
 
     Context "Parameter validation" {
     }
@@ -29,7 +29,7 @@ Describe "New-Session" -Tag 'unit' {
             # arrange
             Mock Send-Request {
                 Mock Send-Request {
-                    $Fixture = 'New-Session.Response.xml'
+                    $Fixture = 'New-IntacctSession.Response.xml'
                     $Content = Get-Content (Join-Path $FixturesDirectory $Fixture) -Raw
                     # # Write-Debug $Content
                     # [xml]$Content    
@@ -47,7 +47,7 @@ Describe "New-Session" -Tag 'unit' {
             }
 
             # act
-            $IntacctSession = New-Session -SenderCredential $Expected.SenderCredential -UserCredential $Expected.UserCredential -CompanyId $Expected.CompanyId
+            $IntacctSession = New-IntacctSession -SenderCredential $Expected.SenderCredential -UserCredential $Expected.UserCredential -CompanyId $Expected.CompanyId
 
         }
 

@@ -1,10 +1,24 @@
 <#
+.SYNOPSIS
+Create a new Intacct session.
+
+.PARAMETER SenderCredential
+
+.PARAMETER UserCredential
+
+.PARAMETER CompanyId
+
+.EXAMPLE
+$SenderCredential = Get-Credential
+$UserCredential = Get-Credential
+
+$IntacctSession = New-IntacctSession -SenderCredential $SenderCredential -UserCredential $UserCredential -CompanyId 'AcmeAnvils'
 
 .LINK
 https://groups.google.com/forum/#!msg/pester/ZgNpVc36Z0k/MzRXw2jpAAAJ
 
 #>
-function New-Session {
+function New-IntacctSession {
 
     [CmdletBinding()]
     param
