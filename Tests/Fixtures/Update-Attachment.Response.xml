@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+    <control>
+        <status>success</status>
+        <senderid>senderid</senderid>
+        <controlid>1605562445</controlid>
+        <uniqueid>false</uniqueid>
+        <dtdversion>3.0</dtdversion>
+    </control>
+    <operation>
+        <authentication>
+            <status>success</status>
+            <userid>userid</userid>
+            <companyid>companyid</companyid>
+            <locationid></locationid>
+            <sessiontimestamp>2020-11-16T21:34:05+00:00</sessiontimestamp>
+            <sessiontimeout>2020-11-17T09:34:05+00:00</sessiontimeout>
+        </authentication>
+        <result>
+            <status>success</status>
+            <function>update_supdoc</function>
+            <controlid>dcb750b6-542a-487c-a84f-5cf09834c7b1</controlid>
+            <key>35</key>
+        </result>
+    </operation>
+</response>

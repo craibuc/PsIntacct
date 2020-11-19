@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+    <control>
+        <status>success</status>
+        <senderid>senderid</senderid>
+        <controlid>1605535093</controlid>
+        <uniqueid>false</uniqueid>
+        <dtdversion>3.0</dtdversion>
+    </control>
+    <operation>
+        <authentication>
+            <status>success</status>
+            <userid>userid</userid>
+            <companyid>companyid</companyid>
+            <locationid></locationid>
+            <sessiontimestamp>2020-11-16T13:58:13+00:00</sessiontimestamp>
+            <sessiontimeout>2020-11-16T21:58:13+00:00</sessiontimeout>
+        </authentication>
+        <result>
+            <status>success</status>
+            <function>get_list</function>
+            <controlid>7a8d0ae5-26df-4e83-88ed-28310e863b4d</controlid>
+            <listtype start="0" end="9" total="383">supdoc</listtype>
+            <data>
+                <supdoc>
+                    <recordno>1</recordno>
+                    <supdocid>ATT-00001</supdocid>
+                    <supdocname>Invoice 123</supdocname>
+                    <folder>Bills</folder>
+                    <description/>
+                    <creationdate>04/20/2020</creationdate>
+                    <createdby>createdby</createdby>
+                    <attachments>
+                        <attachment>
+                            <attachmentname>zPDF 0</attachmentname>
+                            <attachmenttype>pdf</attachmenttype>
+                            <attachmentdata></attachmentdata>
+                        </attachment>
+                    </attachments>
+                </supdoc>
+                <supdoc>
+                    <recordno>2</recordno>
+                    <supdocid>ATT-00002</supdocid>
+                    <supdocname>Lorem ipsum</supdocname>
+                    <folder>Bills</folder>
+                    <description/>
+                    <creationdate>04/20/2020</creationdate>
+                    <createdby>createdby</createdby>
+                    <attachments>
+                        <attachment>
+                            <attachmentname>XLXS 0</attachmentname>
+                            <attachmenttype>xlsx</attachmenttype>
+                            <attachmentdata></attachmentdata>
+                        </attachment>
+                        <attachment>
+                            <attachmentname>PDF 0</attachmentname>
+                            <attachmenttype>pdf</attachmenttype>
+                            <attachmentdata></attachmentdata>
+                        </attachment>
+                    </attachments>
+                </supdoc>
+            </data>
+        </result>
+    </operation>
+</response>
