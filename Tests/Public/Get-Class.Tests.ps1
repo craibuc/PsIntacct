@@ -1,29 +1,33 @@
-# /PsIntacct
-$ProjectDirectory = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
+BeforeAll {
 
-# /PsIntacct/PsIntacct/Public
-$PublicPath = Join-Path $ProjectDirectory "/PsIntacct/Public/"
-$PrivatePath = Join-Path $ProjectDirectory "/PsIntacct/Private/"
+    # /PsIntacct
+    $ProjectDirectory = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
 
-# /PsIntacct/Tests/Fixtures/
-$FixturesDirectory = Join-Path $ProjectDirectory "/Tests/Fixtures/"
+    $PublicPath = Join-Path $ProjectDirectory "/PsIntacct/Public/"
+    $PrivatePath = Join-Path $ProjectDirectory "/PsIntacct/Private/"
+    $FixturesDirectory = Join-Path $ProjectDirectory "/Tests/Fixtures/"
 
-# Get-Object.ps1
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
+    # dependencies
+    . (Join-Path $PrivatePath "Send-Request.ps1")
 
-# . /PsIntacct/PsIntacct/Public/Get-Object.ps1
-. (Join-Path $PublicPath $sut)
+    # Get-Class.ps1
+    $sut = (Split-Path -Leaf $PSCommandPath) -replace '\.Tests\.', '.'
 
-# dependencies
-. (Join-Path $PrivatePath "Send-Request.ps1")
+    # . /PsIntacct/PsIntacct/Public/Get-Class.ps1
+    . (Join-Path $PublicPath $sut)
+}
 
-Describe "Get-Object" {
+Describe "Get-Class" {
 
     Context 'Parameter validation' {
-        $Command = Get-Command 'Get-Object'
+        BeforeAll {
+            $Command = Get-Command 'Get-Class'
+        }
 
         Context 'Session' {
-            $ParameterName = 'Session'
+            BeforeAll {
+                $ParameterName = 'Session'
+            }
 
             It "is a [pscustomobject]" {
                 $Command | Should -HaveParameter $ParameterName -Type pscustomobject
@@ -33,8 +37,10 @@ Describe "Get-Object" {
             }
         }
 
-        Context 'Object' {
-            $ParameterName = 'Object'
+        Context 'Name' {
+            BeforeAll {
+                $ParameterName = 'Name'
+            }
 
             It "is a [string]" {
                 $Command | Should -HaveParameter $ParameterName -Type string
@@ -48,7 +54,9 @@ Describe "Get-Object" {
         }
 
         Context 'Details' {
-            $ParameterName = 'Details'
+            BeforeAll {
+                $ParameterName = 'Details'
+            }
 
             It "is a [switch]" {
                 $Command | Should -HaveParameter $ParameterName -Type switch
@@ -59,46 +67,53 @@ Describe "Get-Object" {
         }
     }
 
-    # arrange
-    $Credential = New-MockObject -Type PsCredential
-    $Session = [PsCustomObject]@{Credential=$Credential;sessionid='abcdefghi';endpoint='https://xx.yy.zz'}
-    $PSDefaultParameterValues['*:Session'] = $Session
+    Context "Usage" {
 
-    Context "Default parameters" {
-
-        BeforeEach {
+        BeforeAll {
             # arrange
-            Mock Send-Request {
-                $Fixture = 'Get-Object.Default.xml'
-                $Content = Get-Content (Join-Path $FixturesDirectory $Fixture) -Raw
-                # Write-Debug $Content
-                [xml]$Content
+            $Credential = New-MockObject -Type PsCredential
+            $Session = [PsCustomObject]@{Credential=$Credential;sessionid='abcdefghi';endpoint='https://xx.yy.zz'}
+            $PSDefaultParameterValues['*:Session'] = $Session
+        }
+
+        Context "when 'Session' parameter is supplied" {
+
+            BeforeEach {
+                # arrange
+                Mock Send-Request {
+                    $Fixture = 'Get-Object.Default.xml'
+                    $Content = Get-Content (Join-Path $FixturesDirectory $Fixture) -Raw
+                    # Write-Debug $Content
+                    [xml]$Content
+                }
+    
+                # act
+                $Actual = Get-Class
             }
-
-            # act
-            $Actual = Get-Object
+    
+            it "adds the 'inspect' and 'object' elements" {
+    
+                # assert
+                #<inspect><object>*</object></inspect>
+                Assert-MockCalled Send-Request -ParameterFilter {
+                    $verb = ([xml]$Function).function
+                    $verb.ChildNodes[0].Name -eq 'inspect' -and
+                    $verb.inspect.detail -eq $NULL -and
+                    $verb.inspect.object -eq '*'
+                }    
+            }
+    
+            It "returns the expected 'type' object's properties" {
+                # assert
+                $Actual.typename | Should -Not -BeNullOrEmpty
+                $Actual."#text" | Should -Not -BeNullOrEmpty
+            }
+    
         }
-
-        it "configures the function element properly" {
-
-            # assert
-            #<inspect><object>*</object></inspect>
-            Assert-MockCalled Send-Request -ParameterFilter {
-                $inspect = ([xml]$Function).function.inspect
-                $inspect.detail -eq $NULL -and
-                $inspect.object -eq '*'
-            }    
-        }
-
-        It "returns the expected 'type' object's properties" {
-            # assert
-            $Actual.typename | Should -Not -BeNullOrEmpty
-            $Actual."#text" | Should -Not -BeNullOrEmpty
-        }
-
+    
     }
 
-    Context "-Object" {
+    Context "when the 'Name' parameter is supplied" {
 
         BeforeEach {
             # arrange
@@ -110,7 +125,7 @@ Describe "Get-Object" {
             }
 
             # act
-            $Actual = Get-Object -Object 'EMPLOYEE'
+            $Actual = Get-Class -Name 'EMPLOYEE'
         }
 
         it "configures the function element properly" {
@@ -132,7 +147,7 @@ Describe "Get-Object" {
 
     }
 
-    Context "-Object AND -Details" {
+    Context "when the 'Name' and 'Details' parameters are supplied" {
 
         BeforeEach {
             # arrange
@@ -144,7 +159,7 @@ Describe "Get-Object" {
             }
 
             # act
-            $Actual = Get-Object -Object 'EMPLOYEE' -Details
+            $Actual = Get-Class -Name 'EMPLOYEE' -Details
 
         }
 

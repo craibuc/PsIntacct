@@ -1,33 +1,33 @@
 <#
 .SYNOPSIS
-Retrieve Object metadata
+Retrieve Class metadata
 
 .PARAMETER Session
 The Session object created by New-Session
 
-.PARAMETER Object
-Get information for the specified Object
+.PARAMETER Name
+Get information for the Class with the specified name.
 
 .PARAMETER Details
-Include all details for the specified Object
+Include all details for the specified Class.
 
 .EXAMPLE
-PS> Get-Object
+PS> Get-Class
 
-Get all Objects
+Get all Classes
 
 .EXAMPLE
-PS> Get-Object -Object 'EMPLOYEE'
+PS> Get-Class -Name 'EMPLOYEE'
 
 Get summary information for EMPLOYEE
 
 .EXAMPLE
-PS> Get-Object -Object 'EMPLOYEE' -Details
+PS> Get-Class -Name 'EMPLOYEE' -Details
 
 Get detailed information for EMPLOYEE
 
 #>
-function Get-Object {
+function Get-Class {
 
     [CmdletBinding()]
     param (
@@ -35,7 +35,7 @@ function Get-Object {
         [pscustomobject]$Session,
 
         [Parameter()]
-        [string]$Object='*',
+        [string]$Name='*',
 
         [Parameter()]
         [switch]$Details
@@ -43,15 +43,15 @@ function Get-Object {
 
     Write-Debug "$($MyInvocation.MyCommand.Name)"
 
-    $Inspect = switch ($Object) 
+    $Inspect = switch ($Name) 
     {
-        '*' { "<inspect><object>$Object</object></inspect>" }
-        Default { "<inspect detail='$( [int]$Details.IsPresent )'><object>$Object</object></inspect>" }
+        '*' { "<inspect><object>$Name</object></inspect>" }
+        Default { "<inspect detail='$( [int]$Details.IsPresent )'><object>$Name</object></inspect>" }
     }
     # Write-Debug "Inspect: $Inspect"
 
     $Function = "<function controlid='$( New-Guid )'>$Inspect</function>"
-    # Write-Debug "Function: $Function"
+    Write-Debug "Function: $Function"
 
     $Content = Send-Request -Credential $Session.Credential -Session $Session -Function $Function
 
