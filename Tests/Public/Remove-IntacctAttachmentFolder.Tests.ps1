@@ -34,7 +34,7 @@ Describe "Remove-IntacctAttachmentFolder" -Tag 'unit' {
                 Mandatory = $true
             }
             @{
-                ParameterName = 'name'
+                ParameterName = 'supdocname'
                 Type = [string]
                 Mandatory = $true
             }
@@ -57,7 +57,7 @@ Describe "Remove-IntacctAttachmentFolder" -Tag 'unit' {
 
     } # /Contect - parameter validation
 
-    Context "when 'Session' and 'name' supplied" {
+    Context "when 'Session' and 'supdocname' supplied" {
 
         BeforeAll {
             # arrange
@@ -78,15 +78,15 @@ Describe "Remove-IntacctAttachmentFolder" -Tag 'unit' {
                 $Response
             }
             
-            $name = 'MyFolder'
+            $supdocname = 'MyFolder'
 
             # act
-            Remove-IntacctAttachmentFolder -Session $Session -name $name
+            Remove-IntacctAttachmentFolder -Session $Session -supdocname $supdocname
         }
 
         it "adds the 'delete_supdocfolder' element" {
             # assert
-            # <function controlid='$Guid'><delete_supdocfolder key='$name'/></function>
+            # <function controlid='$Guid'><delete_supdocfolder key='$supdocname'/></function>
             Assert-MockCalled Send-Request -ParameterFilter {
                 $verb = ([xml]$Function).function
                 $verb.ChildNodes[0].Name -eq 'delete_supdocfolder'
@@ -95,10 +95,10 @@ Describe "Remove-IntacctAttachmentFolder" -Tag 'unit' {
 
         it "configures the function element properly" {
             # assert
-            # <function controlid='$Guid'><delete_supdocfolder key='$name'/></function>
+            # <function controlid='$Guid'><delete_supdocfolder key='$supdocname'/></function>
             Assert-MockCalled Send-Request -ParameterFilter {
                 $verb = ([xml]$Function).function.delete_supdocfolder
-                $verb.key -eq $name
+                $verb.key -eq $supdocname
             }    
         }
 
