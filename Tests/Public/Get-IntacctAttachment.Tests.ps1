@@ -42,6 +42,13 @@ Describe "Get-IntacctAttachment" -Tag 'unit' {
                     @{ParameterSetName='ById';Mandatory=$true}
                 )
             }
+            @{
+                ParameterName = 'supdocid'
+                Type = [string]
+                ParameterSets = @(
+                    @{ParameterSetName='ById';Mandatory=$true}
+                )
+            }
             # @{
             #     ParameterName = 'start'
             #     Type = [int]
@@ -59,23 +66,18 @@ Describe "Get-IntacctAttachment" -Tag 'unit' {
             #     Type = [bool]
             #     Mandatory = $false
             # }
-            # @{
-            #     ParameterName = 'filter'
-            #     Type = [object[]]
-            #     Mandatory = $false
-            # }
+            @{
+                ParameterName = 'filter'
+                Type = [pscustomobject]
+                ParameterSets = @(
+                    @{ParameterSetName='All';Mandatory=$false}
+                )
+            }
             # @{
             #     ParameterName = 'sorts'
             #     Type = [object[]]
             #     Mandatory = $false
             # }
-            @{
-                ParameterName = 'supdocid'
-                Type = [string]
-                ParameterSets = @(
-                    @{ParameterSetName='ById';Mandatory=$true}
-                )
-            }
             @{
                 ParameterName = 'Fields'
                 Type = [string[]]
@@ -165,9 +167,48 @@ Describe "Get-IntacctAttachment" -Tag 'unit' {
         # Context "when 'showPrivate' is supplied" {
         #     It "does something" {}
         # }
-        # Context "when 'filter' is supplied" {
-        #     It "does something" {}
-        # }
+
+        Context "when the 'filter' parameter is supplied with an expression" {
+
+            BeforeAll {
+
+                $Filter = [pscustomobject]@{
+                    expression = @{
+                        field = 'recordno'
+                        operator = '='
+                        value = '38'
+                    }
+                }
+            }
+
+            BeforeEach {
+                # arrange    
+                Mock Send-Request {
+                    $Fixture = 'Get-Attachment.Response.xml'
+                    $Content = Get-Content (Join-Path $FixturesDirectory $Fixture) -Raw
+                    # # Write-Debug $Content
+                    # [xml]$Content    
+    
+                    $Response = New-MockObject -Type  Microsoft.PowerShell.Commands.BasicHtmlWebResponseObject
+                    $Response | Add-Member -Type NoteProperty -Name 'Content' -Value $Content -Force
+                    $Response
+                }
+
+                # act
+                $Actual = Get-IntacctAttachment -Session $Session -filter $Filter
+            }
+
+            It "adds the 'filter/expression' element" {
+                Should -Invoke Send-Request -ParameterFilter {
+                    $verb = ([xml]$Function).function.get_list
+                    $verb.filter.expression.field -eq $filter.expression.field -and
+                    $verb.filter.expression.operator -eq $filter.expression.operator -and
+                    $verb.filter.expression.value -eq $filter.expression.value
+                }
+            }
+
+        }
+
         # Context "when 'sorts' is supplied" {
         #     It "does something" {}
         # }

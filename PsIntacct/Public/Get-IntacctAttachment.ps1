@@ -75,8 +75,8 @@ function Get-IntacctAttachment {
         # [Parameter(ParameterSetName='All')]
         # [bool]$showprivate,
 
-        # [Parameter(ParameterSetName='All')]
-        # [object]$filter,
+        [Parameter(ParameterSetName='All')]
+        [pscustomobject]$filter,
 
         # [Parameter(ParameterSetName='All')]
         # [object[]]$sorts,
@@ -93,55 +93,64 @@ function Get-IntacctAttachment {
     # create 'Function' XML
     #
 
-    <#
-    # 'All'
-    <get_list object="supdoc" start='0' maxitems="10" showprivate='true'>
-        <filter>
-            <expression>
-                <field>supdocname</field><operator>=</operator><value>lorem_ipsum_3</value>
-            </expression>
-        </filter>
-        <sorts>
-            <sortfield order='asc'>supdocname</sortfield>
-        </sorts>
-        <fields>
-            <field>supdocid</field><field>supdocname</field>
-        </fields>
-    </get_list>
-
-    # 'ById'
-    <get object="supdoc" key='ATT-00000'>
-        <fields>
-            <field>supdocid</field><field>supdocname</field>
-        </fields>
-    </get>
-    #>
-
     $SB = [Text.StringBuilder]::new()
     [void]$SB.Append("<function controlid='$( New-Guid )'>")
 
     switch ($PSCmdlet.ParameterSetName)
     {
-        'All' { [void]$SB.Append("<get_list object='supdoc'>") }
-        'ById' { [void]$SB.Append("<get object='supdoc' key='$supdocid'>") }
+        <#
+        <get_list object="supdoc" start='0' maxitems="10" showprivate='true'>
+            <filter>
+                <expression>
+                    <field>supdocname</field><operator>=</operator><value>lorem_ipsum_3</value>
+                </expression>
+                <logical/>
+            </filter>
+            <sorts>
+                <sortfield order='asc'>supdocname</sortfield>
+            </sorts>
+            <fields>
+                <field>supdocid</field><field>supdocname</field>
+            </fields>
+        </get_list>
+        #>
+        'All' 
+        { 
+            [void]$SB.Append("<get_list object='supdoc'>") 
+
+            if ($filter.expression) 
+            {
+                [void]$SB.Append( '<filter><expression>')
+                [void]$SB.Append( ('<field>{0}</field><operator>{1}</operator><value>{2}</value>' -f $filter.expression.field, $filter.expression.operator, $filter.expression.value) )
+                [void]$SB.Append( '</expression></filter>')
+            }
+            # TODO: finish logical implementation
+            if ($filter.logical) 
+            {
+                [void]$SB.Append( '<filter><logical>')
+                # [void]$SB.Append( ('<field>{0}</field><operator>{1}</operator><value>{2}</value>' -f $filter.expression.field, $filter.expression.operator, $filter.expression.value) )
+                [void]$SB.Append( '</logical></filter>')
+            }
+            # TODO: finish sorts implementation
+            # if ($sorts) { [void]$SB.Append( '<sorts><sortfield>{0}</sortfield></sorts>' -f ( $sorts -join '</sortfield><sortfield>') ) }
+            if ($fields) { [void]$SB.Append( '<fields><field>{0}</field></fields>' -f ( $fields -join '</field><field>') ) }
+
+            [void]$SB.Append("</get_list>")
+        }
+
+        <#
+        <get object="supdoc" key='ATT-00000'>
+            <fields><field>supdocid</field><field>supdocname</field></fields>
+        </get>
+        #>
+        'ById' 
+        {
+            [void]$SB.Append("<get object='supdoc' key='$supdocid'>")
+            if ($fields) { [void]$SB.Append( '<fields><field>{0}</field></fields>' -f ( $fields -join '</field><field>') ) }
+            [void]$SB.Append("</get>")
+        }
     }
     
-    # TODO: implement support for elements
-    # if ( $PSCmdlet.ParameterSetName -eq 'All' )
-    # {
-        # if ($filter) { [void]$SB.Append( '<filter><filter>') ) }
-        # if ($sorts) { [void]$SB.Append( '<sorts><sortfield>{0}</sortfield></sorts>' -f ( $sorts -join '</sortfield><sortfield>') ) }
-    # }
-
-    # both parametersets
-    if ($fields) { [void]$SB.Append( '<fields><field>{0}</field></fields>' -f ( $fields -join '</field><field>') ) }
-
-    switch ($PSCmdlet.ParameterSetName)
-    {
-        'All' { [void]$SB.Append("</get_list>") }
-        'ById' { [void]$SB.Append("</get>") }
-    }
-
     [void]$SB.Append("</function>")
     $Function = $SB.ToString()
 
