@@ -41,7 +41,7 @@ function Get-IntacctAttachmentFolder {
         [pscustomobject]$Session,
 
         [Parameter(ParameterSetName='ByName',Mandatory)]
-        [string]$name
+        [string]$supdocname
 
         # [Parameter(ParameterSetName='All')]
         # [int]$start
@@ -66,9 +66,9 @@ function Get-IntacctAttachmentFolder {
     Write-Debug "$($MyInvocation.MyCommand.Name)"
 
     $Guid = New-Guid
-    $Function = if ( $name -ne '' )
+    $Function = if ( $supdocname -ne '' )
     {
-        "<function controlid='$Guid'><get object=""supdocfolder"" key=""$name""></get></function>"
+        "<function controlid='$Guid'><get object=""supdocfolder"" key='$supdocname'></get></function>"
     }
     else
     {

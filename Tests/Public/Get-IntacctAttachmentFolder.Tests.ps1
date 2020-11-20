@@ -67,7 +67,7 @@ Describe "Get-IntacctAttachmentFolder" -Tag 'unit' {
             #     Mandatory = $false
             # }
             @{
-                ParameterName = 'name'
+                ParameterName = 'supdocname'
                 Type = [string]
                 ParameterSets = @(
                     @{ParameterSetName='All';Mandatory=$false}
@@ -177,25 +177,25 @@ Describe "Get-IntacctAttachmentFolder" -Tag 'unit' {
         #     It "does something" {}
         # }
 
-        Context "when 'name' is supplied" {
+        Context "when 'supdocname' is supplied" {
 
             BeforeEach {
                 # arrange
-                $name = 'loremIpsum'
+                $supdocname = 'loremIpsum'
 
                 # act
-                $Actual = Get-IntacctAttachmentFolder -Session $Session -name $name
+                $Actual = Get-IntacctAttachmentFolder -Session $Session -supdocname $supdocname
             }
 
             it "configures the function element properly" {
 
-                # <function controlid='$Guid'><get object="supdocfolder" key="Bills"></get></function>
+                # <function controlid='$Guid'><get object="supdocfolder" key="supdocname"></get></function>
 
                 # assert
                 Should -Invoke Send-Request -ParameterFilter {
                     $verb = ([xml]$Function).function.get
                     $verb.object -eq 'supdocfolder' -and
-                    $verb.key -eq $name
+                    $verb.key -eq $supdocname
                 }
 
             }
