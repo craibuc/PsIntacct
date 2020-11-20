@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+    <control>
+        <status>success</status>
+        <senderid>senderid</senderid>
+        <controlid>1605824596</controlid>
+        <uniqueid>false</uniqueid>
+        <dtdversion>3.0</dtdversion>
+    </control>
+    <operation>
+        <authentication>
+            <status>success</status>
+            <userid>userid</userid>
+            <companyid>companyid</companyid>
+            <locationid></locationid>
+            <sessiontimestamp>2020-11-19T22:23:16+00:00</sessiontimestamp>
+            <sessiontimeout>2020-11-20T10:23:16+00:00</sessiontimeout>
+        </authentication>
+        <result>
+            <status>success</status>
+            <function>readByQuery</function>
+            <controlid>9936226c-8443-4a40-8a38-f621fc79a6a3</controlid>
+            <data listtype="apbill" count="1" totalcount="816" numremaining="815" resultId="7765623338X7bwUx4HsmSBC9j3Gof@eQAAAAY4">
+                <apbill>
+                    <RECORDNO>1350</RECORDNO>
+                    <RECORDTYPE>pi</RECORDTYPE>
+                    <RECORDID></RECORDID>
+                    <FINANCIALENTITY></FINANCIALENTITY>
+                    <STATE>Posted</STATE>
+                    <RAWSTATE>A</RAWSTATE>
+                    <VENDORID>VEN-000010</VENDORID>
+                    <VENDORNAME>Vendor Name</VENDORNAME>
+                    <FORM1099TYPE></FORM1099TYPE>
+                    <FORM1099BOX></FORM1099BOX>
+                    <VENDTYPE1099TYPE></VENDTYPE1099TYPE>
+                    <TRX_ENTITYDUE>12345</TRX_ENTITYDUE>
+                    <DOCNUMBER></DOCNUMBER>
+                    <DESCRIPTION></DESCRIPTION>
+                    <DESCRIPTION2></DESCRIPTION2>
+                    <TERMNAME>Net30</TERMNAME>
+                    <TERMKEY>14</TERMKEY>
+                    <TERMVALUE>::#30#:O:</TERMVALUE>
+                    <WHENCREATED>04/01/2012</WHENCREATED>
+                    <WHENPOSTED>04/01/2012</WHENPOSTED>
+                    <WHENDISCOUNT>04/01/2012</WHENDISCOUNT>
+                    <WHENDUE>05/01/2012</WHENDUE>
+                    <WHENPAID></WHENPAID>
+                    <RECPAYMENTDATE></RECPAYMENTDATE>
+                    <PAYMENTPRIORITY></PAYMENTPRIORITY>
+                    <ONHOLD>false</ONHOLD>
+                    <BASECURR>USD</BASECURR>
+                    <CURRENCY>USD</CURRENCY>
+                    <EXCH_RATE_DATE></EXCH_RATE_DATE>
+                    <EXCH_RATE_TYPE_ID></EXCH_RATE_TYPE_ID>
+                    <EXCHANGE_RATE></EXCHANGE_RATE>
+                    <TOTALENTERED>5900</TOTALENTERED>
+                    <TOTALSELECTED>0</TOTALSELECTED>
+                    <TOTALPAID>0</TOTALPAID>
+                    <TOTALDUE>5900</TOTALDUE>
+                    <TRX_TOTALENTERED>5900</TRX_TOTALENTERED>
+                    <TRX_TOTALSELECTED>0</TRX_TOTALSELECTED>
+                    <TRX_TOTALPAID>0</TRX_TOTALPAID>
+                    <TRX_TOTALDUE>5900</TRX_TOTALDUE>
+                    <BILLTOPAYTOCONTACTNAME>Vendor Name</BILLTOPAYTOCONTACTNAME>
+                    <SHIPTORETURNTOCONTACTNAME>Vendor Name</SHIPTORETURNTOCONTACTNAME>
+                    <BILLTOPAYTOKEY>247</BILLTOPAYTOKEY>
+                    <SHIPTORETURNTOKEY>247</SHIPTORETURNTOKEY>
+                    <PRBATCH>Bills: 2012/04/01 Batch</PRBATCH>
+                    <PRBATCHKEY>816</PRBATCHKEY>
+                    <MODULEKEY>3.AP</MODULEKEY>
+                    <SCHOPKEY>5</SCHOPKEY>
+                    <SYSTEMGENERATED>F</SYSTEMGENERATED>
+                    <AUWHENCREATED>09/16/2013 22:50:21</AUWHENCREATED>
+                    <WHENMODIFIED>09/16/2013 15:50:21</WHENMODIFIED>
+                    <CREATEDBY></CREATEDBY>
+                    <MODIFIEDBY></MODIFIEDBY>
+                    <DUE_IN_DAYS>3124</DUE_IN_DAYS>
+                    <PAYTO.TAXGROUP.NAME></PAYTO.TAXGROUP.NAME>
+                    <PAYTO.TAXGROUP.RECORDNO></PAYTO.TAXGROUP.RECORDNO>
+                    <PAYTO.TAXID></PAYTO.TAXID>
+                    <INCLUSIVETAX></INCLUSIVETAX>
+                    <TAXSOLUTIONKEY></TAXSOLUTIONKEY>
+                    <TAXSOLUTIONID></TAXSOLUTIONID>
+                    <SHOWMULTILINETAX></SHOWMULTILINETAX>
+                    <TAXMETHOD></TAXMETHOD>
+                    <RETAINAGEPERCENTAGE></RETAINAGEPERCENTAGE>
+                    <TRX_TOTALRETAINED></TRX_TOTALRETAINED>
+                    <TRX_TOTALRELEASED></TRX_TOTALRELEASED>
+                    <TOTALRETAINED></TOTALRETAINED>
+                    <SUPDOCID></SUPDOCID>
+                    <MEGAENTITYKEY></MEGAENTITYKEY>
+                    <MEGAENTITYID></MEGAENTITYID>
+                    <MEGAENTITYNAME></MEGAENTITYNAME>
+                    <VENDOR_NOTES></VENDOR_NOTES>
+                    <VOUCHER_NUMBER>VCH-000000105</VOUCHER_NUMBER>
+                    <EXCHRATEDATE></EXCHRATEDATE>
+                    <EXCHRATETYPE></EXCHRATETYPE>
+                    <EXCHRATE></EXCHRATE>
+                    <PAYTOCONTACTNAME>Vendor Name</PAYTOCONTACTNAME>
+                    <RETURNTOCONTACTNAME>Vendor Name</RETURNTOCONTACTNAME>
+                </apbill>
+            </data>
+        </result>
+    </operation>
+</response>
