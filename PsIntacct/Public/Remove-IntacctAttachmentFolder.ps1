@@ -5,11 +5,11 @@ Removes the specified Intacct attachment folder.
 .DESCRIPTION
 Removes the specified Intacct attachment folder.
 
-.PARAMETER supdocname
+.PARAMETER supdocfoldername
 The attachment folder's name.
 
 .EXAMPLE
-Remove-IntacctAttachmentFolder -Session $Session -supdocname 'MyFolder'
+Remove-IntacctAttachmentFolder -Session $Session -supdocfoldername 'MyFolder'
 
 .LINK
 https://developer.intacct.com/api/company-console/attachments/#delete-attachment-folder-legacy
@@ -23,7 +23,7 @@ function Remove-IntacctAttachmentFolder {
         [pscustomobject]$Session,
 
         [Parameter(Mandatory)]
-        [string]$supdocname
+        [string]$supdocfoldername
     )
     
     begin
@@ -33,10 +33,10 @@ function Remove-IntacctAttachmentFolder {
     
     process{
 
-        $Function = "<function controlid='$( New-Guid )'><delete_supdocfolder key='$supdocname'/></function>"
+        $Function = "<function controlid='$( New-Guid )'><delete_supdocfolder key='$supdocfoldername'/></function>"
         Write-Debug "Function: $Function"
 
-        if ( $PSCmdlet.ShouldProcess($supdocname,"Remove-IntacctAttachmentFolder") )
+        if ( $PSCmdlet.ShouldProcess($supdocfoldername,"Remove-IntacctAttachmentFolder") )
         {
 
             try

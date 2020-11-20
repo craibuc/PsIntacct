@@ -34,7 +34,7 @@ Describe "Remove-IntacctAttachmentFolder" -Tag 'unit' {
                 Mandatory = $true
             }
             @{
-                ParameterName = 'supdocname'
+                ParameterName = 'supdocfoldername'
                 Type = [string]
                 Mandatory = $true
             }
@@ -57,7 +57,7 @@ Describe "Remove-IntacctAttachmentFolder" -Tag 'unit' {
 
     } # /Contect - parameter validation
 
-    Context "when 'Session' and 'supdocname' supplied" {
+    Context "when 'Session' and 'supdocfoldername' supplied" {
 
         BeforeAll {
             # arrange
@@ -78,15 +78,15 @@ Describe "Remove-IntacctAttachmentFolder" -Tag 'unit' {
                 $Response
             }
             
-            $supdocname = 'MyFolder'
+            $supdocfoldername = 'MyFolder'
 
             # act
-            Remove-IntacctAttachmentFolder -Session $Session -supdocname $supdocname
+            Remove-IntacctAttachmentFolder -Session $Session -supdocfoldername $supdocfoldername
         }
 
         it "adds the 'delete_supdocfolder' element" {
             # assert
-            # <function controlid='$Guid'><delete_supdocfolder key='$supdocname'/></function>
+            # <function controlid='$Guid'><delete_supdocfolder key='$supdocfoldername'/></function>
             Assert-MockCalled Send-Request -ParameterFilter {
                 $verb = ([xml]$Function).function
                 $verb.ChildNodes[0].Name -eq 'delete_supdocfolder'
@@ -95,10 +95,10 @@ Describe "Remove-IntacctAttachmentFolder" -Tag 'unit' {
 
         it "configures the function element properly" {
             # assert
-            # <function controlid='$Guid'><delete_supdocfolder key='$supdocname'/></function>
+            # <function controlid='$Guid'><delete_supdocfolder key='$supdocfoldername'/></function>
             Assert-MockCalled Send-Request -ParameterFilter {
                 $verb = ([xml]$Function).function.delete_supdocfolder
-                $verb.key -eq $supdocname
+                $verb.key -eq $supdocfoldername
             }    
         }
 
