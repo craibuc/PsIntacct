@@ -12,12 +12,12 @@ The type of object to be deleted (e.g. CUSTOMER, CONTACT)
 The Id (RECORDNO) of the object to be deleted.
 
 .EXAMPLE
-Remove-Object -Object 'CUSTOMER' -Id 1234 -WhatIf
+Remove-IntacctObject -Object 'CUSTOMER' -Id 1234 -WhatIf
 
 Preview the effects of deleting CUSTOMER 1234.
 
 .EXAMPLE
-Remove-Object -Object 'CUSTOMER' -Id 1234
+Remove-IntacctObject -Object 'CUSTOMER' -Id 1234
 
 Confirm
 Are you sure you want to perform this action?
@@ -27,17 +27,17 @@ Performing the operation "Delete" on target "CUSTOMER: 1234".
 Delete CUSTOMER 1234 after being prompted for confirmation.
 
 .EXAMPLE
-Remove-Object -Object 'CUSTOMER' -Id 1234 -Confirm:$false
+Remove-IntacctObject -Object 'CUSTOMER' -Id 1234 -Confirm:$false
 
 Delete CUSTOMER 1234 without confirmation prompting.  DANGEROUS!
 
 .EXAMPLE
-Find-Object -Object 'CUSTOMER' | Remove-Object -Confirm:$false
+Find-Object -Object 'CUSTOMER' | Remove-IntacctObject -Confirm:$false
 
 Delete all CUSTOMER objects without confirmation prompting.  SUPER, SUPER, SUPER DANGEROUS!
 
 #>
-function Remove-Object {
+function Remove-IntacctObject {
 
     [CmdletBinding(SupportsShouldProcess,ConfirmImpact='High')]
     param (
