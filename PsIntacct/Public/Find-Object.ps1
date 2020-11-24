@@ -1,3 +1,48 @@
+<#
+.SYNOPSIS
+
+.PARAMETER Session
+
+.PARAMETER Object
+Any, valid Intacct class (e.g. 'APBILL','ARADJUSTMENT','ARINVOICE','ARPYMT')
+
+.PARAMETER Fields
+Any valid field for the specified class (e.g. 'RECORDNO','RECORDID','STATE','VENDORID','VENDORNAME','DOCNUMBER','SUPDOCID' for APBILL).
+
+.PARAMETER Query
+A query in the legacy, readByQuery syntax (e.g. "VendorName = 'Regal Services'").
+
+.PARAMETER Offset
+Number of records to skip before returning records.
+
+.PARAMETER PageSize
+Number of records to return.
+
+.EXAMPLE
+Find-Object -Session $Session -Object 'APBILL'
+
+Return all APBILL records
+
+.EXAMPLE
+Find-Object -Session $Session -Object 'APBILL' -Fields 'RECORDNO','RECORDID','STATE','VENDORID','VENDORNAME','DOCNUMBER','SUPDOCID'
+
+Return the specified fields for all APBILL records
+
+.EXAMPLE
+Find-Object -Session $Session -Object 'APBILL' -Query "STATE='A' AND SUPDOCID IS NULL"
+
+Return Posted, Paid, or Partially Paid APBILL records that do not have an attachment record.
+
+.LINK
+Get-Class
+
+.LINK
+https://developer.intacct.com/api/platform-services/objects/
+
+.LINK
+https://developer.intacct.com/web-services/queries/#using-legacy-readbyquery
+
+#>
 function Find-Object {
 
     [CmdletBinding()]
@@ -6,11 +51,11 @@ function Find-Object {
         [pscustomobject]$Session,
 
         [Parameter(Mandatory)]
-        [ValidateSet('ARADJUSTMENT','ARINVOICE','ARPYMT','BOOKING_TYPE','CONTACT','CUSTOMER','EMPLOYEE','GLACCOUNT','PROJECT','USERINFO','VENDOR')]
+        # [ValidateSet('APBILL','ARADJUSTMENT','ARINVOICE','ARPYMT','BOOKING_TYPE','CONTACT','CUSTOMER','EMPLOYEE','GLACCOUNT','PROJECT','USERINFO','VENDOR')]
         [string]$Object,
 
         [Parameter()]
-        [string]$Fields='*',
+        [object]$Fields,
 
         [Parameter()]
         [string]$Query,
@@ -29,12 +74,12 @@ function Find-Object {
         "<function controlid='$(New-Guid)'>
             <readByQuery>
                 <object>$Object</object>
-                <fields>$Fields</fields>
+                <fields>$( $Fields.length -eq 0 ? '*' : ( $Fields -is [array] ? $Fields -join ',' : $Fields) )</fields>
                 <query>$Query</query>
                 <pagesize>$PageSize</pagesize>
             </readByQuery>
         </function>"
-    # Write-Debug $Function
+    Write-Debug $Function
 
     try
     {
