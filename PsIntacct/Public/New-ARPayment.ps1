@@ -3,7 +3,7 @@
 Create an A/R payment.
 
 .PARAMETER Session
-The Session object returned by New-Session.
+The Session object returned by New-IntacctSession.
 
 .PARAMETER ARPaymentXml
 The Xml representation of an ARPayment, from ConvertTo-ARPayment

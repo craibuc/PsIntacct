@@ -3,7 +3,7 @@
 Save an Intacct Attachment header and files.
 
 .PARAMETER Session
-A valid Intacct session; use New-Session to create a valid session.
+A valid Intacct session; use New-IntacctSession to create a valid session.
 
 .PARAMETER supdocid
 Attachment ID to update
@@ -21,7 +21,7 @@ Description
 Zero or more attachments; use ConvertTo-IntacctFile to create correct object model/.
 
 .LINK
-New-Session
+New-IntacctSession
 
 .LINK
 ConvertTo-IntacctFile

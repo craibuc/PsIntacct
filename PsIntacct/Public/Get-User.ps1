@@ -3,7 +3,7 @@
 Retrieve a User record by id or name.
 
 .PARAMETER Session
-The Session object created by New-Session.
+The Session object created by New-IntacctSession.
 
 .PARAMETER Id
 The User's Id.

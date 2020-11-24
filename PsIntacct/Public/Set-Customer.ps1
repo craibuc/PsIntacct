@@ -3,7 +3,7 @@
 Update a customer.
 
 .PARAMETER Session
-The Session object returned by New-Session.
+The Session object returned by New-IntacctSession.
 
 .PARAMETER CustomerXml
 The Xml representation of an CustomerXml, from ConvertTo-CustomerXml

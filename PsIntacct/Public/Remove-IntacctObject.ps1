@@ -3,7 +3,7 @@
 Delete an object from Intacct.  High potential for a career-ending actions!
 
 .PARAMETER Session
-The object created by the New-Session cmdlet.
+The object created by the New-IntacctSession cmdlet.
 
 .PARAMETER Object
 The type of object to be deleted (e.g. CUSTOMER, CONTACT)

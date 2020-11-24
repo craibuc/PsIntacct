@@ -3,7 +3,7 @@
 Create an invoice.
 
 .PARAMETER Session
-The Session object returned by New-Session.
+The Session object returned by New-IntacctSession.
 
 .PARAMETER InvoiceXml
 The Xml representation of an InvoiceXml, from ConvertTo-InvoiceXml

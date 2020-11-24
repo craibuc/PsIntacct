@@ -3,7 +3,7 @@
 Retrieve a Contact record by id or name.
 
 .PARAMETER Session
-The Session object created by New-Session.
+The Session object created by New-IntacctSession.
 
 .PARAMETER Id
 The Contact's Id.

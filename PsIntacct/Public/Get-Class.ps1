@@ -3,7 +3,7 @@
 Retrieve Class metadata
 
 .PARAMETER Session
-The Session object created by New-Session
+The Session object created by New-IntacctSession
 
 .PARAMETER Name
 Get information for the Class with the specified name.

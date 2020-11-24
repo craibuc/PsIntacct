@@ -3,7 +3,7 @@
 Create a customer.
 
 .PARAMETER Session
-The Session object returned by New-Session.
+The Session object returned by New-IntacctSession.
 
 .PARAMETER ObjectXml
 The Xml representation of an object, from ConvertTo-[Object]Xml

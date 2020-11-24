@@ -1,6 +1,6 @@
 <#
 .PARAMETER Session
-The Session object create by New-Session
+The Session object create by New-IntacctSession
 
 .PARAMETER JOURNAL
 Stat journal symbol

@@ -3,7 +3,7 @@
 Update an Intacct attachment folder.
 
 .PARAMETER Session
-A valid Intacct session; use New-Session to create a valid session.
+A valid Intacct session; use New-IntacctSession to create a valid session.
 
 .PARAMETER supdocfoldername
 Attachment folder's name.
@@ -15,7 +15,7 @@ Attachment folder's description,
 Attachment folder's parent.
 
 .LINK
-New-Session
+New-IntacctSession
 
 .LINK
 https://developer.intacct.com/api/company-console/attachments/#update-attachment-folder-legacy

@@ -3,7 +3,7 @@
 Create an A/R adjustment.
 
 .PARAMETER Session
-The Session object returned by New-Session.
+The Session object returned by New-IntacctSession.
 
 .PARAMETER ARAdjustmentXml
 The Xml representation of an ARAdjustment, from ConvertTo-ARAdjustment

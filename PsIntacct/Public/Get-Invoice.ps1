@@ -3,7 +3,7 @@
 Retrieve a Invoice record by id or number.
 
 .PARAMETER Session
-The Session object created by New-Session.
+The Session object created by New-IntacctSession.
 
 .PARAMETER Id
 The Invoice's Id.
