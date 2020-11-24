@@ -35,7 +35,7 @@ $SenderCredential = Get-Credential
 $UserCredential = Get-Credential
 
 # create the session object
-$Session = New-Session -SenderCredential $SenderCredential -UserCredential $UserCredential -CompanyId 'my_company_id'
+$Session = New-IntacctSession -SenderCredential $SenderCredential -UserCredential $UserCredential -CompanyId 'my_company_id'
 ```
 
 ## Contributors
