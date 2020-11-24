@@ -11,18 +11,18 @@ BeforeAll {
     # dependencies
     . (Join-Path $PrivatePath "Send-Request.ps1")
 
-    # Find-Object.ps1
+    # Find-IntacctObject.ps1
     $sut = (Split-Path -Leaf $PSCommandPath) -replace '\.Tests\.', '.'
 
-    # . /PsIntacct/PsIntacct/Public/Find-Object.ps1
+    # . /PsIntacct/PsIntacct/Public/Find-IntacctObject.ps1
     . (Join-Path $PublicPath $sut)
 }
 
-Describe "Find-Object" -Tag 'unit' {
+Describe "Find-IntacctObject" -Tag 'unit' {
 
     Context "Parameter validation" {
         BeforeAll {
-            $Command = Get-Command 'Find-Object'
+            $Command = Get-Command 'Find-IntacctObject'
         }
 
         Context "Session" {
@@ -114,7 +114,7 @@ Describe "Find-Object" -Tag 'unit' {
         BeforeEach {
             # arrange
             Mock Send-Request {
-                $Fixture = 'Find-Object.Response.xml'
+                $Fixture = 'Find-IntacctObject.Response.xml'
                 $Content = Get-Content (Join-Path $FixturesDirectory $Fixture) -Raw
                 # # Write-Debug $Content
                 # [xml]$Content    
@@ -144,7 +144,7 @@ Describe "Find-Object" -Tag 'unit' {
 
             BeforeEach {
                 # act
-                $Actual = Find-Object -Session $Session -Object 'APBILL'
+                $Actual = Find-IntacctObject -Session $Session -Object 'APBILL'
             }
 
             it "adds the 'readByQuery' element" {
@@ -198,7 +198,7 @@ Describe "Find-Object" -Tag 'unit' {
                     $Fields = 'A','B'
     
                     # act
-                    Find-Object -Session $Session -Object $Object -Fields $Fields
+                    Find-IntacctObject -Session $Session -Object $Object -Fields $Fields
 
                     # assert
                     Should -Invoke Send-Request -ParameterFilter {
@@ -216,7 +216,7 @@ Describe "Find-Object" -Tag 'unit' {
                     $Fields = @()
     
                     # act
-                    Find-Object -Session $Session -Object $Object -Fields $Fields
+                    Find-IntacctObject -Session $Session -Object $Object -Fields $Fields
 
                     # assert
                     Should -Invoke Send-Request -ParameterFilter {
@@ -233,7 +233,7 @@ Describe "Find-Object" -Tag 'unit' {
                     $Fields = 'A,B'
     
                     # act
-                    Find-Object -Session $Session -Object $Object -Fields $Fields
+                    Find-IntacctObject -Session $Session -Object $Object -Fields $Fields
     
                     # assert
                     Should -Invoke Send-Request -ParameterFilter {
@@ -249,7 +249,7 @@ Describe "Find-Object" -Tag 'unit' {
                     $Fields = ''
     
                     # act
-                    Find-Object -Session $Session -Object $Object -Fields $Fields
+                    Find-IntacctObject -Session $Session -Object $Object -Fields $Fields
     
                     # assert
                     Should -Invoke Send-Request -ParameterFilter {
@@ -268,7 +268,7 @@ Describe "Find-Object" -Tag 'unit' {
                 $Query = "RECORDID='00000'"
 
                 # act
-                Find-Object -Session $Session -Object $Object -Query $Query
+                Find-IntacctObject -Session $Session -Object $Object -Query $Query
             }
 
             it "adds the 'query' element and sets its value to '$Query'" {
@@ -287,7 +287,7 @@ Describe "Find-Object" -Tag 'unit' {
                 $PageSize = 50
 
                 # act
-                Find-Object -Session $Session -Object $Object -PageSize $PageSize
+                Find-IntacctObject -Session $Session -Object $Object -PageSize $PageSize
             }
 
             it "adds the 'pagesize' element to its value to $PageSize" {
@@ -406,7 +406,7 @@ Describe "Find-Object" -Tag 'unit' {
 
 #         it "returns the specified number of records" -Skip {
 #             # act 
-#             [xml]$Actual = Find-Object -Session $Session
+#             [xml]$Actual = Find-IntacctObject -Session $Session
 
 #             #assert
 #             $Actual.response.operation.result.data.count | Should -Be $PageSize

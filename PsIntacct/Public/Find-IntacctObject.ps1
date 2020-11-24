@@ -19,17 +19,17 @@ Number of records to skip before returning records.
 Number of records to return.
 
 .EXAMPLE
-Find-Object -Session $Session -Object 'APBILL'
+Find-IntacctObject -Session $Session -Object 'APBILL'
 
 Return all APBILL records
 
 .EXAMPLE
-Find-Object -Session $Session -Object 'APBILL' -Fields 'RECORDNO','RECORDID','STATE','VENDORID','VENDORNAME','DOCNUMBER','SUPDOCID'
+Find-IntacctObject -Session $Session -Object 'APBILL' -Fields 'RECORDNO','RECORDID','STATE','VENDORID','VENDORNAME','DOCNUMBER','SUPDOCID'
 
 Return the specified fields for all APBILL records
 
 .EXAMPLE
-Find-Object -Session $Session -Object 'APBILL' -Query "STATE='A' AND SUPDOCID IS NULL"
+Find-IntacctObject -Session $Session -Object 'APBILL' -Query "STATE='A' AND SUPDOCID IS NULL"
 
 Return Posted, Paid, or Partially Paid APBILL records that do not have an attachment record.
 
@@ -43,7 +43,7 @@ https://developer.intacct.com/api/platform-services/objects/
 https://developer.intacct.com/web-services/queries/#using-legacy-readbyquery
 
 #>
-function Find-Object {
+function Find-IntacctObject {
 
     [CmdletBinding()]
     param (
