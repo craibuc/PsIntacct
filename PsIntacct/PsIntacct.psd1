@@ -12,7 +12,7 @@
 RootModule = 'PsIntacct.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.11.0'
+ModuleVersion = '0.12.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -70,7 +70,11 @@ Description = 'PowerShell module that wraps the Intacct API.'
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @(
+    'Get-IntacctAttachmentFolder', 'Set-IntacctAttachmentFolder', 'New-IntacctAttachmentFolder', 'Remove-IntacctAttachmentFolder'
+    'Get-IntacctAttachment','Save-IntacctAttachment','Remove-IntacctAttachment' #,'Set-IntacctAttachment','New-IntacctAttachment'
+    'ConvertTo-IntacctFile','ConvertFrom-IntacctFile'
     'ConvertTo-ContactXml','ConvertTo-SplitXml','ConvertTo-XmlDocument'
+    'Get-Class'
     'Find-Object','Remove-Object','Save-Object'
     'Format-Xml'
     'ConvertTo-APBill'
@@ -79,7 +83,8 @@ FunctionsToExport = @(
     'ConvertTo-CustomerXml','Get-Customer','New-Customer','Set-Customer'
     'Get-Dimension'
     'ConvertTo-InvoiceXml','ConvertTo-InvoiceItemXml','Get-Invoice','New-Invoice','Set-Invoice'
-    'New-Session','New-GLEntry','New-StatisticalJournalEntry'
+    'New-GLEntry','New-StatisticalJournalEntry'
+    'New-IntacctSession'
     'Get-User'
     'ConvertTo-VendorXml'
 )
@@ -91,7 +96,7 @@ CmdletsToExport = @()
 VariablesToExport = '*'
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = @()
+AliasesToExport = @('New-Session')
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
