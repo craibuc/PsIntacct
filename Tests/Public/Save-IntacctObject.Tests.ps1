@@ -1,22 +1,24 @@
-# /PsIntacct
-$ProjectDirectory = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
+BeforeAll {
 
-# /PsIntacct/PsIntacct/Public
-$PublicPath = Join-Path $ProjectDirectory "/PsIntacct/Public/"
-$PrivatePath = Join-Path $ProjectDirectory "/PsIntacct/Private/"
+    # /PsIntacct
+    $ProjectDirectory = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
 
-# /PsIntacct/Tests/Fixtures/
-$FixturesDirectory = Join-Path $ProjectDirectory "/Tests/Fixtures/"
+    # /PsIntacct/PsIntacct/Public
+    $PublicPath = Join-Path $ProjectDirectory "/PsIntacct/Public/"
+    $PrivatePath = Join-Path $ProjectDirectory "/PsIntacct/Private/"
+    $FixturesDirectory = Join-Path $ProjectDirectory "/Tests/Fixtures/"
 
-# Save-IntacctObject.ps1
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
+    # Save-IntacctObject.ps1
+    $sut = (Split-Path -Leaf $PSCommandPath) -replace '\.Tests\.', '.'
 
-# . /PsIntacct/PsIntacct/Public/Save-IntacctObject.ps1
-. (Join-Path $PublicPath $sut)
+    # . /PsIntacct/PsIntacct/Public/Save-IntacctObject.ps1
+    . (Join-Path $PublicPath $sut)
 
-# dependencies
-. (Join-Path $PrivatePath "Send-Request.ps1")
-# . (Join-Path $PrivatePath "ConvertTo-PlainText.ps1")
+    # dependencies
+    . (Join-Path $PrivatePath "Send-Request.ps1")
+    # . (Join-Path $PrivatePath "ConvertTo-PlainText.ps1")
+
+}
 
 Describe "Save-IntacctObject" -Tag 'unit' {
 
@@ -55,11 +57,9 @@ Describe "Save-IntacctObject" -Tag 'unit' {
     Context "Usage" {
 
         BeforeAll {
-
             # arrange
             $Credential = New-MockObject -Type PsCredential
             $Session = [PsCustomObject]@{Credential=$Credential;sessionid='abcdefghi';endpoint='https://intacct.com'}
-
         }
 
         Context "when a RECORDNO is provided" {

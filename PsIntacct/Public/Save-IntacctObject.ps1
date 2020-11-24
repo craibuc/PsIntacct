@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-Create a customer.
+Save an XML representation of an Intacct object.
 
 .PARAMETER Session
 The Session object returned by New-IntacctSession.
@@ -9,7 +9,7 @@ The Session object returned by New-IntacctSession.
 The Xml representation of an object, from ConvertTo-[Object]Xml
 #>
 
-function Save-Object {
+function Save-IntacctObject {
 
     [CmdletBinding()]
     param (
