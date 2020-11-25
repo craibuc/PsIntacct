@@ -9,4 +9,7 @@
             . $_
         }
 
+# compatibility
+Set-Alias -Name 'Find-Object' -Value Find-IntacctObject
 Set-Alias -Name 'New-Session' -Value New-IntacctSession
+Set-Alias -Name 'Save-Object' -Value Save-IntacctObject
