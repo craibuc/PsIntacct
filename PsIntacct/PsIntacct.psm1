@@ -13,3 +13,16 @@
 Set-Alias -Name 'Find-Object' -Value Find-IntacctObject
 Set-Alias -Name 'New-Session' -Value New-IntacctSession
 Set-Alias -Name 'Save-Object' -Value Save-IntacctObject
+
+# argument completers
+
+Register-ArgumentCompleter -CommandName 'New-IntacctSdkObject' -ParameterName TypeName -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+
+    Write-Verbose "CommandName: $CommandName"
+    Write-Verbose "ParameterName: $ParameterName"
+    Write-Verbose "wordToComplete: $wordToComplete"
+
+    Find-IntacctSdkType -Expression "*$wordToComplete*" | Select-Object -Expand Name
+
+}
