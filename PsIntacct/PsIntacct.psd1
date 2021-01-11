@@ -12,7 +12,7 @@
 RootModule = 'PsIntacct.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.13.0'
+ModuleVersion = '1.0.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -54,7 +54,10 @@ Description = 'PowerShell module that wraps the Intacct API.'
 # RequiredModules = @()
 
 # Assemblies that must be loaded prior to importing this module
-# RequiredAssemblies = @()
+RequiredAssemblies = @(
+    'Intacct.SDK.dll'
+    'Microsoft.Extensions.Logging.Abstractions.dll'
+)
 
 # Script files (.ps1) that are run in the caller's environment prior to importing this module.
 # ScriptsToProcess = @()
@@ -70,6 +73,9 @@ Description = 'PowerShell module that wraps the Intacct API.'
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @(
+    'New-IntacctSdkObject','Find-IntacctSdkType','Set-IntacctSdkConfiguration','Save-IntacctSdkObject'
+
+    # obsolete
     'Get-IntacctAttachmentFolder', 'Set-IntacctAttachmentFolder', 'New-IntacctAttachmentFolder', 'Remove-IntacctAttachmentFolder'
     'Get-IntacctAttachment','Save-IntacctAttachment','Remove-IntacctAttachment' #,'Set-IntacctAttachment','New-IntacctAttachment'
     'ConvertTo-IntacctFile','ConvertFrom-IntacctFile'
@@ -116,7 +122,7 @@ PrivateData = @{
 
     PSData = @{
 
-        Prerelease = 'beta'
+        Prerelease = 'alpha'
 
         # Tags applied to this module. These help with module discovery in online galleries.
         # Tags = @()
